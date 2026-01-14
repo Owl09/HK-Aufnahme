@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Aufnahme HK Daten</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#eef2ff">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <style>
+    :root { font-family: "Segoe UI", Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+    body { margin: 0; padding: calc(24px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom)); background: #f4f5f7; color: #1f2933; display: flex; justify-content: center; }
+    .card { width: min(940px, 100%); background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 18px 40px rgba(15,23,42,0.12); border: 1px solid #e5e7eb; }
+    h1 { margin: 0 0 6px; }
+    p { margin: 0 0 20px; color: #4b5563; }
+    form { display: flex; flex-direction: column; gap: 18px; }
+    .room-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; }
+    details { border-radius: 14px; }
+    summary { list-style: none; cursor: pointer; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; color: #111827; font-weight: 600; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; font-size: 20px; transition: transform 0.2s; }
+    details[open] summary::after { transform: rotate(45deg); }
+    summary span { display: flex; flex-direction: column; }
+    summary small { font-weight: normal; color: #6b7280; }
+    .room-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 18px; }
+    .field-row { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 12px; align-items: center; }
+    .field-row.single { grid-template-columns: 170px 1fr; }
+    label { font-weight: 600; color: #1f2933; }
+    select, input[type="text"] { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; }
+    small { display: block; margin-top: 4px; color: #64748b; font-weight: normal; }
+    .hk-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; background: #fff; display: flex; flex-direction: column; gap: 12px; }
+    .hk-card h3 { margin: 0; font-size: 16px; color: #0f172a; }
+
+    .add-hk-btn, .add-room-btn, .export-btn, .export-file-btn, .export-json-btn, .import-json-btn, .reset-btn {
+      margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af;
+      background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center;
+    }
+    .add-hk-btn:active, .add-room-btn:active, .export-btn:active, .export-file-btn:active,
+    .export-json-btn:active, .import-json-btn:active, .reset-btn:active { transform: translateY(1px); }
+
+    .export-btn { border-color: #2563eb; color: #1d4ed8; background: #eef2ff; }
+    .export-file-btn { border-color: #059669; color: #065f46; background: #ecfdf3; }
+    .export-json-btn { border-color: #7c3aed; color: #5b21b6; background: #f5f3ff; }
+    .import-json-btn { border-color: #a21caf; color: #86198f; background: #fdf2f8; }
+    .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
+
+    .print-view { display: none; }
+    @media print {
+      body { background: #fff; }
+      .card, .add-room-btn, .export-btn, .add-hk-btn, .export-file-btn, .export-json-btn, .import-json-btn, .reset-btn { display: none !important; }
+      .print-view { display: block !important; }
+    }
+    @media (max-width: 720px) { .field-row, .field-row.single { grid-template-columns: 1fr; } }
+
+    /* kleines Status-Badge fürs Autosave */
+    .save-indicator {
+      position: sticky;
+      top: calc(8px + env(safe-area-inset-top));
+      z-index: 50;
+      margin: 0 0 14px;
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #ffffffcc;
+      backdrop-filter: blur(8px);
+      color: #111827;
+      font-size: 14px;
+      width: fit-content;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 999px; background: #9ca3af; }
+    .dot.ok { background: #10b981; }
+    .dot.busy { background: #f59e0b; }
+  </style>
+</head>
+
+<body>
+<main class="card">
+  <header>
+    <h1>Aufnahme HK Daten</h1>
+    <p>Als installierbare iPad-Web-App nutzbar (offline + Auto-Save).</p>
+  </header>
+
+  <div class="save-indicator" aria-live="polite">
+    <span id="saveDot" class="dot"></span>
+    <span id="saveText">Noch nicht gespeichert</span>
+  </div>
+
+  <form>
+    <!-- Vorlage: Raum 1 (wird geklont) -->
+    <section class="room-card">
+      <details open>
+        <summary><span data-room-label data-default="Raum 1">Raum 1 <small>Geschoss zuerst wählen</small></span><span></span></summary>
+        <div class="room-body">
+          <div class="field-row single">
+            <label for="room1Floor">Geschoss<small>EG bis DG</small></label>
+            <select id="room1Floor" name="room1Floor">
+              <option value="" selected disabled>Geschoss wählen …</option>
+              <option>EG</option><option>1.OG</option><option>2.OG</option><option>3.OG</option><option>4.OG</option><option>5.OG</option><option>DG</option>
+            </select>
+          </div>
+
+          <div class="field-row single">
+            <label for="room1Name">Raum<small>WZ, EZ, BZ, WC, SZ, KI, AR, Kü</small></label>
+            <select id="room1Name" name="room1Name">
+              <option value="" selected disabled>Raum wählen …</option>
+              <option>WZ</option><option>EZ</option><option>BZ</option><option>WC</option><option>SZ</option><option>KI</option><option>AR</option><option>Kü</option>
+            </select>
+          </div>
+
+          <div class="hk-stack">
+            <article class="hk-card">
+              <h3>Heizkörper 1</h3>
+
+              <div class="field-row">
+                <label>HK Typ<small>10, 11, 12, 20, 21, 22, 33, 34</small></label>
+                <select name="room1HkType1">
+                  <option value="" selected disabled>Typ wählen …</option>
+                  <option>10</option><option>11</option><option>12</option><option>20</option><option>21</option><option>22</option><option>33</option><option>34</option>
+                </select>
+                <input type="text" name="room1HkType1Custom" placeholder="eigener Typ">
+              </div>
+
+              <div class="field-row">
+                <label>Höhe [mm]<small>400, 600, 800, 900</small></label>
+                <select name="room1HkHeight1">
+                  <option value="" selected disabled>Höhe wählen …</option>
+                  <option>400</option><option>600</option><option>800</option><option>900</option>
+                </select>
+                <input type="text" name="room1HkHeight1Custom" placeholder="andere Höhe">
+              </div>
+
+              <div class="field-row">
+                <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
+                <select name="room1HkWidth1">
+                  <option value="" selected disabled>Breite wählen …</option>
+                  <option>500</option><option>600</option><option>900</option><option>1000</option><option>1200</option><option>1400</option>
+                </select>
+                <input type="text" name="room1HkWidth1Custom" placeholder="andere Breite">
+              </div>
+
+              <div class="field-row">
+                <label>DN<small>z. B. DN15, DN20</small></label>
+                <select name="room1HkDn1">
+                  <option value="" selected disabled>DN wählen …</option>
+                  <option>DN15</option><option>DN20</option><option>DN25</option><option>DN32</option>
+                </select>
+                <input type="text" name="room1HkDn1Custom" placeholder="anderes DN">
+              </div>
+            </article>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <button type="button" class="add-room-btn">+ Raum hinzufügen</button>
+
+    <button type="button" class="export-btn">PDF-Übersicht erstellen</button>
+    <button type="button" class="export-file-btn">Bericht als HTML-Datei speichern</button>
+
+    <button type="button" class="export-json-btn">Daten exportieren (JSON)</button>
+    <button type="button" class="import-json-btn">Daten importieren (JSON)</button>
+    <button type="button" class="reset-btn">Alles löschen (Reset)</button>
+
+    <p style="margin-top:12px;color:#6b7280;font-size:15px;">
+      Wichtig: Für dauerhaftes Speichern bitte als Web-App „Zum Home-Bildschirm“ installieren und von dort starten.
+    </p>
+
+    <input id="jsonFile" type="file" accept="application/json" style="display:none" />
+  </form>
+</main>
+
+<div id="printView" class="print-view" aria-hidden="true"></div>
+
+<script>
+(function(){
+  // -----------------------------
+  // PWA: Service Worker registrieren
+  // -----------------------------
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
+  }
+
+  // -----------------------------
+  // Autosave UI
+  // -----------------------------
+  const saveDot = document.getElementById("saveDot");
+  const saveText = document.getElementById("saveText");
+  let saveTimer = null;
+
+  function setSaveState(state, text){
+    if(!saveDot || !saveText) return;
+    saveDot.classList.remove("ok","busy");
+    if(state) saveDot.classList.add(state);
+    saveText.textContent = text;
+  }
+
+  // -----------------------------
+  // Helpers
+  // -----------------------------
+  function updateLabels(){
+    const cards = document.querySelectorAll(".room-card");
+    const seen = {};
+    cards.forEach(card => {
+      const label = card.querySelector("[data-room-label]");
+      const roomSel = card.querySelector('select[name$="Name"]');
+      const floorSel = card.querySelector('select[name$="Floor"]');
+      if(!label || !roomSel || !floorSel) return;
+
+      const room = roomSel.value;
+      const floor = floorSel.value;
+
+      let text = label.dataset.default || "Raum";
+      if(room){
+        seen[room] = (seen[room] || 0) + 1;
+        const suffix = seen[room] > 1 ? seen[room] : "";
+        text = room + suffix + (floor ? ` (${floor})` : "");
+      } else if (floor) {
+        text = (label.dataset.default || "Raum") + ` (${floor})`;
+      }
+
+      const small = document.createElement("small");
+      small.textContent = "Geschoss zuerst wählen";
+      const oldSmall = label.querySelector("small");
+      if(oldSmall) small.textContent = oldSmall.textContent;
+
+      label.textContent = "";
+      label.append(document.createTextNode(text + " "));
+      label.append(small);
+    });
+  }
+
+  function attachRoomListeners(card){
+    const roomSel = card.querySelector('select[name$="Name"]');
+    const floorSel = card.querySelector('select[name$="Floor"]');
+    roomSel && roomSel.addEventListener("change", () => { updateLabels(); scheduleSave(); });
+    floorSel && floorSel.addEventListener("change", () => { updateLabels(); scheduleSave(); });
+  }
+
+  function pickValue(selectEl, customEl){
+    const custom = customEl && customEl.value ? customEl.value.trim() : "";
+    if(custom) return custom;
+    return selectEl && selectEl.value ? selectEl.value : "";
+  }
+
+  function collectData(){
+    const rooms = [];
+    document.querySelectorAll(".room-card").forEach((card, idx) => {
+      const roomSel = card.querySelector('select[name$="Name"]');
+      const floorSel = card.querySelector('select[name$="Floor"]');
+      const roomName = roomSel ? (roomSel.value || "").trim() : "";
+      const floor = floorSel ? (floorSel.value || "").trim() : "";
+
+      const heaters = [];
+      card.querySelectorAll(".hk-card").forEach(hk => {
+        const typeSel = hk.querySelector('select[name*="HkType"]');
+        const typeCustom = hk.querySelector('input[name*="HkType"]');
+        const heightSel = hk.querySelector('select[name*="HkHeight"]');
+        const heightCustom = hk.querySelector('input[name*="HkHeight"]');
+        const widthSel = hk.querySelector('select[name*="HkWidth"]');
+        const widthCustom = hk.querySelector('input[name*="HkWidth"]');
+        const dnSel = hk.querySelector('select[name*="HkDn"]');
+        const dnCustom = hk.querySelector('input[name*="HkDn"]');
+
+        const entry = {
+          type: pickValue(typeSel, typeCustom),
+          height: pickValue(heightSel, heightCustom),
+          width: pickValue(widthSel, widthCustom),
+          dn: pickValue(dnSel, dnCustom)
+        };
+        const hasData = Object.values(entry).some(v => v);
+        if(hasData) heaters.push(entry);
+      });
+
+      rooms.push({ index: idx + 1, roomName, floor, heaters });
+    });
+    return { version: 1, savedAt: new Date().toISOString(), rooms };
+  }
+
+  function buildReportMarkup(payload, now){
+    const data = payload.rooms || [];
+    return [
+      '<div class="doc-head"><h1>Aufnahme HK Daten</h1><div class="meta">Erstellt: ' + now + '</div></div>',
+      data.map(room => {
+        const title = room.roomName || ("Raum " + room.index);
+        const floor = room.floor || "-";
+        const heaters = (room.heaters && room.heaters.length) ? room.heaters : [{type:"",height:"",width:"",dn:""}];
+        return [
+          '<section class="room">',
+          '<div class="room-head">',
+          '<div><div class="room-title">' + title + '</div><div class="room-sub">Geschoss: ' + floor + '</div></div>',
+          '<div class="badge">Raum ' + room.index + '</div>',
+          '</div>',
+          '<table class="hk-table">',
+          '<thead><tr><th>#</th><th>Typ</th><th>Höhe [mm]</th><th>Breite [mm]</th><th>DN</th></tr></thead>',
+          '<tbody>',
+          heaters.map((hk, i) => (
+            '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + (hk.type || "-") + '</td>' +
+            '<td>' + (hk.height || "-") + '</td>' +
+            '<td>' + (hk.width || "-") + '</td>' +
+            '<td>' + (hk.dn || "-") + '</td>' +
+            '</tr>'
+          )).join(""),
+          '</tbody></table></section>'
+        ].join("");
+      }).join("")
+    ].join("");
+  }
+
+  function renderPrint(payload){
+    const now = new Date().toLocaleString();
+    const container = document.getElementById("printView");
+    if(!container) return;
+    container.innerHTML = buildReportMarkup(payload, now);
+    setTimeout(() => window.print(), 50);
+  }
+
+  function downloadHtmlReport(payload){
+    const now = new Date().toLocaleString();
+    const markup = buildReportMarkup(payload, now);
+    const html = [
+      '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Erfassung</title>',
+      '<style>',
+      'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
+      '.doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }',
+      'h1 { margin: 0; font-size: 22px; }',
+      '.meta { color: #6b7280; font-size: 13px; }',
+      '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; background: #fff; }',
+      '.room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }',
+      '.room-title { font-size: 18px; font-weight: 700; }',
+      '.room-sub { color: #6b7280; font-size: 14px; }',
+      '.badge { background: #eef2ff; color: #1d4ed8; border: 1px solid #c7d2fe; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 13px; }',
+      'table { width: 100%; border-collapse: collapse; }',
+      'th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }',
+      'th { background: #f8fafc; font-weight: 700; }',
+      'td { background: #fff; }',
+      '</style></head><body>',
+      markup,
+      '</body></html>'
+    ].join("");
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "hk-bericht.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 15000);
+  }
+
+  function downloadJson(payload){
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "hk-daten.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 15000);
+  }
+
+  // -----------------------------
+  // Dynamik: Heizkörper hinzufügen
+  // -----------------------------
+  function addHeater(stack){
+    const heaters = stack.querySelectorAll(".hk-card");
+    if(!heaters.length) return;
+    const template = heaters[heaters.length - 1];
+    const clone = template.cloneNode(true);
+    const nextIndex = heaters.length + 1;
+
+    const title = clone.querySelector("h3");
+    if(title) title.textContent = "Heizkörper " + nextIndex;
+
+    clone.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+    clone.querySelectorAll("input").forEach(inp => inp.value = "");
+
+    // names auf nächste Nummer umschreiben
+    clone.querySelectorAll("select,input").forEach(el => {
+      const name = el.getAttribute("name");
+      if(!name) return;
+      const m = name.match(/^(room\d+Hk[A-Za-z]+?)(\d+)(Custom)?$/);
+      if(m){
+        const base = m[1];
+        const custom = m[3] || "";
+        el.setAttribute("name", base + nextIndex + custom);
+      }
+    });
+
+    stack.appendChild(clone);
+
+    // Speichern, weil Struktur geändert
+    scheduleSave();
+  }
+
+  function ensureAddHeaterButton(card){
+    const stack = card.querySelector(".hk-stack");
+    if(!stack) return;
+
+    // Button in room-body ans Ende setzen (einmal pro Raum)
+    const body = card.querySelector(".room-body");
+    if(!body) return;
+
+    // vorhandenen entfernen und neu setzen (stabil bei Clone/Restore)
+    body.querySelectorAll(".add-hk-btn").forEach(b => b.remove());
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "add-hk-btn";
+    btn.textContent = "+ Heizkörper hinzufügen";
+    btn.addEventListener("click", () => addHeater(stack));
+    body.appendChild(btn);
+  }
+
+  // -----------------------------
+  // Dynamik: Raum hinzufügen
+  // -----------------------------
+  function resetRoomCard(card, index){
+    card.querySelectorAll("details").forEach(det => det.open = false);
+
+    const label = card.querySelector("[data-room-label]");
+    if(label){
+      const small = document.createElement("small");
+      const oldSmall = label.querySelector("small");
+      small.textContent = oldSmall ? oldSmall.textContent : "Geschoss zuerst wählen";
+      label.dataset.default = "Raum " + index;
+      label.textContent = "";
+      label.append(document.createTextNode("Raum " + index + " "));
+      label.append(small);
+    }
+
+    // alle Felder leeren
+    card.querySelectorAll("input").forEach(inp => inp.value = "");
+    card.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+
+    // alle Heizkörper bis auf 1 entfernen
+    const stack = card.querySelector(".hk-stack");
+    if(stack){
+      const hks = Array.from(stack.querySelectorAll(".hk-card"));
+      hks.forEach((hk, i) => { if(i > 0) hk.remove(); });
+      const first = stack.querySelector(".hk-card h3");
+      if(first) first.textContent = "Heizkörper 1";
+    }
+
+    // ids/for/names auf neue room-Nummer
+    card.querySelectorAll("[id]").forEach(el => {
+      el.id = el.id.replace(/room\d+/, "room" + index);
+    });
+    card.querySelectorAll("label[for]").forEach(lab => {
+      lab.htmlFor = lab.htmlFor.replace(/room\d+/, "room" + index);
+    });
+    card.querySelectorAll("[name]").forEach(el => {
+      const name = el.getAttribute("name");
+      if(name) el.setAttribute("name", name.replace(/room\d+/, "room" + index));
+    });
+
+    ensureAddHeaterButton(card);
+    attachRoomListeners(card);
+  }
+
+  const addRoomBtn = document.querySelector(".add-room-btn");
+  const form = document.querySelector("form");
+  const roomTemplate = document.querySelector(".room-card");
+
+  if(addRoomBtn && form && roomTemplate){
+    addRoomBtn.addEventListener("click", () => {
+      const nextIndex = document.querySelectorAll(".room-card").length + 1;
+      const clone = roomTemplate.cloneNode(true);
+      resetRoomCard(clone, nextIndex);
+      form.insertBefore(clone, addRoomBtn);
+      updateLabels();
+      scheduleSave();
+    });
+  }
+
+  // initial: button pro Raum sicherstellen
+  document.querySelectorAll(".room-card").forEach(card => {
+    ensureAddHeaterButton(card);
+    attachRoomListeners(card);
+  });
+  updateLabels();
+
+  // -----------------------------
+  // Persistenz (PWA): localStorage (stabil im Home-Screen App-Modus)
+  // -----------------------------
+  const STORAGE_KEY = "hkFormData_v1";
+
+  function scheduleSave(){
+    setSaveState("busy", "Speichert …");
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try{
+        const payload = collectData();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        setSaveState("ok", "Gespeichert");
+      } catch(e){
+        setSaveState("", "Speichern fehlgeschlagen");
+      }
+    }, 250);
+  }
+
+  function restoreData(payload){
+    if(!payload || !payload.rooms) return;
+
+    // alle Räume außer den ersten entfernen
+    const cards = Array.from(document.querySelectorAll(".room-card"));
+    cards.slice(1).forEach(c => c.remove());
+
+    // Raum 1 als Basis
+    const first = document.querySelector(".room-card");
+    if(!first) return;
+
+    // Räume aufbauen
+    payload.rooms.forEach((room, idx) => {
+      const roomIndex = idx + 1;
+      let card = null;
+
+      if(roomIndex === 1){
+        card = first;
+        resetRoomCard(card, 1);
+      } else {
+        const clone = first.cloneNode(true);
+        resetRoomCard(clone, roomIndex);
+        form.insertBefore(clone, addRoomBtn);
+        card = clone;
+      }
+
+      // Werte setzen
+      const floorSel = card.querySelector('select[name="room'+roomIndex+'Floor"]');
+      const roomSel  = card.querySelector('select[name="room'+roomIndex+'Name"]');
+      if(floorSel && room.floor) floorSel.value = room.floor;
+      if(roomSel && room.roomName) roomSel.value = room.roomName;
+
+      // Heizkörper anlegen
+      const stack = card.querySelector(".hk-stack");
+      const heaters = (room.heaters && room.heaters.length) ? room.heaters : [];
+      for(let i=1; i<heaters.length; i++){
+        addHeater(stack);
+      }
+
+      // Heizkörper-Werte setzen
+      const hkCards = Array.from(card.querySelectorAll(".hk-card"));
+      hkCards.forEach((hkEl, i) => {
+        const n = i + 1;
+        const hk = heaters[i];
+        if(!hk) return;
+
+        function setPick(prefix, value){
+          const sel = hkEl.querySelector('select[name="room'+roomIndex+prefix+n+'"]');
+          const inp = hkEl.querySelector('input[name="room'+roomIndex+prefix+n+'Custom"]');
+          if(!value) { if(sel) sel.selectedIndex=0; if(inp) inp.value=""; return; }
+
+          // wenn Wert in Dropdown existiert → select setzen, sonst custom füllen
+          if(sel){
+            const opts = Array.from(sel.options).map(o => o.value);
+            if(opts.includes(value)){
+              sel.value = value;
+              if(inp) inp.value = "";
+            } else {
+              sel.selectedIndex = 0;
+              if(inp) inp.value = value;
+            }
+          } else if(inp){
+            inp.value = value;
+          }
+        }
+
+        setPick("HkType", hk.type);
+        setPick("HkHeight", hk.height);
+        setPick("HkWidth", hk.width);
+        setPick("HkDn", hk.dn);
+      });
+
+      ensureAddHeaterButton(card);
+      attachRoomListeners(card);
+    });
+
+    updateLabels();
+  }
+
+  function tryRestore(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) { setSaveState("", "Noch nicht gespeichert"); return; }
+    try{
+      const payload = JSON.parse(raw);
+      restoreData(payload);
+      setSaveState("ok", "Wiederhergestellt (gespeichert)");
+    } catch(e){
+      setSaveState("", "Restore fehlgeschlagen");
+    }
+  }
+
+  // Änderungen am Formular → speichern
+  document.addEventListener("input", (e) => {
+    const t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+    if(t.closest("form")) scheduleSave();
+  });
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+    if(t.closest("form")) scheduleSave();
+  });
+
+  // -----------------------------
+  // Buttons: PDF / HTML / JSON / Import / Reset
+  // -----------------------------
+  const exportBtn = document.querySelector(".export-btn");
+  const exportFileBtn = document.querySelector(".export-file-btn");
+  const exportJsonBtn = document.querySelector(".export-json-btn");
+  const importJsonBtn = document.querySelector(".import-json-btn");
+  const resetBtn = document.querySelector(".reset-btn");
+  const jsonFile = document.getElementById("jsonFile");
+
+  if(exportBtn){
+    exportBtn.addEventListener("click", () => {
+      const payload = collectData();
+      const hasAny = (payload.rooms || []).some(r => (r.roomName || r.floor || (r.heaters && r.heaters.length)));
+      if(!hasAny){ alert("Keine Daten erfasst."); return; }
+      renderPrint(payload);
+    });
+  }
+
+  if(exportFileBtn){
+    exportFileBtn.addEventListener("click", () => {
+      const payload = collectData();
+      const hasAny = (payload.rooms || []).some(r => (r.roomName || r.floor || (r.heaters && r.heaters.length)));
+      if(!hasAny){ alert("Keine Daten erfasst."); return; }
+      downloadHtmlReport(payload);
+    });
+  }
+
+  if(exportJsonBtn){
+    exportJsonBtn.addEventListener("click", () => {
+      const payload = collectData();
+      downloadJson(payload);
+    });
+  }
+
+  if(importJsonBtn && jsonFile){
+    importJsonBtn.addEventListener("click", () => jsonFile.click());
+    jsonFile.addEventListener("change", async () => {
+      const file = jsonFile.files && jsonFile.files[0];
+      if(!file) return;
+      try{
+        const text = await file.text();
+        const payload = JSON.parse(text);
+        restoreData(payload);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        setSaveState("ok", "Importiert + gespeichert");
+      } catch(e){
+        alert("Import fehlgeschlagen (kein gültiges JSON).");
+      } finally {
+        jsonFile.value = "";
+      }
+    });
+  }
+
+  if(resetBtn){
+    resetBtn.addEventListener("click", () => {
+      if(!confirm("Wirklich alle Daten löschen?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    });
+  }
+
+  // Start: Restore versuchen
+  tryRestore();
+
+})();
+</script>
+</body>
+</html>
