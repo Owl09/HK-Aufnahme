@@ -1464,13 +1464,16 @@
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
+    const distributorPhotoChecked = !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked');
+    const distributorDnValue = ((document.getElementById("distributorDn") || {}).value || "").trim();
+    const layingSpacingValue = ((document.getElementById("layingSpacing") || {}).value || "").trim();
     const system = {
-      surfaceHeating: data.system.surfaceHeating || (surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : "")),
-      distributorPhoto: data.system.distributorPhoto || !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
-      distributorDn: data.system.distributorDn || ((document.getElementById("distributorDn") || {}).value || ""),
-      layingSpacing: data.system.layingSpacing || ((document.getElementById("layingSpacing") || {}).value || "")
+      surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
+      distributorPhoto: distributorPhotoChecked,
+      distributorDn: distributorDnValue,
+      layingSpacing: layingSpacingValue
     };
-    const hasSystem = !!(system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.layingSpacing || detailsOpen || data.detailsOpen);
+    const hasSystem = !!(system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.layingSpacing || detailsOpen);
     const sections = [];
     if(hasSystem){
       sections.push([
