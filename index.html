@@ -1415,6 +1415,13 @@
 
   function collectData(){
     const rooms = [];
+    const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
+    const system = {
+      surfaceHeating: surfaceHeating ? surfaceHeating.value : "",
+      distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
+      distributorDn: (document.getElementById("distributorDn") || {}).value || "",
+      layingSpacing: (document.getElementById("layingSpacing") || {}).value || ""
+    };
     document.querySelectorAll(".room-card").forEach((card, idx) => {
       const roomSel = card.querySelector('select[name$="Name"]');
       const floorSel = card.querySelector('select[name$="Floor"]');
@@ -1443,7 +1450,7 @@
         rooms.push({ index: idx + 1, roomName, floor, heaters });
       }
     });
-    return rooms;
+    return { system, rooms };
   }
 
   function renderPrint(data){
@@ -1452,7 +1459,19 @@
     if(!container) return;
     container.innerHTML = [
       '<div class="doc-head"><h1>Aufnahme HK Daten</h1><div class="meta">Erstellt: ' + now + '</div></div>',
-      data.map(room => {
+      '<section class="room">',
+      '<div class="room-head">',
+      '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Fl\u00e4chenheizung vorhanden: ' + (data.system.surfaceHeating || "-") + '</div></div>',
+      '<div class="badge">System</div>',
+      '</div>',
+      '<table class="hk-table">',
+      '<thead><tr><th>Foto vom Verteiler</th><th>Verteiler DN</th><th>Verlegeabstand</th></tr></thead>',
+      '<tbody><tr>' +
+      '<td>' + (data.system.distributorPhoto ? "Ja" : "Nein") + '</td>' +
+      '<td>' + (data.system.distributorDn || "-") + '</td>' +
+      '<td>' + (data.system.layingSpacing || "-") + '</td>' +
+      '</tr></tbody></table></section>',
+      data.rooms.map(room => {
         const title = room.roomName || "Raum " + room.index;
         const floor = room.floor || "-";
         const heaters = room.heaters.length ? room.heaters : [{type:"",height:"",width:"",dn:""}];
@@ -1520,7 +1539,7 @@
   if(exportBtn){
     exportBtn.addEventListener("click", () => {
       const data = collectData();
-      if(!data.length){
+      if(!data.rooms.length && !data.system.surfaceHeating && !data.system.distributorPhoto && !data.system.distributorDn && !data.system.layingSpacing){
         alert("Keine Daten erfasst.");
         return;
       }
