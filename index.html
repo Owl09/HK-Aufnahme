@@ -1461,21 +1461,30 @@
     const now = new Date().toLocaleString();
     const container = document.getElementById("printView");
     if(!container) return;
-    const hasSystem = !!(data.system.surfaceHeating || data.system.distributorPhoto || data.system.distributorDn || data.system.layingSpacing || data.detailsOpen);
+    const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
+    const surfaceDetails = document.getElementById("surfaceHeatingDetails");
+    const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
+    const system = {
+      surfaceHeating: data.system.surfaceHeating || (surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : "")),
+      distributorPhoto: data.system.distributorPhoto || !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
+      distributorDn: data.system.distributorDn || ((document.getElementById("distributorDn") || {}).value || ""),
+      layingSpacing: data.system.layingSpacing || ((document.getElementById("layingSpacing") || {}).value || "")
+    };
+    const hasSystem = !!(system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.layingSpacing || detailsOpen || data.detailsOpen);
     const sections = [];
     if(hasSystem){
       sections.push([
         '<section class="room">',
         '<div class="room-head">',
-        '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Fl\u00e4chenheizung vorhanden: ' + (data.system.surfaceHeating || "-") + '</div></div>',
+        '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Fl\u00e4chenheizung vorhanden: ' + (system.surfaceHeating || "-") + '</div></div>',
         '<div class="badge">System</div>',
         '</div>',
         '<table class="hk-table">',
         '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
         '<tbody>',
-        '<tr><td>Foto vom Verteiler</td><td>' + (data.system.distributorPhoto ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Verteiler DN</td><td>' + (data.system.distributorDn || "-") + '</td></tr>',
-        '<tr><td>Verlegeabstand</td><td>' + (data.system.layingSpacing || "-") + '</td></tr>',
+        '<tr><td>Foto vom Verteiler</td><td>' + (system.distributorPhoto ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Verteiler DN</td><td>' + (system.distributorDn || "-") + '</td></tr>',
+        '<tr><td>Verlegeabstand</td><td>' + (system.layingSpacing || "-") + '</td></tr>',
         '</tbody></table></section>'
       ].join(""));
     }
@@ -1506,7 +1515,13 @@
       sections.join("")
     ].join("");
     document.body.classList.add("show-print");
-    setTimeout(() => window.print(), 300);
+    // Force reflow before printing (iOS WebView)
+    void container.offsetHeight;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(() => window.print(), 300);
+      });
+    });
   }
 
   function downloadFile(data){
