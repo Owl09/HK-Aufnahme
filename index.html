@@ -46,7 +46,7 @@
         .add-room-btn { margin-top: 16px; }
         .export-btn { border-color: #2563eb; color: #1d4ed8; background: #eef2ff; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
-        .print-view { display: none; }
+        .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
         .print-view { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; padding: 18px; }
         .print-view .doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
         .print-view h1 { margin: 0; font-size: 22px; }
@@ -60,11 +60,11 @@
         .print-view th, .print-view td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }
         .print-view th { background: #f8fafc; font-weight: 700; }
         body.show-print .card { display: none; }
-        body.show-print .print-view { display: block; }
+        body.show-print .print-view { visibility: visible; height: auto; overflow: visible; }
         @media print {
           body { background: #fff; }
           .card, .add-room-btn, .export-btn, .add-hk-btn { display: none !important; }
-          .print-view { display: block !important; }
+          .print-view { visibility: visible !important; height: auto !important; overflow: visible !important; }
           .print-view .room { break-inside: avoid; page-break-inside: avoid; }
         }
         @media (max-width: 720px) { .field-row, .field-row.single { grid-template-columns: 1fr; } }
