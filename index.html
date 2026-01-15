@@ -33,7 +33,13 @@
         .inline-options { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
         .inline-options label { display: flex; align-items: center; gap: 6px; font-weight: 600; }
         .inline-options input { width: auto; }
-        small { display: block; margin-top: 4px; color: #64748b; font-weight: normal; }
+        .draw-wrap { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+        .draw-canvas { width: 100%; height: 44px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; touch-action: none; }
+        .draw-wrap { margin-top: 0; }
+        .draw-actions { justify-content: flex-end; }
+        .draw-actions { display: none; }
+        .draw-action { display: none; }
+        small { display: none; margin-top: 4px; color: #64748b; font-weight: normal; }
         .hk-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; background: #fff; display: flex; flex-direction: column; gap: 12px; }
         .hk-card h3 { margin: 0; font-size: 16px; color: #0f172a; }
         .hk-toggle { border: none; margin: 0; }
@@ -59,6 +65,7 @@
         .print-view table { width: 100%; border-collapse: collapse; }
         .print-view th, .print-view td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }
         .print-view th { background: #f8fafc; font-weight: 700; }
+        .print-view .draw-img { display: block; max-height: 60px; max-width: 140px; }
         body.show-print .card { display: none; }
         body.show-print .print-view { visibility: visible; height: auto; overflow: visible; }
         @media print {
@@ -111,6 +118,62 @@
                         <option>25</option>
                         <option>27.5</option>
                         <option>30</option>
+                    </select>
+                </div>
+                <div class="field-row single">
+                    <label for="fBHLineDiameter">Durchmesser Leitung FBH</label>
+                    <select id="fBHLineDiameter" name="fBHLineDiameter">
+                        <option value="" selected disabled>Durchmesser w&auml;hlen &hellip;</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                        <option>24</option>
+                        <option>25</option>
+                        <option>26</option>
+                        <option>27</option>
+                        <option>28</option>
+                        <option>29</option>
+                        <option>30</option>
+                        <option>31</option>
+                        <option>32</option>
+                        <option>33</option>
+                        <option>34</option>
+                        <option>35</option>
+                        <option>36</option>
+                        <option>37</option>
+                        <option>38</option>
+                        <option>39</option>
+                        <option>40</option>
+                        <option>41</option>
+                        <option>42</option>
+                        <option>43</option>
+                        <option>44</option>
+                        <option>45</option>
+                        <option>46</option>
+                        <option>47</option>
+                        <option>48</option>
+                        <option>49</option>
+                        <option>50</option>
                     </select>
                 </div>
             </div>
@@ -1316,6 +1379,78 @@
   attachBauformListeners(document);
   updateLabels();
 
+  function setupDrawingInputs(container){
+    const inputs = (container || document).querySelectorAll('input[type="text"][name$="Custom"]');
+    inputs.forEach(input => {
+      if(input.dataset.drawEnhanced) return;
+      input.dataset.drawEnhanced = "1";
+      const wrap = document.createElement("div");
+      wrap.className = "draw-wrap";
+      const canvas = document.createElement("canvas");
+      canvas.className = "draw-canvas";
+      wrap.append(canvas);
+
+      const hidden = document.createElement("input");
+      hidden.type = "hidden";
+      hidden.name = input.name;
+      hidden.dataset.drawing = "";
+      input.insertAdjacentElement("afterend", wrap);
+      input.replaceWith(hidden);
+
+      const ctx = canvas.getContext("2d");
+      function resizeCanvas(){
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#0f172a";
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+
+      let drawing = false;
+      function posFromEvent(e){
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+      function start(e){
+        drawing = true;
+        const p = posFromEvent(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        e.preventDefault();
+      }
+      function move(e){
+        if(!drawing) return;
+        const p = posFromEvent(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        e.preventDefault();
+      }
+      function end(){
+        if(!drawing) return;
+        drawing = false;
+        hidden.dataset.drawing = canvas.toDataURL("image/png");
+      }
+      canvas.addEventListener("pointerdown", start);
+      canvas.addEventListener("pointermove", move);
+      canvas.addEventListener("pointerup", end);
+      canvas.addEventListener("pointerleave", end);
+      canvas.addEventListener("touchstart", start, { passive: false });
+      canvas.addEventListener("touchmove", move, { passive: false });
+      canvas.addEventListener("touchend", end);
+
+      // keine Loeschen-Aktion
+    });
+  }
+
+  setupDrawingInputs(document);
+
   const surfaceHeatingRadios = document.querySelectorAll('input[name="surfaceHeating"]');
   const surfaceHeatingDetails = document.getElementById("surfaceHeatingDetails");
   function toggleSurfaceHeating(){
@@ -1337,6 +1472,11 @@
     clone.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
     clone.querySelectorAll("input").forEach(inp => inp.value = "");
     clone.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    clone.querySelectorAll(".draw-wrap").forEach(wrap => wrap.remove());
+    clone.querySelectorAll('input[type="hidden"][name$="Custom"]').forEach(inp => {
+      delete inp.dataset.drawing;
+      delete inp.dataset.drawEnhanced;
+    });
     clone.querySelectorAll("select,input").forEach(el => {
       const name = el.getAttribute("name");
       if(!name) return;
@@ -1345,6 +1485,7 @@
     });
     stack.appendChild(clone);
     attachBauformListeners(clone);
+    setupDrawingInputs(clone);
   }
 
   function enhanceStack(stack){
@@ -1379,6 +1520,11 @@
     card.querySelectorAll("input").forEach(inp => inp.value = "");
     card.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
     card.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+    card.querySelectorAll(".draw-wrap").forEach(wrap => wrap.remove());
+    card.querySelectorAll('input[type="hidden"][name$="Custom"]').forEach(inp => {
+      delete inp.dataset.drawing;
+      delete inp.dataset.drawEnhanced;
+    });
     card.querySelectorAll("h3").forEach((h3, i) => h3.textContent = "Heizk\u00f6rper " + (i + 1));
     card.querySelectorAll("[id]").forEach(el => {
       const id = el.id;
@@ -1405,14 +1551,17 @@
       attachRoomListeners(clone);
       clone.querySelectorAll(".hk-stack").forEach(enhanceStack);
       attachBauformListeners(clone);
+      setupDrawingInputs(clone);
       updateLabels();
     });
   }
 
-  function pickValue(selectEl, customEl){
-    const custom = customEl && customEl.value ? customEl.value.trim() : "";
-    if(custom) return custom;
-    return selectEl && selectEl.value ? selectEl.value : "";
+  function pickField(selectEl, customEl){
+    const selectVal = selectEl && selectEl.value ? selectEl.value : "";
+    if(selectVal) return { value: selectVal, draw: "" };
+    const draw = customEl && customEl.dataset.drawing ? customEl.dataset.drawing : "";
+    if(draw) return { value: "", draw };
+    return { value: "", draw: "" };
   }
 
   function collectData(){
@@ -1433,6 +1582,9 @@
       const floor = floorSel ? floorSel.value.trim() : "";
       const heaters = [];
       card.querySelectorAll(".hk-card").forEach(hk => {
+        const formChecked = hk.querySelector('input[type="radio"][name*="HkForm"]:checked');
+        const formText = formChecked && formChecked.parentElement ? formChecked.parentElement.textContent : "";
+        const bauform = /Rippen/i.test(formText) ? "Rippen" : (/Platte/i.test(formText) ? "Platte" : "");
         const typeSel = hk.querySelector('select[name*="HkType"]');
         const typeCustom = hk.querySelector('input[name*="HkType"]');
         const heightSel = hk.querySelector('select[name*="HkHeight"]');
@@ -1441,13 +1593,22 @@
         const widthCustom = hk.querySelector('input[name*="HkWidth"]');
         const dnSel = hk.querySelector('select[name*="HkDn"]');
         const dnCustom = hk.querySelector('input[name*="HkDn"]');
+        const typeField = pickField(typeSel, typeCustom);
+        const heightField = pickField(heightSel, heightCustom);
+        const widthField = pickField(widthSel, widthCustom);
+        const dnField = pickField(dnSel, dnCustom);
         const entry = {
-          type: pickValue(typeSel, typeCustom),
-          height: pickValue(heightSel, heightCustom),
-          width: pickValue(widthSel, widthCustom),
-          dn: pickValue(dnSel, dnCustom)
+          bauform,
+          type: typeField.value,
+          typeDraw: typeField.draw,
+          height: heightField.value,
+          heightDraw: heightField.draw,
+          width: widthField.value,
+          widthDraw: widthField.draw,
+          dn: dnField.value,
+          dnDraw: dnField.draw
         };
-        const hasData = Object.values(entry).some(v => v);
+        const hasData = !!(entry.type || entry.typeDraw || entry.height || entry.heightDraw || entry.width || entry.widthDraw || entry.dn || entry.dnDraw);
         if(hasData) heaters.push(entry);
       });
       if(roomName || floor || heaters.length){
@@ -1455,6 +1616,11 @@
       }
     });
     return { system, rooms, detailsOpen };
+  }
+
+  function renderCell(value, draw){
+    if(draw) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
+    return value || "-";
   }
 
   function renderPrint(data){
@@ -1471,9 +1637,10 @@
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: distributorPhotoChecked,
       distributorDn: distributorDnValue,
-      layingSpacing: layingSpacingValue
+      layingSpacing: layingSpacingValue,
+      fbhLineDiameter: ((document.getElementById("fBHLineDiameter") || {}).value || "").trim()
     };
-    const hasSystem = !!(system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.layingSpacing || detailsOpen);
+    const hasSystem = !!(system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.layingSpacing || system.fbhLineDiameter || detailsOpen);
     const sections = [];
     if(hasSystem){
       sections.push([
@@ -1488,29 +1655,61 @@
         '<tr><td>Foto vom Verteiler</td><td>' + (system.distributorPhoto ? "Ja" : "Nein") + '</td></tr>',
         '<tr><td>Verteiler DN</td><td>' + (system.distributorDn || "-") + '</td></tr>',
         '<tr><td>Verlegeabstand</td><td>' + (system.layingSpacing || "-") + '</td></tr>',
+        '<tr><td>Durchmesser Leitung FBH</td><td>' + (system.fbhLineDiameter || "-") + '</td></tr>',
         '</tbody></table></section>'
       ].join(""));
     }
     data.rooms.forEach(room => {
+      const plate = [];
+      const rippen = [];
+      room.heaters.forEach(hk => {
+        if((hk.bauform || "").toLowerCase() === "rippen") rippen.push(hk);
+        else plate.push(hk);
+      });
       sections.push([
         '<section class="room">',
         '<div class="room-head">',
         '<div><div class="room-title">' + (room.roomName || "Raum " + room.index) + '</div><div class="room-sub">Geschoss: ' + (room.floor || "-") + '</div></div>',
         '<div class="badge">Raum ' + room.index + '</div>',
         '</div>',
-        '<table class="hk-table">',
-        '<thead><tr><th>#</th><th>Typ</th><th>H\u00f6he [mm]</th><th>Breite [mm]</th><th>DN</th></tr></thead>',
-        '<tbody>',
-        (room.heaters.length ? room.heaters : [{type:"",height:"",width:"",dn:""}]).map((hk, i) => (
-          '<tr>' +
-          '<td>' + (i + 1) + '</td>' +
-          '<td>' + (hk.type || "-") + '</td>' +
-          '<td>' + (hk.height || "-") + '</td>' +
-          '<td>' + (hk.width || "-") + '</td>' +
-          '<td>' + (hk.dn || "-") + '</td>' +
-          '</tr>'
-        )).join(""),
-        '</tbody></table></section>'
+        (plate.length ? [
+          '<table class="hk-table">',
+          '<thead><tr><th>#</th><th>Bauform</th><th>Typ</th><th>H\u00f6he [mm]</th><th>Breite [mm]</th><th>DN</th></tr></thead>',
+          '<tbody>',
+          plate.map((hk, i) => (
+            '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + (hk.bauform || "Platte") + '</td>' +
+            '<td>' + renderCell(hk.type, hk.typeDraw) + '</td>' +
+            '<td>' + renderCell(hk.height, hk.heightDraw) + '</td>' +
+            '<td>' + renderCell(hk.width, hk.widthDraw) + '</td>' +
+            '<td>' + renderCell(hk.dn, hk.dnDraw) + '</td>' +
+            '</tr>'
+          )).join(""),
+          '</tbody></table>'
+        ].join("") : ""),
+        (rippen.length ? [
+          '<table class="hk-table" style="margin-top:10px;">',
+          '<thead><tr><th>#</th><th>Bauform</th><th>Typ</th><th>H\u00f6he [mm]</th><th>Tiefe [mm]</th><th>Gliederzahl</th></tr></thead>',
+          '<tbody>',
+          rippen.map((hk, i) => (
+            '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + (hk.bauform || "Rippen") + '</td>' +
+            '<td>' + renderCell(hk.type, hk.typeDraw) + '</td>' +
+            '<td>' + renderCell(hk.height, hk.heightDraw) + '</td>' +
+            '<td>' + renderCell(hk.width, hk.widthDraw) + '</td>' +
+            '<td>' + renderCell(hk.dn, hk.dnDraw) + '</td>' +
+            '</tr>'
+          )).join(""),
+          '</tbody></table>'
+        ].join("") : ""),
+        (!plate.length && !rippen.length ? [
+          '<table class="hk-table">',
+          '<thead><tr><th>#</th><th>Typ</th><th>H\u00f6he [mm]</th><th>Breite [mm]</th><th>DN</th></tr></thead>',
+          '<tbody><tr><td>1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr></tbody></table>'
+        ].join("") : ""),
+        '</section>'
       ].join(""));
     });
     container.innerHTML = [
@@ -1569,7 +1768,7 @@
   if(exportBtn){
     exportBtn.addEventListener("click", () => {
       const data = collectData();
-      if(!data.rooms.length && !data.system.surfaceHeating && !data.system.distributorPhoto && !data.system.distributorDn && !data.system.layingSpacing){
+      if(!data.rooms.length && !data.system.surfaceHeating && !data.system.distributorPhoto && !data.system.distributorDn && !data.system.layingSpacing && !data.system.fbhLineDiameter){
         alert("Keine Daten erfasst.");
         return;
       }
