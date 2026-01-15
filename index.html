@@ -1418,8 +1418,10 @@
   function collectData(){
     const rooms = [];
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
+    const surfaceDetails = document.getElementById("surfaceHeatingDetails");
+    const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
     const system = {
-      surfaceHeating: surfaceHeating ? surfaceHeating.value : "",
+      surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
       layingSpacing: (document.getElementById("layingSpacing") || {}).value || ""
@@ -1452,14 +1454,14 @@
         rooms.push({ index: idx + 1, roomName, floor, heaters });
       }
     });
-    return { system, rooms };
+    return { system, rooms, detailsOpen };
   }
 
   function renderPrint(data){
     const now = new Date().toLocaleString();
     const container = document.getElementById("printView");
     if(!container) return;
-    const hasSystem = !!(data.system.surfaceHeating || data.system.distributorPhoto || data.system.distributorDn || data.system.layingSpacing);
+    const hasSystem = !!(data.system.surfaceHeating || data.system.distributorPhoto || data.system.distributorDn || data.system.layingSpacing || data.detailsOpen);
     container.innerHTML = [
       '<div class="doc-head"><h1>Aufnahme HK Daten</h1><div class="meta">Erstellt: ' + now + '</div></div>',
       hasSystem ? [
