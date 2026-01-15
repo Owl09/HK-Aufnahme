@@ -1,4 +1,4 @@
-const CACHE_NAME = "hk-daten-v2";
+const CACHE_NAME = "hk-daten-v3";
 const ASSETS = [
   "./",
   "./index.html",
