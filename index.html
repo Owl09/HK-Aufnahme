@@ -1462,47 +1462,48 @@
     const container = document.getElementById("printView");
     if(!container) return;
     const hasSystem = !!(data.system.surfaceHeating || data.system.distributorPhoto || data.system.distributorDn || data.system.layingSpacing || data.detailsOpen);
-    container.innerHTML = [
-      '<div class="doc-head"><h1>Aufnahme HK Daten</h1><div class="meta">Erstellt: ' + now + '</div></div>',
-      hasSystem ? [
+    const sections = [];
+    if(hasSystem){
+      sections.push([
         '<section class="room">',
         '<div class="room-head">',
         '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Fl\u00e4chenheizung vorhanden: ' + (data.system.surfaceHeating || "-") + '</div></div>',
         '<div class="badge">System</div>',
         '</div>',
         '<table class="hk-table">',
-        '<thead><tr><th>Foto vom Verteiler</th><th>Verteiler DN</th><th>Verlegeabstand</th></tr></thead>',
-        '<tbody><tr>' +
-        '<td>' + (data.system.distributorPhoto ? "Ja" : "Nein") + '</td>' +
-        '<td>' + (data.system.distributorDn || "-") + '</td>' +
-        '<td>' + (data.system.layingSpacing || "-") + '</td>' +
-        '</tr></tbody></table></section>'
-      ].join("") : "",
-      data.rooms.map(room => {
-        const title = room.roomName || "Raum " + room.index;
-        const floor = room.floor || "-";
-        const heaters = room.heaters.length ? room.heaters : [{type:"",height:"",width:"",dn:""}];
-        return [
-          '<section class="room">',
-          '<div class="room-head">',
-          '<div><div class="room-title">' + title + '</div><div class="room-sub">Geschoss: ' + floor + '</div></div>',
-          '<div class="badge">Raum ' + room.index + '</div>',
-          '</div>',
-          '<table class="hk-table">',
-          '<thead><tr><th>#</th><th>Typ</th><th>H\u00f6he [mm]</th><th>Breite [mm]</th><th>DN</th></tr></thead>',
-          '<tbody>',
-          heaters.map((hk, i) => (
-            '<tr>' +
-            '<td>' + (i + 1) + '</td>' +
-            '<td>' + (hk.type || "-") + '</td>' +
-            '<td>' + (hk.height || "-") + '</td>' +
-            '<td>' + (hk.width || "-") + '</td>' +
-            '<td>' + (hk.dn || "-") + '</td>' +
-            '</tr>'
-          )).join(""),
-          '</tbody></table></section>'
-        ].join("");
-      }).join("")
+        '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
+        '<tbody>',
+        '<tr><td>Foto vom Verteiler</td><td>' + (data.system.distributorPhoto ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Verteiler DN</td><td>' + (data.system.distributorDn || "-") + '</td></tr>',
+        '<tr><td>Verlegeabstand</td><td>' + (data.system.layingSpacing || "-") + '</td></tr>',
+        '</tbody></table></section>'
+      ].join(""));
+    }
+    data.rooms.forEach(room => {
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">' + (room.roomName || "Raum " + room.index) + '</div><div class="room-sub">Geschoss: ' + (room.floor || "-") + '</div></div>',
+        '<div class="badge">Raum ' + room.index + '</div>',
+        '</div>',
+        '<table class="hk-table">',
+        '<thead><tr><th>#</th><th>Typ</th><th>H\u00f6he [mm]</th><th>Breite [mm]</th><th>DN</th></tr></thead>',
+        '<tbody>',
+        (room.heaters.length ? room.heaters : [{type:"",height:"",width:"",dn:""}]).map((hk, i) => (
+          '<tr>' +
+          '<td>' + (i + 1) + '</td>' +
+          '<td>' + (hk.type || "-") + '</td>' +
+          '<td>' + (hk.height || "-") + '</td>' +
+          '<td>' + (hk.width || "-") + '</td>' +
+          '<td>' + (hk.dn || "-") + '</td>' +
+          '</tr>'
+        )).join(""),
+        '</tbody></table></section>'
+      ].join(""));
+    });
+    container.innerHTML = [
+      '<div class="doc-head"><h1>Aufnahme HK Daten</h1><div class="meta">Erstellt: ' + now + '</div></div>',
+      sections.join("")
     ].join("");
     document.body.classList.add("show-print");
     setTimeout(() => window.print(), 300);
