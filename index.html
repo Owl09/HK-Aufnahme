@@ -2274,9 +2274,9 @@
         '</body></html>'
       ].join("");
       try{
-        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
+        const file = new File([html], "hk-uebersicht.html", { type: "application/octet-stream" });
         if(navigator.canShare && navigator.canShare({ files: [file] })){
-          await navigator.share({ files: [file], title: "HK Uebersicht" });
+          await navigator.share({ files: [file] });
         } else {
           renderPrint(data);
         }
