@@ -2252,13 +2252,31 @@
         alert("Keine Daten erfasst.");
         return;
       }
+      renderPrint(data, true);
+      const html = [
+        '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
+        '<style>',
+        'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
+        '.doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }',
+        'h1 { margin: 0; font-size: 22px; }',
+        '.meta { color: #6b7280; font-size: 13px; }',
+        '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
+        '.room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }',
+        '.room-title { font-size: 18px; font-weight: 700; }',
+        '.room-sub { color: #6b7280; font-size: 14px; }',
+        '.badge { background: #eef2ff; color: #1d4ed8; border: 1px solid #c7d2fe; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 13px; }',
+        'table { width: 100%; border-collapse: collapse; }',
+        'th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }',
+        'th { background: #f8fafc; font-weight: 700; }',
+        '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
+        '</style></head><body>',
+        document.getElementById("printView").innerHTML,
+        '</body></html>'
+      ].join("");
       try{
-        if(navigator.share){
-          await navigator.share({
-            title: "HK Uebersicht",
-            text: "HK Uebersicht teilen",
-            url: location.href
-          });
+        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
+        if(navigator.canShare && navigator.canShare({ files: [file] })){
+          await navigator.share({ files: [file], title: "HK Uebersicht" });
         } else {
           renderPrint(data);
         }
