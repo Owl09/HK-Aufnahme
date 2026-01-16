@@ -1630,6 +1630,14 @@
   attachBauformListeners(document);
   updateLabels();
 
+  function isStylusEvent(e){
+    if(typeof e.pointerType === "string") return e.pointerType === "pen";
+    if(e.touches && e.touches[0] && typeof e.touches[0].touchType === "string"){
+      return e.touches[0].touchType === "stylus";
+    }
+    return false;
+  }
+
   function setupDrawingInputs(container){
     const inputs = (container || document).querySelectorAll('input[type="text"][name$="Custom"]');
     inputs.forEach(input => {
@@ -1674,11 +1682,8 @@
         ctx.globalCompositeOperation = erasing ? "destination-out" : "source-over";
         ctx.lineWidth = erasing ? 8 : 2;
       }
-      function isPenEvent(e){
-        return e.pointerType === "pen";
-      }
       function start(e){
-        if(!isPenEvent(e)) return;
+        if(!isStylusEvent(e)) return;
         drawing = true;
         applyMode();
         const p = posFromEvent(e);
@@ -1687,7 +1692,7 @@
         e.preventDefault();
       }
       function move(e){
-        if(!drawing || !isPenEvent(e)) return;
+        if(!drawing || !isStylusEvent(e)) return;
         const p = posFromEvent(e);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
@@ -1702,6 +1707,9 @@
       canvas.addEventListener("pointermove", move);
       canvas.addEventListener("pointerup", end);
       canvas.addEventListener("pointerleave", end);
+      canvas.addEventListener("touchstart", start, { passive: false });
+      canvas.addEventListener("touchmove", move, { passive: false });
+      canvas.addEventListener("touchend", end);
 
       // keine Loeschen-Aktion
     });
@@ -1741,11 +1749,8 @@
       ctx.globalCompositeOperation = erasing ? "destination-out" : "source-over";
       ctx.lineWidth = erasing ? 8 : 2;
     }
-    function isPenEvent(e){
-      return e.pointerType === "pen";
-    }
     function start(e){
-      if(!isPenEvent(e)) return;
+      if(!isStylusEvent(e)) return;
       drawing = true;
       applyMode();
       const p = posFromEvent(e);
@@ -1754,7 +1759,7 @@
       e.preventDefault();
     }
     function move(e){
-      if(!drawing || !isPenEvent(e)) return;
+      if(!drawing || !isStylusEvent(e)) return;
       const p = posFromEvent(e);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
@@ -1769,6 +1774,9 @@
     canvas.addEventListener("pointermove", move);
     canvas.addEventListener("pointerup", end);
     canvas.addEventListener("pointerleave", end);
+    canvas.addEventListener("touchstart", start, { passive: false });
+    canvas.addEventListener("touchmove", move, { passive: false });
+    canvas.addEventListener("touchend", end);
   }
 
   document.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
