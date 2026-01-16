@@ -28,11 +28,14 @@
         .room-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 18px; }
         .field-row { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 12px; align-items: center; }
         .field-row.single { grid-template-columns: 170px 1fr; }
+        .field-row.dual { grid-template-columns: 170px 0.8fr 170px 0.8fr; column-gap: 8px; }
+        .field-row.pump { grid-template-columns: 170px 1fr 70px 50px 1fr; column-gap: 8px; }
         label { font-weight: 600; color: #1f2933; }
         select, input[type="text"] { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; }
         .inline-options { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
         .inline-options label { display: flex; align-items: center; gap: 6px; font-weight: 600; }
         .inline-options input { width: auto; }
+        .check-grid { display: grid; grid-template-columns: repeat(2, minmax(160px, 1fr)); gap: 8px 16px; }
         .draw-wrap { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
         .draw-canvas { width: 100%; height: 44px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; touch-action: none; }
         .draw-wrap { margin-top: 0; }
@@ -86,6 +89,234 @@
     <form>
         <section class="system-card">
             <h2 style="margin:0;font-size:18px;">Anlagentechnik</h2>
+            <div class="field-row">
+                <label for="systemManufacturer">Hersteller</label>
+                <select id="systemManufacturer" name="systemManufacturer">
+                    <option value="" selected disabled>Hersteller w&auml;hlen &hellip;</option>
+                    <option>Viesmann</option>
+                    <option>Bosch</option>
+                    <option>Buderus</option>
+                    <option>Junkers</option>
+                </select>
+                <div class="draw-wrap">
+                    <input type="hidden" id="systemManufacturerDraw" name="systemManufacturerDraw">
+                    <canvas class="draw-canvas" data-draw-target="systemManufacturerDraw"></canvas>
+                </div>
+            </div>
+            <div class="field-row dual">
+                <label for="systemTypeDraw">Typ</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="systemTypeDraw" name="systemTypeDraw">
+                    <canvas class="draw-canvas" data-draw-target="systemTypeDraw"></canvas>
+                </div>
+                <label for="systemPowerDraw">Leistung</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="systemPowerDraw" name="systemPowerDraw">
+                    <canvas class="draw-canvas" data-draw-target="systemPowerDraw"></canvas>
+                </div>
+            </div>
+            <div class="field-row dual">
+                <label for="systemYear">Baujahr</label>
+                <select id="systemYear" name="systemYear">
+                    <option value="" selected disabled>Baujahr w&auml;hlen &hellip;</option>
+                    <option>2028</option>
+                    <option>2027</option>
+                    <option>2026</option>
+                    <option>2025</option>
+                    <option>2024</option>
+                    <option>2023</option>
+                    <option>2022</option>
+                    <option>2021</option>
+                    <option>2020</option>
+                    <option>2019</option>
+                    <option>2018</option>
+                    <option>2017</option>
+                    <option>2016</option>
+                    <option>2015</option>
+                    <option>2014</option>
+                    <option>2013</option>
+                    <option>2012</option>
+                    <option>2011</option>
+                    <option>2010</option>
+                    <option>2009</option>
+                    <option>2008</option>
+                    <option>2007</option>
+                    <option>2006</option>
+                    <option>2005</option>
+                    <option>2004</option>
+                    <option>2003</option>
+                    <option>2002</option>
+                    <option>2001</option>
+                    <option>2000</option>
+                    <option>1999</option>
+                    <option>1998</option>
+                    <option>1997</option>
+                    <option>1996</option>
+                    <option>1995</option>
+                    <option>1994</option>
+                    <option>1993</option>
+                    <option>1992</option>
+                    <option>1991</option>
+                    <option>1990</option>
+                    <option>1989</option>
+                    <option>1988</option>
+                    <option>1987</option>
+                    <option>1986</option>
+                    <option>1985</option>
+                    <option>1984</option>
+                    <option>1983</option>
+                    <option>1982</option>
+                    <option>1981</option>
+                    <option>1980</option>
+                    <option>1979</option>
+                    <option>1978</option>
+                    <option>1977</option>
+                    <option>1976</option>
+                    <option>1975</option>
+                    <option>1974</option>
+                    <option>1973</option>
+                    <option>1972</option>
+                    <option>1971</option>
+                    <option>1970</option>
+                    <option>1969</option>
+                    <option>1968</option>
+                    <option>1967</option>
+                    <option>1966</option>
+                    <option>1965</option>
+                    <option>1964</option>
+                    <option>1963</option>
+                    <option>1962</option>
+                    <option>1961</option>
+                    <option>1960</option>
+                    <option>1959</option>
+                    <option>1958</option>
+                    <option>1957</option>
+                    <option>1956</option>
+                    <option>1955</option>
+                    <option>1954</option>
+                    <option>1953</option>
+                    <option>1952</option>
+                    <option>1951</option>
+                    <option>1950</option>
+                    <option>1949</option>
+                    <option>1948</option>
+                    <option>1947</option>
+                    <option>1946</option>
+                    <option>1945</option>
+                    <option>1944</option>
+                    <option>1943</option>
+                    <option>1942</option>
+                    <option>1941</option>
+                    <option>1940</option>
+                </select>
+                <label for="systemFuel">Brennstoff</label>
+                <select id="systemFuel" name="systemFuel">
+                    <option value="" selected disabled>Brennstoff w&auml;hlen &hellip;</option>
+                    <option>Erdgas</option>
+                    <option>&Ouml;l</option>
+                    <option>Pellet</option>
+                </select>
+            </div>
+            <div class="field-row single">
+                <label for="systemLocation">Aufstellort der Heizung</label>
+                <select id="systemLocation" name="systemLocation">
+                    <option value="" selected disabled>Aufstellort w&auml;hlen &hellip;</option>
+                    <option>Keller</option>
+                    <option>Dachboden</option>
+                    <option>In H&uuml;llfl&auml;che</option>
+                    <option>Au&szlig;erhalb H&uuml;llfl&auml;che</option>
+                </select>
+            </div>
+            <div class="field-row single">
+                <label>Optionen</label>
+                <div class="check-grid">
+                    <label><input type="checkbox" name="optionNightReduction">Nachtabsenkung</label>
+                    <label><input type="checkbox" name="optionHydraulicBalance">Hydr. Abgleich</label>
+                    <label><input type="checkbox" name="optionHeaterNiches">Heizk&ouml;rpernieschen</label>
+                    <label><input type="checkbox" name="optionCirculationTimed">Zirku. Zeitgesteuert</label>
+                </div>
+            </div>
+            <div class="field-row dual">
+                <label for="systemThermostatValves">Thermostatventile</label>
+                <select id="systemThermostatValves" name="systemThermostatValves">
+                    <option value="" selected disabled>Ventile w&auml;hlen &hellip;</option>
+                    <option>1K</option>
+                    <option>2K</option>
+                    <option>Digital</option>
+                </select>
+                <label for="heatingCircuits">Anzahl Heizkreise</label>
+                <select id="heatingCircuits" name="heatingCircuits">
+                    <option value="" selected disabled>Anzahl w&auml;hlen &hellip;</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select>
+            </div>
+            <h3 style="margin:6px 0 0;font-size:16px;">Pumpen</h3>
+            <div class="field-row pump">
+                <label for="pumpCirculationDraw">Umw&auml;lzpumpe</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="pumpCirculationDraw" name="pumpCirculationDraw">
+                    <canvas class="draw-canvas" data-draw-target="pumpCirculationDraw"></canvas>
+                </div>
+                <label><input type="checkbox" name="pumpCirculationHe">HE?</label>
+                <label>Stf</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="pumpCirculationStfDraw" name="pumpCirculationStfDraw">
+                    <canvas class="draw-canvas" data-draw-target="pumpCirculationStfDraw"></canvas>
+                </div>
+            </div>
+            <div class="field-row pump">
+                <label for="pumpStorageDraw">Speicherladepumpe</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="pumpStorageDraw" name="pumpStorageDraw">
+                    <canvas class="draw-canvas" data-draw-target="pumpStorageDraw"></canvas>
+                </div>
+                <label><input type="checkbox" name="pumpStorageHe">HE?</label>
+                <label>Stf</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="pumpStorageStfDraw" name="pumpStorageStfDraw">
+                    <canvas class="draw-canvas" data-draw-target="pumpStorageStfDraw"></canvas>
+                </div>
+            </div>
+            <div class="field-row pump">
+                <label for="pumpRecircDraw">Zirkulationspumpe</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="pumpRecircDraw" name="pumpRecircDraw">
+                    <canvas class="draw-canvas" data-draw-target="pumpRecircDraw"></canvas>
+                </div>
+                <label><input type="checkbox" name="pumpRecircHe">HE?</label>
+                <label>Stf</label>
+                <div class="draw-wrap">
+                    <input type="hidden" id="pumpRecircStfDraw" name="pumpRecircStfDraw">
+                    <canvas class="draw-canvas" data-draw-target="pumpRecircStfDraw"></canvas>
+                </div>
+            </div>
+            <div class="field-row dual">
+                <label for="heatDistribution">W&auml;rmeverteilung</label>
+                <select id="heatDistribution" name="heatDistribution">
+                    <option value="" selected disabled>Verteilung w&auml;hlen &hellip;</option>
+                    <option>Fu&szlig;bodenheizung</option>
+                    <option>Heizk&ouml;rper</option>
+                </select>
+                <label for="pipeInsulation">D&auml;mmung der Rohrleitung</label>
+                <select id="pipeInsulation" name="pipeInsulation">
+                    <option value="" selected disabled>D&auml;mmung w&auml;hlen &hellip;</option>
+                    <option>Keine D&auml;mmung</option>
+                    <option>halbe GEG</option>
+                    <option>ganze GEG</option>
+                </select>
+            </div>
+        </section>
+        <section class="system-card">
+            <h2 style="margin:0;font-size:18px;">Fu&szlig;bodenheizung</h2>
             <div class="system-row">
                 <label>Fl&auml;chenheizung vorhanden?</label>
                 <div class="inline-options">
@@ -99,7 +330,10 @@
                 </div>
                 <div class="field-row single">
                     <label for="distributorDn">Verteiler DN</label>
-                    <textarea id="distributorDn" name="distributorDn" placeholder="mit Stift eintragen"></textarea>
+                    <input type="hidden" id="distributorDn" name="distributorDn">
+                    <div class="draw-wrap">
+                        <canvas id="distributorDnDraw" class="draw-canvas" data-draw-target="distributorDn"></canvas>
+                    </div>
                 </div>
                 <div class="field-row single">
                     <label for="layingSpacing">Verlegeabstand</label>
@@ -1453,6 +1687,62 @@
 
   setupDrawingInputs(document);
 
+  function initDrawCanvas(canvas, hidden){
+    const ctx = canvas.getContext("2d");
+    function resizeCanvas(){
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#0f172a";
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    let drawing = false;
+    function posFromEvent(e){
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+    function start(e){
+      drawing = true;
+      const p = posFromEvent(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      e.preventDefault();
+    }
+    function move(e){
+      if(!drawing) return;
+      const p = posFromEvent(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      e.preventDefault();
+    }
+    function end(){
+      if(!drawing) return;
+      drawing = false;
+      hidden.dataset.drawing = canvas.toDataURL("image/png");
+    }
+    canvas.addEventListener("pointerdown", start);
+    canvas.addEventListener("pointermove", move);
+    canvas.addEventListener("pointerup", end);
+    canvas.addEventListener("pointerleave", end);
+    canvas.addEventListener("touchstart", start, { passive: false });
+    canvas.addEventListener("touchmove", move, { passive: false });
+    canvas.addEventListener("touchend", end);
+  }
+
+  document.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+    const targetId = canvas.getAttribute("data-draw-target");
+    const hidden = targetId ? document.getElementById(targetId) : null;
+    if(hidden) initDrawCanvas(canvas, hidden);
+  });
+
   const surfaceHeatingRadios = document.querySelectorAll('input[name="surfaceHeating"]');
   const surfaceHeatingDetails = document.getElementById("surfaceHeatingDetails");
   function toggleSurfaceHeating(){
@@ -1571,11 +1861,60 @@
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
+    const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
+    const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
+    const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
+    const systemPowerDraw = (document.getElementById("systemPowerDraw") || {}).dataset ? (document.getElementById("systemPowerDraw").dataset.drawing || "") : "";
+    const systemYear = (document.getElementById("systemYear") || {}).value || "";
+    const systemFuel = (document.getElementById("systemFuel") || {}).value || "";
+    const systemLocation = (document.getElementById("systemLocation") || {}).value || "";
+    const heatDistribution = (document.getElementById("heatDistribution") || {}).value || "";
+    const pipeInsulation = (document.getElementById("pipeInsulation") || {}).value || "";
+    const pumpCirculationDraw = (document.getElementById("pumpCirculationDraw") || {}).dataset ? (document.getElementById("pumpCirculationDraw").dataset.drawing || "") : "";
+    const pumpCirculationHe = !!document.querySelector('input[name="pumpCirculationHe"]:checked');
+    const pumpCirculationStfDraw = (document.getElementById("pumpCirculationStfDraw") || {}).dataset ? (document.getElementById("pumpCirculationStfDraw").dataset.drawing || "") : "";
+    const pumpStorageDraw = (document.getElementById("pumpStorageDraw") || {}).dataset ? (document.getElementById("pumpStorageDraw").dataset.drawing || "") : "";
+    const pumpStorageHe = !!document.querySelector('input[name="pumpStorageHe"]:checked');
+    const pumpStorageStfDraw = (document.getElementById("pumpStorageStfDraw") || {}).dataset ? (document.getElementById("pumpStorageStfDraw").dataset.drawing || "") : "";
+    const pumpRecircDraw = (document.getElementById("pumpRecircDraw") || {}).dataset ? (document.getElementById("pumpRecircDraw").dataset.drawing || "") : "";
+    const pumpRecircHe = !!document.querySelector('input[name="pumpRecircHe"]:checked');
+    const pumpRecircStfDraw = (document.getElementById("pumpRecircStfDraw") || {}).dataset ? (document.getElementById("pumpRecircStfDraw").dataset.drawing || "") : "";
+    const optionNightReduction = !!document.querySelector('input[name="optionNightReduction"]:checked');
+    const optionHydraulicBalance = !!document.querySelector('input[name="optionHydraulicBalance"]:checked');
+    const optionHeaterNiches = !!document.querySelector('input[name="optionHeaterNiches"]:checked');
+    const optionCirculationTimed = !!document.querySelector('input[name="optionCirculationTimed"]:checked');
+    const systemThermostatValves = (document.getElementById("systemThermostatValves") || {}).value || "";
     const system = {
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
       layingSpacing: (document.getElementById("layingSpacing") || {}).value || ""
+      ,
+      fbhLineDiameter: (document.getElementById("fBHLineDiameter") || {}).value || "",
+      heatingCircuits: (document.getElementById("heatingCircuits") || {}).value || "",
+      systemManufacturer,
+      systemManufacturerDraw,
+      systemTypeDraw,
+      systemPowerDraw,
+      systemYear,
+      systemFuel,
+      systemLocation,
+      heatDistribution,
+      pipeInsulation,
+      optionNightReduction,
+      optionHydraulicBalance,
+      optionHeaterNiches,
+      optionCirculationTimed,
+      systemThermostatValves,
+      pumpCirculationDraw,
+      pumpCirculationHe,
+      pumpCirculationStfDraw,
+      pumpStorageDraw,
+      pumpStorageHe,
+      pumpStorageStfDraw,
+      pumpRecircDraw,
+      pumpRecircHe,
+      pumpRecircStfDraw
     };
     document.querySelectorAll(".room-card").forEach((card, idx) => {
       const roomSel = card.querySelector('select[name$="Name"]');
@@ -1633,31 +1972,102 @@
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
     const distributorPhotoChecked = !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked');
-    const distributorDnValue = ((document.getElementById("distributorDn") || {}).value || "").trim();
+    const distributorDnInput = document.getElementById("distributorDn");
+    const distributorDnValue = (distributorDnInput && distributorDnInput.value ? distributorDnInput.value : "").trim();
+    const distributorDnDraw = distributorDnInput && distributorDnInput.dataset.drawing ? distributorDnInput.dataset.drawing : "";
     const layingSpacingValue = ((document.getElementById("layingSpacing") || {}).value || "").trim();
+    const systemManufacturer = ((document.getElementById("systemManufacturer") || {}).value || "").trim();
+    const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
+    const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
+    const systemPowerDraw = (document.getElementById("systemPowerDraw") || {}).dataset ? (document.getElementById("systemPowerDraw").dataset.drawing || "") : "";
+    const systemYear = ((document.getElementById("systemYear") || {}).value || "").trim();
+    const systemFuel = ((document.getElementById("systemFuel") || {}).value || "").trim();
+    const systemLocation = ((document.getElementById("systemLocation") || {}).value || "").trim();
+    const heatDistribution = ((document.getElementById("heatDistribution") || {}).value || "").trim();
+    const pipeInsulation = ((document.getElementById("pipeInsulation") || {}).value || "").trim();
+    const systemThermostatValves = ((document.getElementById("systemThermostatValves") || {}).value || "").trim();
     const system = {
+      systemManufacturer,
+      systemManufacturerDraw,
+      systemTypeDraw,
+      systemPowerDraw,
+      systemYear,
+      systemFuel,
+      systemLocation,
+      heatDistribution,
+      pipeInsulation,
+      optionNightReduction: !!document.querySelector('input[name="optionNightReduction"]:checked'),
+      optionHydraulicBalance: !!document.querySelector('input[name="optionHydraulicBalance"]:checked'),
+      optionHeaterNiches: !!document.querySelector('input[name="optionHeaterNiches"]:checked'),
+      optionCirculationTimed: !!document.querySelector('input[name="optionCirculationTimed"]:checked'),
+      systemThermostatValves,
+      pumpCirculationDraw: (document.getElementById("pumpCirculationDraw") || {}).dataset ? (document.getElementById("pumpCirculationDraw").dataset.drawing || "") : "",
+      pumpCirculationHe: !!document.querySelector('input[name="pumpCirculationHe"]:checked'),
+      pumpCirculationStfDraw: (document.getElementById("pumpCirculationStfDraw") || {}).dataset ? (document.getElementById("pumpCirculationStfDraw").dataset.drawing || "") : "",
+      pumpStorageDraw: (document.getElementById("pumpStorageDraw") || {}).dataset ? (document.getElementById("pumpStorageDraw").dataset.drawing || "") : "",
+      pumpStorageHe: !!document.querySelector('input[name="pumpStorageHe"]:checked'),
+      pumpStorageStfDraw: (document.getElementById("pumpStorageStfDraw") || {}).dataset ? (document.getElementById("pumpStorageStfDraw").dataset.drawing || "") : "",
+      pumpRecircDraw: (document.getElementById("pumpRecircDraw") || {}).dataset ? (document.getElementById("pumpRecircDraw").dataset.drawing || "") : "",
+      pumpRecircHe: !!document.querySelector('input[name="pumpRecircHe"]:checked'),
+      pumpRecircStfDraw: (document.getElementById("pumpRecircStfDraw") || {}).dataset ? (document.getElementById("pumpRecircStfDraw").dataset.drawing || "") : "",
+      heatingCircuits: ((document.getElementById("heatingCircuits") || {}).value || "").trim(),
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: distributorPhotoChecked,
       distributorDn: distributorDnValue,
+      distributorDnDraw: distributorDnDraw,
       layingSpacing: layingSpacingValue,
       fbhLineDiameter: ((document.getElementById("fBHLineDiameter") || {}).value || "").trim()
     };
-    const hasSystem = !!(system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.layingSpacing || system.fbhLineDiameter || detailsOpen);
+    const hasSystem = !!(
+      system.systemManufacturer || system.systemManufacturerDraw || system.systemType || system.systemTypeDraw ||
+      system.systemPowerDraw || system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
+      system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStfDraw ||
+      system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStfDraw ||
+      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStfDraw ||
+      system.optionNightReduction || system.optionHydraulicBalance || system.optionHeaterNiches || system.optionCirculationTimed ||
+      system.systemThermostatValves || system.heatingCircuits ||
+      system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.distributorDnDraw ||
+      system.layingSpacing || system.fbhLineDiameter || detailsOpen
+    );
     const sections = [];
     if(hasSystem){
       sections.push([
         '<section class="room">',
         '<div class="room-head">',
-        '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Fl\u00e4chenheizung vorhanden: ' + (system.surfaceHeating || "-") + '</div></div>',
+        '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Hersteller: ' + (system.systemManufacturer || "-") + '</div></div>',
         '<div class="badge">System</div>',
         '</div>',
         '<table class="hk-table">',
         '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
         '<tbody>',
+        '<tr><td>Hersteller</td><td>' + renderCell(system.systemManufacturer, system.systemManufacturerDraw) + '</td></tr>',
+        '<tr><td>Typ</td><td>' + renderCell("", system.systemTypeDraw) + '</td></tr>',
+        '<tr><td>Leistung</td><td>' + renderCell("", system.systemPowerDraw) + '</td></tr>',
+        '<tr><td>Baujahr</td><td>' + (system.systemYear || "-") + '</td></tr>',
+        '<tr><td>Brennstoff</td><td>' + (system.systemFuel || "-") + '</td></tr>',
+        '<tr><td>Aufstellort der Heizung</td><td>' + (system.systemLocation || "-") + '</td></tr>',
+        '<tr><td>W\u00e4rmeverteilung</td><td>' + (system.heatDistribution || "-") + '</td></tr>',
+        '<tr><td>D\u00e4mmung der Rohrleitung</td><td>' + (system.pipeInsulation || "-") + '</td></tr>',
+        '<tr><td>Nachtabsenlung</td><td>' + (system.optionNightReduction ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Hydr. Abgleich</td><td>' + (system.optionHydraulicBalance ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Heizk\u00f6rpernieschen</td><td>' + (system.optionHeaterNiches ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Zirku. Zeitgesteuert</td><td>' + (system.optionCirculationTimed ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Thermostatventile</td><td>' + (system.systemThermostatValves || "-") + '</td></tr>',
+        '<tr><td>Anzahl Heizkreise</td><td>' + (system.heatingCircuits || "-") + '</td></tr>',
+        '<tr><td>Fl\u00e4chenheizung vorhanden</td><td>' + (system.surfaceHeating || "-") + '</td></tr>',
         '<tr><td>Foto vom Verteiler</td><td>' + (system.distributorPhoto ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Verteiler DN</td><td>' + (system.distributorDn || "-") + '</td></tr>',
+        '<tr><td>Verteiler DN</td><td>' + renderCell(system.distributorDn, system.distributorDnDraw) + '</td></tr>',
         '<tr><td>Verlegeabstand</td><td>' + (system.layingSpacing || "-") + '</td></tr>',
         '<tr><td>Durchmesser Leitung FBH</td><td>' + (system.fbhLineDiameter || "-") + '</td></tr>',
+        '<tr><td>Umw\u00e4lzpumpe</td><td>' + renderCell("", system.pumpCirculationDraw) + '</td></tr>',
+        '<tr><td>Umw\u00e4lzpumpe HE?</td><td>' + (system.pumpCirculationHe ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Umw\u00e4lzpumpe Stf</td><td>' + renderCell("", system.pumpCirculationStfDraw) + '</td></tr>',
+        '<tr><td>Speicherladepumpe</td><td>' + renderCell("", system.pumpStorageDraw) + '</td></tr>',
+        '<tr><td>Speicherladepumpe HE?</td><td>' + (system.pumpStorageHe ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Speicherladepumpe Stf</td><td>' + renderCell("", system.pumpStorageStfDraw) + '</td></tr>',
+        '<tr><td>Zirkulationspumpe</td><td>' + renderCell("", system.pumpRecircDraw) + '</td></tr>',
+        '<tr><td>Zirkulationspumpe HE?</td><td>' + (system.pumpRecircHe ? "Ja" : "Nein") + '</td></tr>',
+        '<tr><td>Zirkulationspumpe Stf</td><td>' + renderCell("", system.pumpRecircStfDraw) + '</td></tr>',
         '</tbody></table></section>'
       ].join(""));
     }
@@ -1770,7 +2180,21 @@
   if(exportBtn){
     exportBtn.addEventListener("click", () => {
       const data = collectData();
-      if(!data.rooms.length && !data.system.surfaceHeating && !data.system.distributorPhoto && !data.system.distributorDn && !data.system.layingSpacing && !data.system.fbhLineDiameter){
+      if(
+        !data.rooms.length &&
+        !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
+        !data.system.systemTypeDraw &&
+        !data.system.systemPowerDraw &&
+        !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
+        !data.system.optionNightReduction && !data.system.optionHydraulicBalance && !data.system.optionHeaterNiches && !data.system.optionCirculationTimed &&
+        !data.system.systemThermostatValves &&
+        !data.system.surfaceHeating && !data.system.distributorPhoto &&
+        !data.system.heatingCircuits && !data.system.distributorDn &&
+        !data.system.layingSpacing && !data.system.fbhLineDiameter &&
+        !data.system.pumpCirculationDraw && !data.system.pumpCirculationHe && !data.system.pumpCirculationStfDraw &&
+        !data.system.pumpStorageDraw && !data.system.pumpStorageHe && !data.system.pumpStorageStfDraw &&
+        !data.system.pumpRecircDraw && !data.system.pumpRecircHe && !data.system.pumpRecircStfDraw
+      ){
         alert("Keine Daten erfasst.");
         return;
       }
