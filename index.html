@@ -1433,7 +1433,6 @@
             </details>
         </section>
         <button type="button" class="add-room-btn">+ Raum hinzuf&uuml;gen</button>
-        <button type="button" class="export-btn">PDF-&Uuml;bersicht erstellen</button>
         <button type="button" class="share-btn">Teilen</button>
         <button type="button" class="eraser-btn">Radierer</button>
         <button type="button" class="reset-btn">Alles reseten</button>
@@ -1704,6 +1703,7 @@
         if(!drawing) return;
         drawing = false;
         hidden.dataset.drawing = canvas.toDataURL("image/png");
+        scheduleSave();
       }
       canvas.addEventListener("pointerdown", start);
       canvas.addEventListener("pointermove", move);
@@ -1771,6 +1771,7 @@
       if(!drawing) return;
       drawing = false;
       hidden.dataset.drawing = canvas.toDataURL("image/png");
+      scheduleSave();
     }
     canvas.addEventListener("pointerdown", start);
     canvas.addEventListener("pointermove", move);
@@ -1802,6 +1803,7 @@
   }
   surfaceHeatingRadios.forEach(r => r.addEventListener("change", toggleSurfaceHeating));
   toggleSurfaceHeating();
+  restoreFormState();
 
   function collectFormState(){
     const roomCount = document.querySelectorAll(".room-card").length;
@@ -1871,9 +1873,10 @@
     try { state = JSON.parse(raw); } catch(e){ state = null; }
     if(!state) return;
     const currentRooms = document.querySelectorAll(".room-card").length;
-    if(addRoomBtn && state.roomCount && state.roomCount > currentRooms){
+    const addRoomBtnLocal = document.querySelector(".add-room-btn");
+    if(addRoomBtnLocal && state.roomCount && state.roomCount > currentRooms){
       for(let i = currentRooms; i < state.roomCount; i++){
-        addRoomBtn.click();
+        addRoomBtnLocal.click();
       }
     }
     document.querySelectorAll(".room-card").forEach((card, idx) => {
@@ -1915,7 +1918,6 @@
   document.addEventListener("input", scheduleSave, true);
   document.addEventListener("change", scheduleSave, true);
   window.addEventListener("beforeunload", scheduleSave);
-  restoreFormState();
 
   function addHeater(stack){
     const heaters = stack.querySelectorAll(".hk-card");
@@ -1942,6 +1944,7 @@
     stack.appendChild(clone);
     attachBauformListeners(clone);
     setupDrawingInputs(clone);
+    scheduleSave();
   }
 
   function enhanceStack(stack){
@@ -2009,6 +2012,7 @@
       attachBauformListeners(clone);
       setupDrawingInputs(clone);
       updateLabels();
+      scheduleSave();
     });
   }
 
@@ -2352,36 +2356,11 @@
     setTimeout(() => URL.revokeObjectURL(url), 15000);
   }
 
-  const exportBtn = document.querySelector(".export-btn");
   const shareBtn = document.querySelector(".share-btn");
   const resetBtn = document.querySelector(".reset-btn");
   window.addEventListener("afterprint", () => {
     document.body.classList.remove("show-print");
   });
-  if(exportBtn){
-    exportBtn.addEventListener("click", () => {
-      const data = collectData();
-      if(
-        !data.rooms.length &&
-        !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
-        !data.system.systemTypeDraw &&
-        !data.system.systemPowerDraw &&
-        !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
-        !data.system.optionNightReduction && !data.system.optionHydraulicBalance && !data.system.optionHeaterNiches && !data.system.optionCirculationTimed &&
-        !data.system.systemThermostatValves &&
-        !data.system.surfaceHeating && !data.system.distributorPhoto &&
-        !data.system.heatingCircuits && !data.system.distributorDn &&
-        !data.system.layingSpacing && !data.system.fbhLineDiameter &&
-        !data.system.pumpCirculationDraw && !data.system.pumpCirculationHe && !data.system.pumpCirculationStfDraw &&
-        !data.system.pumpStorageDraw && !data.system.pumpStorageHe && !data.system.pumpStorageStfDraw &&
-        !data.system.pumpRecircDraw && !data.system.pumpRecircHe && !data.system.pumpRecircStfDraw
-      ){
-        alert("Keine Daten erfasst.");
-        return;
-      }
-      renderPrint(data);
-    });
-  }
   if(shareBtn){
     shareBtn.addEventListener("click", async () => {
       const data = collectData();
