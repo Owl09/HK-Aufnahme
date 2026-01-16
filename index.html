@@ -42,6 +42,8 @@
         .draw-actions { justify-content: flex-end; }
         .draw-actions { display: none; }
         .draw-action { display: none; }
+        .draw-toggle { display: none; }
+        .draw-toggle.active { display: none; }
         small { display: none; margin-top: 4px; color: #64748b; font-weight: normal; }
         .hk-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; background: #fff; display: flex; flex-direction: column; gap: 12px; }
         .hk-card h3 { margin: 0; font-size: 16px; color: #0f172a; }
@@ -50,10 +52,12 @@
         .hk-toggle summary::after { content: "+"; font-size: 16px; }
         .hk-toggle[open] summary::after { content: "-"; }
         .hk-toggle .hk-card { margin-top: 10px; }
-        .add-hk-btn, .add-room-btn, .export-btn, .reset-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
-        .add-hk-btn:active, .add-room-btn:active, .export-btn:active, .reset-btn:active { transform: translateY(1px); }
+        .add-hk-btn, .add-room-btn, .export-btn, .reset-btn, .eraser-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
+        .add-hk-btn:active, .add-room-btn:active, .export-btn:active, .reset-btn:active, .eraser-btn:active { transform: translateY(1px); }
         .add-room-btn { margin-top: 16px; }
         .export-btn { border-color: #2563eb; color: #1d4ed8; background: #eef2ff; }
+        .eraser-btn { border-color: #f59e0b; color: #92400e; background: #fef3c7; }
+        .eraser-btn.active { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
         .share-btn { border-color: #059669; color: #065f46; background: #ecfdf3; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
         .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
@@ -1431,6 +1435,7 @@
         <button type="button" class="add-room-btn">+ Raum hinzuf&uuml;gen</button>
         <button type="button" class="export-btn">PDF-&Uuml;bersicht erstellen</button>
         <button type="button" class="share-btn">Teilen</button>
+        <button type="button" class="eraser-btn">Radierer</button>
         <button type="button" class="reset-btn">Alles reseten</button>
         <p style="margin-top:12px;color:#6b7280;font-size:15px;">Tipp: R&auml;ume lassen sich mit dem Button oben beliebig erg&auml;nzen. Bei Bedarf in Safari, Chrome oder Edge &ouml;ffnen.</p>
     </form>
@@ -1438,6 +1443,14 @@
 <div id="printView" class="print-view" aria-hidden="true"></div>
 <script>
 (function(){
+  let eraserMode = false;
+  const eraserBtn = document.querySelector(".eraser-btn");
+  if(eraserBtn){
+    eraserBtn.addEventListener("click", () => {
+      eraserMode = !eraserMode;
+      eraserBtn.classList.toggle("active", eraserMode);
+    });
+  }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js?v=3").then(reg => {
@@ -1656,15 +1669,25 @@
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         return { x: clientX - rect.left, y: clientY - rect.top };
       }
+      function applyMode(){
+        const erasing = eraserMode;
+        ctx.globalCompositeOperation = erasing ? "destination-out" : "source-over";
+        ctx.lineWidth = erasing ? 8 : 2;
+      }
+      function isPenEvent(e){
+        return e.pointerType === "pen";
+      }
       function start(e){
+        if(!isPenEvent(e)) return;
         drawing = true;
+        applyMode();
         const p = posFromEvent(e);
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         e.preventDefault();
       }
       function move(e){
-        if(!drawing) return;
+        if(!drawing || !isPenEvent(e)) return;
         const p = posFromEvent(e);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
@@ -1679,9 +1702,6 @@
       canvas.addEventListener("pointermove", move);
       canvas.addEventListener("pointerup", end);
       canvas.addEventListener("pointerleave", end);
-      canvas.addEventListener("touchstart", start, { passive: false });
-      canvas.addEventListener("touchmove", move, { passive: false });
-      canvas.addEventListener("touchend", end);
 
       // keine Loeschen-Aktion
     });
@@ -1716,15 +1736,25 @@
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       return { x: clientX - rect.left, y: clientY - rect.top };
     }
+    function applyMode(){
+      const erasing = eraserMode;
+      ctx.globalCompositeOperation = erasing ? "destination-out" : "source-over";
+      ctx.lineWidth = erasing ? 8 : 2;
+    }
+    function isPenEvent(e){
+      return e.pointerType === "pen";
+    }
     function start(e){
+      if(!isPenEvent(e)) return;
       drawing = true;
+      applyMode();
       const p = posFromEvent(e);
       ctx.beginPath();
       ctx.moveTo(p.x, p.y);
       e.preventDefault();
     }
     function move(e){
-      if(!drawing) return;
+      if(!drawing || !isPenEvent(e)) return;
       const p = posFromEvent(e);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
@@ -1739,9 +1769,6 @@
     canvas.addEventListener("pointermove", move);
     canvas.addEventListener("pointerup", end);
     canvas.addEventListener("pointerleave", end);
-    canvas.addEventListener("touchstart", start, { passive: false });
-    canvas.addEventListener("touchmove", move, { passive: false });
-    canvas.addEventListener("touchend", end);
   }
 
   document.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
@@ -2274,7 +2301,7 @@
         '</body></html>'
       ].join("");
       try{
-        const file = new File([html], "hk-uebersicht.html", { type: "application/octet-stream" });
+        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
         if(navigator.canShare && navigator.canShare({ files: [file] })){
           await navigator.share({ files: [file] });
         } else {
