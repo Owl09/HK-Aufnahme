@@ -1443,6 +1443,8 @@
 <div id="printView" class="print-view" aria-hidden="true"></div>
 <script>
 (function(){
+  const STORAGE_KEY = "hkFormStateV1";
+  let saveTimer = null;
   let eraserMode = false;
   const eraserBtn = document.querySelector(".eraser-btn");
   if(eraserBtn){
@@ -1800,6 +1802,120 @@
   }
   surfaceHeatingRadios.forEach(r => r.addEventListener("change", toggleSurfaceHeating));
   toggleSurfaceHeating();
+
+  function collectFormState(){
+    const roomCount = document.querySelectorAll(".room-card").length;
+    const hkCounts = {};
+    document.querySelectorAll(".room-card").forEach((card, idx) => {
+      hkCounts[String(idx + 1)] = card.querySelectorAll(".hk-card").length;
+    });
+    const values = {};
+    document.querySelectorAll("input, select, textarea").forEach(el => {
+      if(!el.name) return;
+      if(el.type === "radio"){
+        if(el.checked) values[el.name] = { type: "radio", value: el.value };
+        return;
+      }
+      if(el.type === "checkbox"){
+        values[el.name] = { type: "checkbox", checked: el.checked };
+        return;
+      }
+      if(el.type === "hidden" && el.dataset.drawing){
+        values[el.name] = { type: "hidden", value: el.value || "", drawing: el.dataset.drawing };
+        return;
+      }
+      values[el.name] = { type: el.type, value: el.value };
+    });
+    return { roomCount, hkCounts, values };
+  }
+
+  function scheduleSave(){
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormState()));
+      } catch(e){}
+    }, 300);
+  }
+
+  function findCanvasForHidden(hidden){
+    if(hidden.id){
+      const byId = document.querySelector('canvas[data-draw-target="' + hidden.id + '"]');
+      if(byId) return byId;
+    }
+    const next = hidden.nextElementSibling;
+    if(next && next.classList && next.classList.contains("draw-wrap")){
+      const canvas = next.querySelector("canvas");
+      if(canvas) return canvas;
+    }
+    return null;
+  }
+
+  function drawDataUrl(canvas, dataUrl){
+    if(!canvas || !dataUrl) return;
+    const ctx = canvas.getContext("2d");
+    resizeDrawCanvas(canvas, ctx);
+    const rect = canvas.getBoundingClientRect();
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, rect.width, rect.height);
+    };
+    img.src = dataUrl;
+  }
+
+  function restoreFormState(){
+    let raw = null;
+    try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) { raw = null; }
+    if(!raw) return;
+    let state = null;
+    try { state = JSON.parse(raw); } catch(e){ state = null; }
+    if(!state) return;
+    const currentRooms = document.querySelectorAll(".room-card").length;
+    if(addRoomBtn && state.roomCount && state.roomCount > currentRooms){
+      for(let i = currentRooms; i < state.roomCount; i++){
+        addRoomBtn.click();
+      }
+    }
+    document.querySelectorAll(".room-card").forEach((card, idx) => {
+      const target = state.hkCounts ? state.hkCounts[String(idx + 1)] : null;
+      if(!target) return;
+      const stack = card.querySelector(".hk-stack");
+      if(!stack) return;
+      while(stack.querySelectorAll(".hk-card").length < target){
+        addHeater(stack);
+      }
+    });
+    const values = state.values || {};
+    Object.keys(values).forEach(name => {
+      const data = values[name];
+      const els = document.querySelectorAll('[name="' + name + '"]');
+      if(!els.length) return;
+      if(data.type === "radio"){
+        els.forEach(el => { el.checked = (el.value === data.value); });
+        return;
+      }
+      if(data.type === "checkbox"){
+        els.forEach(el => { el.checked = !!data.checked; });
+        return;
+      }
+      els.forEach(el => {
+        if(data.type === "hidden" && data.drawing){
+          el.dataset.drawing = data.drawing;
+          const canvas = findCanvasForHidden(el);
+          if(canvas) drawDataUrl(canvas, data.drawing);
+        } else if("value" in data){
+          el.value = data.value;
+        }
+      });
+    });
+    toggleSurfaceHeating();
+    updateLabels();
+  }
+
+  document.addEventListener("input", scheduleSave, true);
+  document.addEventListener("change", scheduleSave, true);
+  window.addEventListener("beforeunload", scheduleSave);
+  restoreFormState();
 
   function addHeater(stack){
     const heaters = stack.querySelectorAll(".hk-card");
@@ -2323,6 +2439,7 @@
   if(resetBtn){
     resetBtn.addEventListener("click", () => {
       if(confirm("Alle Eingaben zuruecksetzen?")){
+        try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
         location.reload();
       }
     });
