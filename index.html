@@ -1974,7 +1974,7 @@
 
   function renderCell(value, draw){
     if(draw) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
-    return value || "-";
+    return value || "";
   }
 
   function renderPrint(data, skipPrint){
@@ -2044,45 +2044,57 @@
     );
     const sections = [];
     if(hasSystem){
-      sections.push([
-        '<section class="room">',
-        '<div class="room-head">',
-        '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Hersteller: ' + (system.systemManufacturer || "-") + '</div></div>',
-        '<div class="badge">System</div>',
-        '</div>',
-        '<table class="hk-table">',
-        '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
-        '<tbody>',
-        '<tr><td>Hersteller</td><td>' + renderCell(system.systemManufacturer, system.systemManufacturerDraw) + '</td></tr>',
-        '<tr><td>Typ</td><td>' + renderCell("", system.systemTypeDraw) + '</td></tr>',
-        '<tr><td>Leistung</td><td>' + renderCell("", system.systemPowerDraw) + '</td></tr>',
-        '<tr><td>Baujahr</td><td>' + (system.systemYear || "-") + '</td></tr>',
-        '<tr><td>Brennstoff</td><td>' + (system.systemFuel || "-") + '</td></tr>',
-        '<tr><td>Aufstellort der Heizung</td><td>' + (system.systemLocation || "-") + '</td></tr>',
-        '<tr><td>W\u00e4rmeverteilung</td><td>' + (system.heatDistribution || "-") + '</td></tr>',
-        '<tr><td>D\u00e4mmung der Rohrleitung</td><td>' + (system.pipeInsulation || "-") + '</td></tr>',
-        '<tr><td>Nachtabsenlung</td><td>' + (system.optionNightReduction ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Hydr. Abgleich</td><td>' + (system.optionHydraulicBalance ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Heizk\u00f6rpernieschen</td><td>' + (system.optionHeaterNiches ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Zirku. Zeitgesteuert</td><td>' + (system.optionCirculationTimed ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Thermostatventile</td><td>' + (system.systemThermostatValves || "-") + '</td></tr>',
-        '<tr><td>Anzahl Heizkreise</td><td>' + (system.heatingCircuits || "-") + '</td></tr>',
-        '<tr><td>Fl\u00e4chenheizung vorhanden</td><td>' + (system.surfaceHeating || "-") + '</td></tr>',
-        '<tr><td>Foto vom Verteiler</td><td>' + (system.distributorPhoto ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Verteiler DN</td><td>' + renderCell(system.distributorDn, system.distributorDnDraw) + '</td></tr>',
-        '<tr><td>Verlegeabstand</td><td>' + (system.layingSpacing || "-") + '</td></tr>',
-        '<tr><td>Durchmesser Leitung FBH</td><td>' + (system.fbhLineDiameter || "-") + '</td></tr>',
-        '<tr><td>Umw\u00e4lzpumpe</td><td>' + renderCell("", system.pumpCirculationDraw) + '</td></tr>',
-        '<tr><td>Umw\u00e4lzpumpe HE?</td><td>' + (system.pumpCirculationHe ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Umw\u00e4lzpumpe Stf</td><td>' + renderCell("", system.pumpCirculationStfDraw) + '</td></tr>',
-        '<tr><td>Speicherladepumpe</td><td>' + renderCell("", system.pumpStorageDraw) + '</td></tr>',
-        '<tr><td>Speicherladepumpe HE?</td><td>' + (system.pumpStorageHe ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Speicherladepumpe Stf</td><td>' + renderCell("", system.pumpStorageStfDraw) + '</td></tr>',
-        '<tr><td>Zirkulationspumpe</td><td>' + renderCell("", system.pumpRecircDraw) + '</td></tr>',
-        '<tr><td>Zirkulationspumpe HE?</td><td>' + (system.pumpRecircHe ? "Ja" : "Nein") + '</td></tr>',
-        '<tr><td>Zirkulationspumpe Stf</td><td>' + renderCell("", system.pumpRecircStfDraw) + '</td></tr>',
-        '</tbody></table></section>'
-      ].join(""));
+      const rows = [];
+      const addRow = (label, value, draw) => {
+        if((value && value !== "-") || draw){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value || "", draw || "") + '</td></tr>');
+        }
+      };
+      const addFlag = (label, flag) => {
+        if(flag) rows.push('<tr><td>' + label + '</td><td>Ja</td></tr>');
+      };
+      addRow("Hersteller", system.systemManufacturer, system.systemManufacturerDraw);
+      addRow("Typ", "", system.systemTypeDraw);
+      addRow("Leistung", "", system.systemPowerDraw);
+      addRow("Baujahr", system.systemYear, "");
+      addRow("Brennstoff", system.systemFuel, "");
+      addRow("Aufstellort der Heizung", system.systemLocation, "");
+      addRow("W\u00e4rmeverteilung", system.heatDistribution, "");
+      addRow("D\u00e4mmung der Rohrleitung", system.pipeInsulation, "");
+      addFlag("Nachtabsenkung", system.optionNightReduction);
+      addFlag("Hydr. Abgleich", system.optionHydraulicBalance);
+      addFlag("Heizk\u00f6rpernieschen", system.optionHeaterNiches);
+      addFlag("Zirku. Zeitgesteuert", system.optionCirculationTimed);
+      addRow("Thermostatventile", system.systemThermostatValves, "");
+      addRow("Anzahl Heizkreise", system.heatingCircuits, "");
+      addRow("Fl\u00e4chenheizung vorhanden", system.surfaceHeating, "");
+      addFlag("Foto vom Verteiler", system.distributorPhoto);
+      addRow("Verteiler DN", system.distributorDn, system.distributorDnDraw);
+      addRow("Verlegeabstand", system.layingSpacing, "");
+      addRow("Durchmesser Leitung FBH", system.fbhLineDiameter, "");
+      addRow("Umw\u00e4lzpumpe", "", system.pumpCirculationDraw);
+      addFlag("Umw\u00e4lzpumpe HE?", system.pumpCirculationHe);
+      addRow("Umw\u00e4lzpumpe Stf", "", system.pumpCirculationStfDraw);
+      addRow("Speicherladepumpe", "", system.pumpStorageDraw);
+      addFlag("Speicherladepumpe HE?", system.pumpStorageHe);
+      addRow("Speicherladepumpe Stf", "", system.pumpStorageStfDraw);
+      addRow("Zirkulationspumpe", "", system.pumpRecircDraw);
+      addFlag("Zirkulationspumpe HE?", system.pumpRecircHe);
+      addRow("Zirkulationspumpe Stf", "", system.pumpRecircStfDraw);
+      if(rows.length){
+        sections.push([
+          '<section class="room">',
+          '<div class="room-head">',
+          '<div><div class="room-title">Anlagentechnik</div><div class="room-sub">Hersteller: ' + (system.systemManufacturer || "-") + '</div></div>',
+          '<div class="badge">System</div>',
+          '</div>',
+          '<table class="hk-table">',
+          '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
+          '<tbody>',
+          rows.join(""),
+          '</tbody></table></section>'
+        ].join(""));
+      }
     }
     data.rooms.forEach(room => {
       const plate = [];
