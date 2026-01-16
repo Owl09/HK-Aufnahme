@@ -54,6 +54,7 @@
         .add-hk-btn:active, .add-room-btn:active, .export-btn:active, .reset-btn:active { transform: translateY(1px); }
         .add-room-btn { margin-top: 16px; }
         .export-btn { border-color: #2563eb; color: #1d4ed8; background: #eef2ff; }
+        .share-btn { border-color: #059669; color: #065f46; background: #ecfdf3; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
         .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
         .print-view { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; padding: 18px; }
@@ -1429,6 +1430,7 @@
         </section>
         <button type="button" class="add-room-btn">+ Raum hinzuf&uuml;gen</button>
         <button type="button" class="export-btn">PDF-&Uuml;bersicht erstellen</button>
+        <button type="button" class="share-btn">Teilen</button>
         <button type="button" class="reset-btn">Alles reseten</button>
         <p style="margin-top:12px;color:#6b7280;font-size:15px;">Tipp: R&auml;ume lassen sich mit dem Button oben beliebig erg&auml;nzen. Bei Bedarf in Safari, Chrome oder Edge &ouml;ffnen.</p>
     </form>
@@ -1687,19 +1689,24 @@
 
   setupDrawingInputs(document);
 
+  function resizeDrawCanvas(canvas, ctx){
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+    canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#0f172a";
+  }
+
   function initDrawCanvas(canvas, hidden){
     const ctx = canvas.getContext("2d");
     function resizeCanvas(){
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.lineWidth = 2;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "#0f172a";
+      resizeDrawCanvas(canvas, ctx);
     }
     resizeCanvas();
+    canvas.dataset.resizeHook = "1";
     window.addEventListener("resize", resizeCanvas);
 
     let drawing = false;
@@ -1749,6 +1756,12 @@
     if(!surfaceHeatingDetails) return;
     const checked = document.querySelector('input[name="surfaceHeating"]:checked');
     surfaceHeatingDetails.classList.toggle("hidden", !(checked && checked.value === "Ja"));
+    if(checked && checked.value === "Ja"){
+      surfaceHeatingDetails.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+        const ctx = canvas.getContext("2d");
+        if(ctx) resizeDrawCanvas(canvas, ctx);
+      });
+    }
   }
   surfaceHeatingRadios.forEach(r => r.addEventListener("change", toggleSurfaceHeating));
   toggleSurfaceHeating();
@@ -1964,7 +1977,7 @@
     return value || "-";
   }
 
-  function renderPrint(data){
+  function renderPrint(data, skipPrint){
     const now = new Date().toLocaleString();
     const container = document.getElementById("printView");
     if(!container) return;
@@ -2128,6 +2141,10 @@
       '<div class="doc-head"><h1>Aufnahme HK Daten</h1><div class="meta">Erstellt: ' + now + '</div></div>',
       sections.join("")
     ].join("");
+    if(skipPrint) {
+      document.body.classList.remove("show-print");
+      return;
+    }
     document.body.classList.add("show-print");
     // Force reflow before printing (iOS WebView)
     void container.offsetHeight;
@@ -2173,6 +2190,7 @@
   }
 
   const exportBtn = document.querySelector(".export-btn");
+  const shareBtn = document.querySelector(".share-btn");
   const resetBtn = document.querySelector(".reset-btn");
   window.addEventListener("afterprint", () => {
     document.body.classList.remove("show-print");
@@ -2199,6 +2217,60 @@
         return;
       }
       renderPrint(data);
+    });
+  }
+  if(shareBtn){
+    shareBtn.addEventListener("click", async () => {
+      const data = collectData();
+      if(
+        !data.rooms.length &&
+        !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
+        !data.system.systemTypeDraw &&
+        !data.system.systemPowerDraw &&
+        !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
+        !data.system.optionNightReduction && !data.system.optionHydraulicBalance && !data.system.optionHeaterNiches && !data.system.optionCirculationTimed &&
+        !data.system.systemThermostatValves &&
+        !data.system.surfaceHeating && !data.system.distributorPhoto &&
+        !data.system.heatingCircuits && !data.system.distributorDn &&
+        !data.system.layingSpacing && !data.system.fbhLineDiameter &&
+        !data.system.pumpCirculationDraw && !data.system.pumpCirculationHe && !data.system.pumpCirculationStfDraw &&
+        !data.system.pumpStorageDraw && !data.system.pumpStorageHe && !data.system.pumpStorageStfDraw &&
+        !data.system.pumpRecircDraw && !data.system.pumpRecircHe && !data.system.pumpRecircStfDraw
+      ){
+        alert("Keine Daten erfasst.");
+        return;
+      }
+      renderPrint(data, true);
+      const html = [
+        '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
+        '<style>',
+        'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
+        '.doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }',
+        'h1 { margin: 0; font-size: 22px; }',
+        '.meta { color: #6b7280; font-size: 13px; }',
+        '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
+        '.room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }',
+        '.room-title { font-size: 18px; font-weight: 700; }',
+        '.room-sub { color: #6b7280; font-size: 14px; }',
+        '.badge { background: #eef2ff; color: #1d4ed8; border: 1px solid #c7d2fe; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 13px; }',
+        'table { width: 100%; border-collapse: collapse; }',
+        'th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }',
+        'th { background: #f8fafc; font-weight: 700; }',
+        '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
+        '</style></head><body>',
+        document.getElementById("printView").innerHTML,
+        '</body></html>'
+      ].join("");
+      try{
+        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
+        if(navigator.canShare && navigator.canShare({ files: [file] })){
+          await navigator.share({ files: [file], title: "HK Uebersicht" });
+        } else {
+          renderPrint(data);
+        }
+      } catch(e){
+        renderPrint(data);
+      }
     });
   }
   if(resetBtn){
