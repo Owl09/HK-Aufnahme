@@ -52,17 +52,14 @@
         .hk-toggle summary::after { content: "+"; font-size: 16px; }
         .hk-toggle[open] summary::after { content: "-"; }
         .hk-toggle .hk-card { margin-top: 10px; }
-        .add-hk-btn, .add-room-btn, .export-btn, .reset-btn, .eraser-btn, .drawmode-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
-        .add-hk-btn:active, .add-room-btn:active, .export-btn:active, .reset-btn:active, .eraser-btn:active, .drawmode-btn:active { transform: translateY(1px); }
+        .add-hk-btn, .add-room-btn, .export-btn, .reset-btn, .eraser-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
+        .add-hk-btn:active, .add-room-btn:active, .export-btn:active, .reset-btn:active, .eraser-btn:active { transform: translateY(1px); }
         .add-room-btn { margin-top: 16px; }
         .export-btn { border-color: #2563eb; color: #1d4ed8; background: #eef2ff; }
         .eraser-btn { border-color: #f59e0b; color: #92400e; background: #fef3c7; }
         .eraser-btn.active { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
-        .drawmode-btn { border-color: #7c3aed; color: #5b21b6; background: #ede9fe; }
-        .drawmode-btn.active { background: #ddd6fe; border-color: #c4b5fd; }
-        .global-draw { position: fixed; inset: 0; z-index: 9999; display: none; background: transparent; touch-action: none; }
-        body.draw-mode .global-draw { display: block; }
-        .share-btn { border-color: #9ca3af; color: #111827; background: #f9fafb; }
+        .share-btn { border-color: #16a34a; color: #14532d; background: #dcfce7; }
+        .share-btn.active { background: #bbf7d0; border-color: #86efac; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
         .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
         .print-view { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; padding: 18px; }
@@ -1439,36 +1436,21 @@
         <button type="button" class="add-room-btn">+ Raum hinzuf&uuml;gen</button>
         <button type="button" class="share-btn">Teilen</button>
         <button type="button" class="eraser-btn">Radierer</button>
-        <button type="button" class="drawmode-btn">Zeichenmodus</button>
         <button type="button" class="reset-btn">Alles reseten</button>
         <p style="margin-top:12px;color:#6b7280;font-size:15px;">Tipp: R&auml;ume lassen sich mit dem Button oben beliebig erg&auml;nzen. Bei Bedarf in Safari, Chrome oder Edge &ouml;ffnen.</p>
     </form>
 </main>
 <div id="printView" class="print-view" aria-hidden="true"></div>
-<canvas id="globalDrawCanvas" class="global-draw" aria-hidden="true"></canvas>
 <script>
 (function(){
   const STORAGE_KEY = "hkFormStateV1";
   let saveTimer = null;
-  let globalDrawMode = false;
-  const globalCanvas = document.getElementById("globalDrawCanvas");
-  const drawModeBtn = document.querySelector(".drawmode-btn");
   let eraserMode = false;
   const eraserBtn = document.querySelector(".eraser-btn");
   if(eraserBtn){
     eraserBtn.addEventListener("click", () => {
       eraserMode = !eraserMode;
       eraserBtn.classList.toggle("active", eraserMode);
-    });
-  }
-  if(drawModeBtn && globalCanvas){
-    drawModeBtn.addEventListener("click", () => {
-      globalDrawMode = !globalDrawMode;
-      drawModeBtn.classList.toggle("active", globalDrawMode);
-      document.body.classList.toggle("draw-mode", globalDrawMode);
-      if(globalDrawMode){
-        resizeGlobalCanvas();
-      }
     });
   }
   if ("serviceWorker" in navigator) {
@@ -1749,69 +1731,6 @@
     ctx.strokeStyle = "#0f172a";
   }
 
-  function resizeGlobalCanvas(){
-    if(!globalCanvas) return;
-    const dpr = window.devicePixelRatio || 1;
-    globalCanvas.width = Math.floor(window.innerWidth * dpr);
-    globalCanvas.height = Math.floor(window.innerHeight * dpr);
-    const ctx = globalCanvas.getContext("2d");
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#0f172a";
-  }
-
-  if(globalCanvas){
-    resizeGlobalCanvas();
-    window.addEventListener("resize", resizeGlobalCanvas);
-    const ctx = globalCanvas.getContext("2d");
-    let drawing = false;
-    function posFromEvent(e){
-      const rect = globalCanvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: clientX - rect.left, y: clientY - rect.top };
-    }
-    function applyMode(){
-      const erasing = eraserMode;
-      ctx.globalCompositeOperation = erasing ? "destination-out" : "source-over";
-      ctx.lineWidth = erasing ? 10 : 2;
-    }
-    function isStylusEvent(e){
-      if(typeof e.pointerType === "string") return e.pointerType === "pen";
-      if(e.touches && e.touches[0] && typeof e.touches[0].touchType === "string"){
-        return e.touches[0].touchType === "stylus";
-      }
-      return false;
-    }
-    function start(e){
-      if(!globalDrawMode || !isStylusEvent(e)) return;
-      drawing = true;
-      applyMode();
-      const p = posFromEvent(e);
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      e.preventDefault();
-    }
-    function move(e){
-      if(!drawing || !isStylusEvent(e)) return;
-      const p = posFromEvent(e);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-      e.preventDefault();
-    }
-    function end(){
-      if(!drawing) return;
-      drawing = false;
-    }
-    globalCanvas.addEventListener("pointerdown", start);
-    globalCanvas.addEventListener("pointermove", move);
-    globalCanvas.addEventListener("pointerup", end);
-    globalCanvas.addEventListener("pointerleave", end);
-    globalCanvas.addEventListener("touchstart", start, { passive: false });
-    globalCanvas.addEventListener("touchmove", move, { passive: false });
-    globalCanvas.addEventListener("touchend", end);
-  }
 
   function initDrawCanvas(canvas, hidden){
     const ctx = canvas.getContext("2d");
