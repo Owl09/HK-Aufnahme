@@ -1929,7 +1929,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=5").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=6").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -2589,6 +2589,12 @@
     const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
+    const windowHr = ((document.getElementById("windowHr") || {}).value || "").trim();
+    const windowRoomDraw = (document.getElementById("windowRoomDraw") || {}).dataset ? (document.getElementById("windowRoomDraw").dataset.drawing || "") : "";
+    const windowVg = ((document.getElementById("windowVg") || {}).value || "").trim();
+    const windowMaterial = ((document.getElementById("windowMaterial") || {}).value || "").trim();
+    const windowSizeDraw = (document.getElementById("windowSizeDraw") || {}).dataset ? (document.getElementById("windowSizeDraw").dataset.drawing || "") : "";
+    const windowYearDraw = (document.getElementById("windowYearDraw") || {}).dataset ? (document.getElementById("windowYearDraw").dataset.drawing || "") : "";
     const windowHr = ((document.getElementById("windowHr") || {}).value || "").trim();
     const windowRoomDraw = (document.getElementById("windowRoomDraw") || {}).dataset ? (document.getElementById("windowRoomDraw").dataset.drawing || "") : "";
     const windowVg = ((document.getElementById("windowVg") || {}).value || "").trim();
