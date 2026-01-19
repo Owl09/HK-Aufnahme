@@ -43,6 +43,8 @@
         .matrix-table { width: 100%; border-collapse: collapse; }
         .matrix-table th, .matrix-table td { border: 1px solid #e5e7eb; padding: 8px; vertical-align: top; text-align: left; }
         .matrix-table th { background: #f8fafc; font-weight: 700; }
+        .matrix-table .col-wide { width: 40%; }
+        .matrix-table .col-narrow { width: 12%; }
         .draw-wrap { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
         .draw-canvas { width: 100%; height: 44px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; touch-action: none; }
         .draw-wrap { margin-top: 0; }
@@ -466,6 +468,70 @@
                                 <div class="draw-wrap">
                                     <input type="hidden" id="wallWestTotalDraw" name="wallWestTotalDraw">
                                     <canvas class="draw-canvas" data-draw-target="wallWestTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>Fenster</span></summary>
+            <div class="section-body">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>HR</th>
+                            <th class="col-narrow">Raum</th>
+                            <th>VG</th>
+                            <th>Stoff</th>
+                            <th class="col-wide">Ma&szlig;e</th>
+                            <th class="col-narrow">Bj.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select id="windowHr" name="windowHr">
+                                    <option value="" selected disabled>HR</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td class="col-narrow">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="windowRoomDraw" name="windowRoomDraw">
+                                    <canvas class="draw-canvas" data-draw-target="windowRoomDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <select id="windowVg" name="windowVg">
+                                    <option value="" selected disabled>VG</option>
+                                    <option>EV</option>
+                                    <option>DV</option>
+                                    <option>3F</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="windowMaterial" name="windowMaterial">
+                                    <option value="" selected disabled>Stoff</option>
+                                    <option>KU</option>
+                                    <option>HO</option>
+                                    <option>ME</option>
+                                </select>
+                            </td>
+                            <td class="col-wide">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="windowSizeDraw" name="windowSizeDraw">
+                                    <canvas class="draw-canvas" data-draw-target="windowSizeDraw"></canvas>
+                                </div>
+                            </td>
+                            <td class="col-narrow">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="windowYearDraw" name="windowYearDraw">
+                                    <canvas class="draw-canvas" data-draw-target="windowYearDraw"></canvas>
                                 </div>
                             </td>
                         </tr>
@@ -2523,6 +2589,12 @@
     const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
+    const windowHr = ((document.getElementById("windowHr") || {}).value || "").trim();
+    const windowRoomDraw = (document.getElementById("windowRoomDraw") || {}).dataset ? (document.getElementById("windowRoomDraw").dataset.drawing || "") : "";
+    const windowVg = ((document.getElementById("windowVg") || {}).value || "").trim();
+    const windowMaterial = ((document.getElementById("windowMaterial") || {}).value || "").trim();
+    const windowSizeDraw = (document.getElementById("windowSizeDraw") || {}).dataset ? (document.getElementById("windowSizeDraw").dataset.drawing || "") : "";
+    const windowYearDraw = (document.getElementById("windowYearDraw") || {}).dataset ? (document.getElementById("windowYearDraw").dataset.drawing || "") : "";
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -2595,6 +2667,12 @@
       wallWestL4Draw,
       wallWestL5Draw,
       wallWestTotalDraw,
+      windowHr,
+      windowRoomDraw,
+      windowVg,
+      windowMaterial,
+      windowSizeDraw,
+      windowYearDraw,
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
@@ -2793,6 +2871,12 @@
       wallWestL4Draw,
       wallWestL5Draw,
       wallWestTotalDraw,
+      windowHr,
+      windowRoomDraw,
+      windowVg,
+      windowMaterial,
+      windowSizeDraw,
+      windowYearDraw,
       systemManufacturer,
       systemManufacturerDraw,
       systemTypeDraw,
@@ -2892,7 +2976,8 @@
       system.floorHeightBasementDraw || system.floorHeightGroundDraw ||
       system.floorHeight1OgDraw || system.floorHeight2OgDraw ||
       system.floorHeight3OgDraw || system.floorHeightDgDraw ||
-      system.structureMassive || system.structureWooden || system.basementHeated
+      system.structureMassive || system.structureWooden || system.basementHeated ||
+      system.notesDraw
     );
     if(hasStructure){
       const rows = [];
@@ -2918,6 +3003,7 @@
       addFlag("Massiv", system.structureMassive);
       addFlag("Holzbalken", system.structureWooden);
       addRowValue("Keller beheizt", system.basementHeated);
+      addRowDraw("Notizen", system.notesDraw);
       if(rows.length){
         sections.push([
           '<section class="room">',
@@ -2932,21 +3018,6 @@
           '</tbody></table></section>'
         ].join(""));
       }
-    }
-    const hasNotes = !!system.notesDraw;
-    if(hasNotes){
-      sections.push([
-        '<section class="room">',
-        '<div class="room-head">',
-        '<div><div class="room-title">Notizen</div><div class="room-sub">Freitext</div></div>',
-        '<div class="badge">Notiz</div>',
-        '</div>',
-        '<table class="hk-table">',
-        '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
-        '<tbody>',
-        '<tr><td>Notizen</td><td>' + renderCell("", system.notesDraw) + '</td></tr>',
-        '</tbody></table></section>'
-      ].join(""));
     }
     const hasWalls = !!(
       system.wallNorthL1Draw || system.wallNorthL2Draw || system.wallNorthL3Draw ||
@@ -3006,6 +3077,31 @@
           system.wallWestL5Draw,
           system.wallWestTotalDraw
         ]),
+        '</tbody></table></section>'
+      ].join(""));
+    }
+    const hasWindows = !!(
+      system.windowHr || system.windowRoomDraw || system.windowVg ||
+      system.windowMaterial || system.windowSizeDraw || system.windowYearDraw
+    );
+    if(hasWindows){
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Fenster</div><div class="room-sub">Himmelsrichtung / Material</div></div>',
+        '<div class="badge">Fenster</div>',
+        '</div>',
+        '<table class="hk-table">',
+        '<thead><tr><th>HR</th><th>Raum</th><th>VG</th><th>Stoff</th><th>Ma\u00dfe</th><th>Bj.</th></tr></thead>',
+        '<tbody>',
+        '<tr>',
+        '<td>' + renderCell(system.windowHr, "") + '</td>',
+        '<td>' + renderCell("", system.windowRoomDraw) + '</td>',
+        '<td>' + renderCell(system.windowVg, "") + '</td>',
+        '<td>' + renderCell(system.windowMaterial, "") + '</td>',
+        '<td>' + renderCell("", system.windowSizeDraw) + '</td>',
+        '<td>' + renderCell("", system.windowYearDraw) + '</td>',
+        '</tr>',
         '</tbody></table></section>'
       ].join(""));
     }
@@ -3201,6 +3297,9 @@
         !data.system.wallWestL1Draw && !data.system.wallWestL2Draw &&
         !data.system.wallWestL3Draw && !data.system.wallWestL4Draw &&
         !data.system.wallWestL5Draw && !data.system.wallWestTotalDraw &&
+        !data.system.windowHr && !data.system.windowRoomDraw &&
+        !data.system.windowVg && !data.system.windowMaterial &&
+        !data.system.windowSizeDraw && !data.system.windowYearDraw &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
         !data.system.systemTypeDraw &&
