@@ -61,8 +61,8 @@
         .hk-toggle summary::after { content: "+"; font-size: 16px; }
         .hk-toggle[open] summary::after { content: "-"; }
         .hk-toggle .hk-card { margin-top: 10px; }
-        .add-hk-btn, .add-room-btn, .export-btn, .reset-btn, .eraser-btn, .share-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
-        .add-hk-btn:active, .add-room-btn:active, .export-btn:active, .reset-btn:active, .eraser-btn:active, .share-btn:active { transform: translateY(1px); }
+        .add-hk-btn, .add-room-btn, .add-window-btn, .export-btn, .reset-btn, .eraser-btn, .share-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
+        .add-hk-btn:active, .add-room-btn:active, .add-window-btn:active, .export-btn:active, .reset-btn:active, .eraser-btn:active, .share-btn:active { transform: translateY(1px); }
         .add-room-btn { margin-top: 16px; }
         .export-btn { border-color: #2563eb; color: #1d4ed8; background: #eef2ff; }
         .eraser-btn { border-color: #f59e0b; color: #92400e; background: #fef3c7; }
@@ -478,7 +478,7 @@
         <details class="system-card" open>
             <summary><span>Fenster</span></summary>
             <div class="section-body">
-                <table class="matrix-table">
+                <table class="matrix-table window-table">
                     <thead>
                         <tr>
                             <th>HR</th>
@@ -490,9 +490,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr class="window-row" data-window-index="1">
                             <td>
-                                <select id="windowHr" name="windowHr">
+                                <select id="windowHr1" name="windowHr1" data-window-field="windowHr">
                                     <option value="" selected disabled>HR</option>
                                     <option>N</option>
                                     <option>O</option>
@@ -502,12 +502,12 @@
                             </td>
                             <td class="col-narrow">
                                 <div class="draw-wrap">
-                                    <input type="hidden" id="windowRoomDraw" name="windowRoomDraw">
-                                    <canvas class="draw-canvas" data-draw-target="windowRoomDraw"></canvas>
+                                    <input type="hidden" id="windowRoomDraw1" name="windowRoomDraw1" data-window-field="windowRoomDraw">
+                                    <canvas class="draw-canvas" data-draw-target="windowRoomDraw1"></canvas>
                                 </div>
                             </td>
                             <td>
-                                <select id="windowVg" name="windowVg">
+                                <select id="windowVg1" name="windowVg1" data-window-field="windowVg">
                                     <option value="" selected disabled>VG</option>
                                     <option>EV</option>
                                     <option>DV</option>
@@ -515,7 +515,7 @@
                                 </select>
                             </td>
                             <td>
-                                <select id="windowMaterial" name="windowMaterial">
+                                <select id="windowMaterial1" name="windowMaterial1" data-window-field="windowMaterial">
                                     <option value="" selected disabled>Stoff</option>
                                     <option>KU</option>
                                     <option>HO</option>
@@ -524,19 +524,20 @@
                             </td>
                             <td class="col-wide">
                                 <div class="draw-wrap">
-                                    <input type="hidden" id="windowSizeDraw" name="windowSizeDraw">
-                                    <canvas class="draw-canvas" data-draw-target="windowSizeDraw"></canvas>
+                                    <input type="hidden" id="windowSizeDraw1" name="windowSizeDraw1" data-window-field="windowSizeDraw">
+                                    <canvas class="draw-canvas" data-draw-target="windowSizeDraw1"></canvas>
                                 </div>
                             </td>
                             <td class="col-narrow">
                                 <div class="draw-wrap">
-                                    <input type="hidden" id="windowYearDraw" name="windowYearDraw">
-                                    <canvas class="draw-canvas" data-draw-target="windowYearDraw"></canvas>
+                                    <input type="hidden" id="windowYearDraw1" name="windowYearDraw1" data-window-field="windowYearDraw">
+                                    <canvas class="draw-canvas" data-draw-target="windowYearDraw1"></canvas>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <button type="button" class="add-window-btn">+ Fenster hinzuf&uuml;gen</button>
             </div>
         </details>
         <details class="system-card" open>
@@ -2323,6 +2324,7 @@
     document.querySelectorAll(".room-card").forEach((card, idx) => {
       hkCounts[String(idx + 1)] = card.querySelectorAll(".hk-card").length;
     });
+    const windowCount = document.querySelectorAll(".window-row").length;
     const values = {};
     document.querySelectorAll("input, select, textarea").forEach(el => {
       if(!el.name) return;
@@ -2340,7 +2342,7 @@
       }
       values[el.name] = { type: el.type, value: el.value };
     });
-    return { roomCount, hkCounts, values };
+    return { roomCount, hkCounts, windowCount, values };
   }
 
   function scheduleSave(){
@@ -2389,6 +2391,15 @@
     if(addRoomBtnLocal && state.roomCount && state.roomCount > currentRooms){
       for(let i = currentRooms; i < state.roomCount; i++){
         addRoomBtnLocal.click();
+      }
+    }
+    const addWindowBtnLocal = document.querySelector(".add-window-btn");
+    if(addWindowBtnLocal && state.windowCount){
+      const currentWindows = document.querySelectorAll(".window-row").length;
+      if(state.windowCount > currentWindows){
+        for(let i = currentWindows; i < state.windowCount; i++){
+          addWindowBtnLocal.click();
+        }
       }
     }
     document.querySelectorAll(".room-card").forEach((card, idx) => {
@@ -2528,6 +2539,52 @@
     });
   }
 
+  function resetWindowRow(row, index){
+    row.dataset.windowIndex = String(index);
+    row.querySelectorAll("[data-window-field]").forEach(el => {
+      const base = el.getAttribute("data-window-field");
+      if(!base) return;
+      const nextId = base + index;
+      el.id = nextId;
+      el.name = nextId;
+      if(el.tagName.toLowerCase() === "input" && el.type === "hidden"){
+        el.dataset.drawing = "";
+      }
+      if(el.tagName.toLowerCase() === "select"){
+        el.value = "";
+      }
+    });
+    row.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+      const wrap = canvas.closest(".draw-wrap");
+      const hidden = wrap ? wrap.querySelector("input[type=\"hidden\"][data-window-field]") : null;
+      if(hidden){
+        canvas.setAttribute("data-draw-target", hidden.id);
+        const ctx = canvas.getContext("2d");
+        if(ctx){
+          resizeDrawCanvas(canvas, ctx);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        initDrawCanvas(canvas, hidden);
+      }
+    });
+  }
+
+  const addWindowBtn = document.querySelector(".add-window-btn");
+  if(addWindowBtn){
+    addWindowBtn.addEventListener("click", () => {
+      const tbody = document.querySelector(".window-table tbody");
+      if(!tbody) return;
+      const rows = tbody.querySelectorAll(".window-row");
+      const nextIndex = rows.length + 1;
+      const template = rows[0];
+      if(!template) return;
+      const clone = template.cloneNode(true);
+      resetWindowRow(clone, nextIndex);
+      tbody.appendChild(clone);
+      scheduleSave();
+    });
+  }
+
   function pickField(selectEl, customEl){
     const selectVal = selectEl && selectEl.value ? selectEl.value : "";
     if(selectVal) return { value: selectVal, draw: "" };
@@ -2589,12 +2646,22 @@
     const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
-    const windowHr = ((document.getElementById("windowHr") || {}).value || "").trim();
-    const windowRoomDraw = (document.getElementById("windowRoomDraw") || {}).dataset ? (document.getElementById("windowRoomDraw").dataset.drawing || "") : "";
-    const windowVg = ((document.getElementById("windowVg") || {}).value || "").trim();
-    const windowMaterial = ((document.getElementById("windowMaterial") || {}).value || "").trim();
-    const windowSizeDraw = (document.getElementById("windowSizeDraw") || {}).dataset ? (document.getElementById("windowSizeDraw").dataset.drawing || "") : "";
-    const windowYearDraw = (document.getElementById("windowYearDraw") || {}).dataset ? (document.getElementById("windowYearDraw").dataset.drawing || "") : "";
+    const windows = [];
+    document.querySelectorAll(".window-row").forEach(row => {
+      const hr = (row.querySelector('select[data-window-field="windowHr"]') || {}).value || "";
+      const vg = (row.querySelector('select[data-window-field="windowVg"]') || {}).value || "";
+      const material = (row.querySelector('select[data-window-field="windowMaterial"]') || {}).value || "";
+      const roomDrawEl = row.querySelector('input[type="hidden"][data-window-field="windowRoomDraw"]');
+      const sizeDrawEl = row.querySelector('input[type="hidden"][data-window-field="windowSizeDraw"]');
+      const yearDrawEl = row.querySelector('input[type="hidden"][data-window-field="windowYearDraw"]');
+      const roomDraw = roomDrawEl && roomDrawEl.dataset ? (roomDrawEl.dataset.drawing || "") : "";
+      const sizeDraw = sizeDrawEl && sizeDrawEl.dataset ? (sizeDrawEl.dataset.drawing || "") : "";
+      const yearDraw = yearDrawEl && yearDrawEl.dataset ? (yearDrawEl.dataset.drawing || "") : "";
+      const hasAny = !!(hr || vg || material || roomDraw || sizeDraw || yearDraw);
+      if(hasAny){
+        windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
+      }
+    });
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -2667,12 +2734,7 @@
       wallWestL4Draw,
       wallWestL5Draw,
       wallWestTotalDraw,
-      windowHr,
-      windowRoomDraw,
-      windowVg,
-      windowMaterial,
-      windowSizeDraw,
-      windowYearDraw,
+      windows,
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
@@ -2871,12 +2933,7 @@
       wallWestL4Draw,
       wallWestL5Draw,
       wallWestTotalDraw,
-      windowHr: data.system.windowHr || "",
-      windowRoomDraw: data.system.windowRoomDraw || "",
-      windowVg: data.system.windowVg || "",
-      windowMaterial: data.system.windowMaterial || "",
-      windowSizeDraw: data.system.windowSizeDraw || "",
-      windowYearDraw: data.system.windowYearDraw || "",
+      windows: Array.isArray(data.system.windows) ? data.system.windows : [],
       systemManufacturer,
       systemManufacturerDraw,
       systemTypeDraw,
@@ -3080,11 +3137,18 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const hasWindows = !!(
-      system.windowHr || system.windowRoomDraw || system.windowVg ||
-      system.windowMaterial || system.windowSizeDraw || system.windowYearDraw
-    );
-    if(hasWindows){
+    const windows = Array.isArray(system.windows) ? system.windows : [];
+    if(windows.length){
+      const windowRows = windows.map(entry => [
+        '<tr>',
+        '<td>' + renderCell(entry.hr || "", "") + '</td>',
+        '<td>' + renderCell("", entry.roomDraw || "") + '</td>',
+        '<td>' + renderCell(entry.vg || "", "") + '</td>',
+        '<td>' + renderCell(entry.material || "", "") + '</td>',
+        '<td>' + renderCell("", entry.sizeDraw || "") + '</td>',
+        '<td>' + renderCell("", entry.yearDraw || "") + '</td>',
+        '</tr>'
+      ].join("")).join("");
       sections.push([
         '<section class="room">',
         '<div class="room-head">',
@@ -3094,14 +3158,7 @@
         '<table class="hk-table">',
         '<thead><tr><th>HR</th><th>Raum</th><th>VG</th><th>Stoff</th><th>Ma\u00dfe</th><th>Bj.</th></tr></thead>',
         '<tbody>',
-        '<tr>',
-        '<td>' + renderCell(system.windowHr, "") + '</td>',
-        '<td>' + renderCell("", system.windowRoomDraw) + '</td>',
-        '<td>' + renderCell(system.windowVg, "") + '</td>',
-        '<td>' + renderCell(system.windowMaterial, "") + '</td>',
-        '<td>' + renderCell("", system.windowSizeDraw) + '</td>',
-        '<td>' + renderCell("", system.windowYearDraw) + '</td>',
-        '</tr>',
+        windowRows,
         '</tbody></table></section>'
       ].join(""));
     }
@@ -3297,9 +3354,7 @@
         !data.system.wallWestL1Draw && !data.system.wallWestL2Draw &&
         !data.system.wallWestL3Draw && !data.system.wallWestL4Draw &&
         !data.system.wallWestL5Draw && !data.system.wallWestTotalDraw &&
-        !data.system.windowHr && !data.system.windowRoomDraw &&
-        !data.system.windowVg && !data.system.windowMaterial &&
-        !data.system.windowSizeDraw && !data.system.windowYearDraw &&
+        !(data.system.windows && data.system.windows.length) &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
         !data.system.systemTypeDraw &&
