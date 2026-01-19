@@ -2539,7 +2539,7 @@
     });
   }
 
-  function resetWindowRow(row, index){
+  function resetWindowRow(row, index, sourceRow){
     row.dataset.windowIndex = String(index);
     row.querySelectorAll("[data-window-field]").forEach(el => {
       const base = el.getAttribute("data-window-field");
@@ -2551,7 +2551,10 @@
         el.dataset.drawing = "";
       }
       if(el.tagName.toLowerCase() === "select"){
-        el.value = "";
+        const sourceSelect = sourceRow
+          ? sourceRow.querySelector('select[data-window-field="' + base + '"]')
+          : null;
+        el.value = sourceSelect ? sourceSelect.value : "";
       }
     });
     row.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
@@ -2578,9 +2581,10 @@
       const nextIndex = rows.length + 1;
       const template = rows[0];
       if(!template) return;
+      const lastRow = rows[rows.length - 1];
       const clone = template.cloneNode(true);
-      resetWindowRow(clone, nextIndex);
       tbody.appendChild(clone);
+      resetWindowRow(clone, nextIndex, lastRow);
       scheduleSave();
     });
   }
