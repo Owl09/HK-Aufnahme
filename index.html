@@ -1710,9 +1710,24 @@
   updateLabels();
 
   function isStylusEvent(e){
-    if(typeof e.pointerType === "string") return e.pointerType === "pen";
-    if(e.touches && e.touches[0] && typeof e.touches[0].touchType === "string"){
-      return e.touches[0].touchType === "stylus";
+    if(typeof e.pointerType === "string"){
+      if(e.pointerType === "pen") return true;
+      if(e.pointerType === "touch"){
+        if((typeof e.tiltX === "number" && e.tiltX !== 0) || (typeof e.tiltY === "number" && e.tiltY !== 0)){
+          return true;
+        }
+        const w = typeof e.width === "number" ? e.width : 0;
+        const h = typeof e.height === "number" ? e.height : 0;
+        if(w && h && Math.max(w, h) <= 10) return true;
+        return false;
+      }
+      return false;
+    }
+    if(e.touches && e.touches[0]){
+      const touch = e.touches[0];
+      if(typeof touch.touchType === "string") return touch.touchType === "stylus";
+      const r = Math.max(touch.radiusX || 0, touch.radiusY || 0);
+      if(r && r <= 10) return true;
     }
     return false;
   }
