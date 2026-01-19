@@ -1709,17 +1709,33 @@
   attachBauformListeners(document);
   updateLabels();
 
+  function isLikelyStylusPointer(e){
+    if(typeof e.pointerType !== "string") return false;
+    if(e.pointerType === "pen") return true;
+    if(e.pointerType !== "touch") return false;
+    const w = typeof e.width === "number" ? e.width : 0;
+    const h = typeof e.height === "number" ? e.height : 0;
+    const pressure = typeof e.pressure === "number" ? e.pressure : 0;
+    const tilt = (typeof e.tiltX === "number" ? Math.abs(e.tiltX) : 0) +
+      (typeof e.tiltY === "number" ? Math.abs(e.tiltY) : 0);
+    if(tilt > 0) return true;
+    if(w && h && Math.max(w, h) <= 10 && pressure >= 0.2) return true;
+    return false;
+  }
+
+  function isLikelyStylusTouch(e){
+    if(!e.touches || !e.touches[0]) return false;
+    const touch = e.touches[0];
+    if(typeof touch.touchType === "string") return touch.touchType === "stylus";
+    const radius = Math.max(touch.radiusX || 0, touch.radiusY || 0);
+    const force = typeof touch.force === "number" ? touch.force : 0;
+    if(radius && radius <= 8 && force >= 0.2) return true;
+    return false;
+  }
+
   function isStylusEvent(e){
-    if(typeof e.pointerType === "string"){
-      if(e.pointerType === "pen") return true;
-      if(e.pointerType === "touch") return true;
-      return false;
-    }
-    if(e.touches && e.touches[0]){
-      const touch = e.touches[0];
-      if(typeof touch.touchType === "string") return touch.touchType === "stylus";
-      return true;
-    }
+    if(isLikelyStylusPointer(e)) return true;
+    if(isLikelyStylusTouch(e)) return true;
     return false;
   }
 
