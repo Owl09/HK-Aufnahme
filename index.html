@@ -3148,16 +3148,24 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const windows = collectWindowsFromDom();
+    const normalizeText = value => {
+      if(value && typeof value === "object" && "value" in value) return String(value.value || "");
+      return value ? String(value) : "";
+    };
+    const normalizeDraw = value => {
+      if(value && typeof value === "object" && value.dataset && value.dataset.drawing) return value.dataset.drawing || "";
+      return value ? String(value) : "";
+    };
+    const windows = Array.isArray(data.system.windows) ? data.system.windows : [];
     if(windows.length){
       const windowRows = windows.map(entry => [
         '<tr>',
-        '<td>' + renderCell(entry.hr || "", "") + '</td>',
-        '<td>' + renderCell("", entry.roomDraw || "") + '</td>',
-        '<td>' + renderCell(entry.vg || "", "") + '</td>',
-        '<td>' + renderCell(entry.material || "", "") + '</td>',
-        '<td>' + renderCell("", entry.sizeDraw || "") + '</td>',
-        '<td>' + renderCell("", entry.yearDraw || "") + '</td>',
+        '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
+        '<td>' + renderCell(normalizeText(entry.vg), "") + '</td>',
+        '<td>' + renderCell(normalizeText(entry.material), "") + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.sizeDraw)) + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.yearDraw)) + '</td>',
         '</tr>'
       ].join("")).join("");
       sections.push([
