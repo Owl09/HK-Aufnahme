@@ -1932,7 +1932,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=8").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=9").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -2302,7 +2302,6 @@
     });
   }
   surfaceHeatingRadios.forEach(r => r.addEventListener("change", toggleSurfaceHeating));
-  toggleSurfaceHeating();
   const buildingDataRadios = document.querySelectorAll('input[name="buildingData"]');
   const buildingDataDetails = document.getElementById("buildingDataDetails");
   function toggleBuildingData(){
@@ -2317,8 +2316,6 @@
     }
   }
   buildingDataRadios.forEach(r => r.addEventListener("change", toggleBuildingData));
-  restoreFormState();
-  toggleBuildingData();
 
   function collectFormState(){
     const roomCount = document.querySelectorAll(".room-card").length;
@@ -2591,6 +2588,10 @@
     });
   }
 
+  restoreFormState();
+  toggleSurfaceHeating();
+  toggleBuildingData();
+
   function pickField(selectEl, customEl){
     const selectVal = selectEl && selectEl.value ? selectEl.value : "";
     if(selectVal) return { value: selectVal, draw: "" };
@@ -2802,26 +2803,9 @@
 
   function collectWindowsFromDom(){
     const windows = [];
-    const hasInk = canvas => {
-      if(!canvas) return false;
-      const ctx = canvas.getContext("2d");
-      if(!ctx) return false;
-      const width = canvas.width || 0;
-      const height = canvas.height || 0;
-      if(!width || !height) return false;
-      const data = ctx.getImageData(0, 0, width, height).data;
-      for(let i = 3; i < data.length; i += 4){
-        if(data[i] !== 0) return true;
-      }
-      return false;
-    };
     const readDraw = (row, field) => {
       const hidden = row.querySelector('input[type="hidden"][data-window-field="' + field + '"]');
-      const stored = hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
-      if(stored) return stored;
-      const canvas = row.querySelector('canvas[data-draw-target="' + (hidden ? hidden.id : "") + '"]');
-      if(canvas && hasInk(canvas)) return canvas.toDataURL("image/png");
-      return "";
+      return hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
     };
     document.querySelectorAll(".window-row").forEach(row => {
       const hr = (row.querySelector('select[data-window-field="windowHr"]') || {}).value || "";
@@ -2830,12 +2814,16 @@
       const roomDraw = readDraw(row, "windowRoomDraw");
       const sizeDraw = readDraw(row, "windowSizeDraw");
       const yearDraw = readDraw(row, "windowYearDraw");
-      const hasAny = !!(hr || vg || material || roomDraw || sizeDraw || yearDraw);
-      if(hasAny){
-        windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
-      }
+      windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
     });
     return windows;
+  }
+
+  function hasWindowData(windows){
+    if(!Array.isArray(windows)) return false;
+    return windows.some(entry => entry && (
+      entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
+    ));
   }
 
   function renderCell(value, draw){
@@ -2847,6 +2835,10 @@
     const now = new Date().toLocaleString();
     const container = document.getElementById("printView");
     if(!container) return;
+    const domWindows = collectWindowsFromDom();
+    if(domWindows.length){
+      data.system.windows = domWindows;
+    }
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
@@ -3174,7 +3166,11 @@
       if(value && typeof value === "object" && value.dataset && value.dataset.drawing) return value.dataset.drawing || "";
       return value ? String(value) : "";
     };
-    const windows = Array.isArray(data.system.windows) ? data.system.windows : [];
+    const windows = Array.isArray(data.system.windows)
+      ? data.system.windows.filter(entry => entry && (
+        entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
+      ))
+      : [];
     if(windows.length){
       const windowRows = windows.map(entry => [
         '<tr>',
@@ -3392,7 +3388,7 @@
         !data.system.wallWestL1Draw && !data.system.wallWestL2Draw &&
         !data.system.wallWestL3Draw && !data.system.wallWestL4Draw &&
         !data.system.wallWestL5Draw && !data.system.wallWestTotalDraw &&
-        !(data.system.windows && data.system.windows.length) &&
+        !hasWindowData(data.system.windows) &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
         !data.system.systemTypeDraw &&
