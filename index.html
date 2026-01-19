@@ -2802,16 +2802,34 @@
 
   function collectWindowsFromDom(){
     const windows = [];
+    const hasInk = canvas => {
+      if(!canvas) return false;
+      const ctx = canvas.getContext("2d");
+      if(!ctx) return false;
+      const width = canvas.width || 0;
+      const height = canvas.height || 0;
+      if(!width || !height) return false;
+      const data = ctx.getImageData(0, 0, width, height).data;
+      for(let i = 3; i < data.length; i += 4){
+        if(data[i] !== 0) return true;
+      }
+      return false;
+    };
+    const readDraw = (row, field) => {
+      const hidden = row.querySelector('input[type="hidden"][data-window-field="' + field + '"]');
+      const stored = hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
+      if(stored) return stored;
+      const canvas = row.querySelector('canvas[data-draw-target="' + (hidden ? hidden.id : "") + '"]');
+      if(canvas && hasInk(canvas)) return canvas.toDataURL("image/png");
+      return "";
+    };
     document.querySelectorAll(".window-row").forEach(row => {
       const hr = (row.querySelector('select[data-window-field="windowHr"]') || {}).value || "";
       const vg = (row.querySelector('select[data-window-field="windowVg"]') || {}).value || "";
       const material = (row.querySelector('select[data-window-field="windowMaterial"]') || {}).value || "";
-      const roomDrawEl = row.querySelector('input[type="hidden"][data-window-field="windowRoomDraw"]');
-      const sizeDrawEl = row.querySelector('input[type="hidden"][data-window-field="windowSizeDraw"]');
-      const yearDrawEl = row.querySelector('input[type="hidden"][data-window-field="windowYearDraw"]');
-      const roomDraw = roomDrawEl && roomDrawEl.dataset ? (roomDrawEl.dataset.drawing || "") : "";
-      const sizeDraw = sizeDrawEl && sizeDrawEl.dataset ? (sizeDrawEl.dataset.drawing || "") : "";
-      const yearDraw = yearDrawEl && yearDrawEl.dataset ? (yearDrawEl.dataset.drawing || "") : "";
+      const roomDraw = readDraw(row, "windowRoomDraw");
+      const sizeDraw = readDraw(row, "windowSizeDraw");
+      const yearDraw = readDraw(row, "windowYearDraw");
       const hasAny = !!(hr || vg || material || roomDraw || sizeDraw || yearDraw);
       if(hasAny){
         windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
