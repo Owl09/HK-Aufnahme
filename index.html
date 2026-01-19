@@ -1718,6 +1718,7 @@
         }
         const w = typeof e.width === "number" ? e.width : 0;
         const h = typeof e.height === "number" ? e.height : 0;
+        if(w === 0 && h === 0) return true;
         if(w && h && Math.max(w, h) <= 10) return true;
         return false;
       }
@@ -1727,6 +1728,7 @@
       const touch = e.touches[0];
       if(typeof touch.touchType === "string") return touch.touchType === "stylus";
       const r = Math.max(touch.radiusX || 0, touch.radiusY || 0);
+      if(r === 0) return true;
       if(r && r <= 10) return true;
     }
     return false;
