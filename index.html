@@ -3148,9 +3148,7 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const windows = Array.isArray(system.windows) && system.windows.length
-      ? system.windows
-      : collectWindowsFromDom();
+    const windows = collectWindowsFromDom();
     if(windows.length){
       const windowRows = windows.map(entry => [
         '<tr>',
