@@ -2256,6 +2256,12 @@
     const distributorDnValue = (distributorDnInput && distributorDnInput.value ? distributorDnInput.value : "").trim();
     const distributorDnDraw = distributorDnInput && distributorDnInput.dataset.drawing ? distributorDnInput.dataset.drawing : "";
     const layingSpacingValue = ((document.getElementById("layingSpacing") || {}).value || "").trim();
+    const addressNameDraw = (document.getElementById("addressNameDraw") || {}).dataset ? (document.getElementById("addressNameDraw").dataset.drawing || "") : "";
+    const addressStreetDraw = (document.getElementById("addressStreetDraw") || {}).dataset ? (document.getElementById("addressStreetDraw").dataset.drawing || "") : "";
+    const addressNumberDraw = (document.getElementById("addressNumberDraw") || {}).dataset ? (document.getElementById("addressNumberDraw").dataset.drawing || "") : "";
+    const addressCityDraw = (document.getElementById("addressCityDraw") || {}).dataset ? (document.getElementById("addressCityDraw").dataset.drawing || "") : "";
+    const addressPhoneDraw = (document.getElementById("addressPhoneDraw") || {}).dataset ? (document.getElementById("addressPhoneDraw").dataset.drawing || "") : "";
+    const addressEmailDraw = (document.getElementById("addressEmailDraw") || {}).dataset ? (document.getElementById("addressEmailDraw").dataset.drawing || "") : "";
     const systemManufacturer = ((document.getElementById("systemManufacturer") || {}).value || "").trim();
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
