@@ -38,7 +38,11 @@
         .inline-options { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
         .inline-options label { display: flex; align-items: center; gap: 6px; font-weight: 600; }
         .inline-options input { width: auto; }
+        .inline-right { margin-left: auto; display: inline-flex; gap: 16px; align-items: center; }
         .check-grid { display: grid; grid-template-columns: repeat(2, minmax(160px, 1fr)); gap: 8px 16px; }
+        .matrix-table { width: 100%; border-collapse: collapse; }
+        .matrix-table th, .matrix-table td { border: 1px solid #e5e7eb; padding: 8px; vertical-align: top; text-align: left; }
+        .matrix-table th { background: #f8fafc; font-weight: 700; }
         .draw-wrap { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
         .draw-canvas { width: 100%; height: 44px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; touch-action: none; }
         .draw-wrap { margin-top: 0; }
@@ -106,17 +110,10 @@
                     </div>
                 </div>
                 <div class="field-row single">
-                    <label for="addressStreetDraw">Stra&szlig;e</label>
+                    <label for="addressStreetDraw">Stra&szlig;e, Nr.</label>
                     <div class="draw-wrap">
                         <input type="hidden" id="addressStreetDraw" name="addressStreetDraw">
                         <canvas class="draw-canvas" data-draw-target="addressStreetDraw"></canvas>
-                    </div>
-                </div>
-                <div class="field-row single">
-                    <label for="addressNumberDraw">Nr.</label>
-                    <div class="draw-wrap">
-                        <input type="hidden" id="addressNumberDraw" name="addressNumberDraw">
-                        <canvas class="draw-canvas" data-draw-target="addressNumberDraw"></canvas>
                     </div>
                 </div>
                 <div class="field-row single">
@@ -140,6 +137,340 @@
                         <canvas class="draw-canvas" data-draw-target="addressEmailDraw"></canvas>
                     </div>
                 </div>
+                <div class="system-row">
+                    <label>Geb&auml;udedaten wie oben?</label>
+                    <div class="inline-options">
+                        <label><input type="radio" name="buildingData" value="Ja">Ja</label>
+                        <label><input type="radio" name="buildingData" value="Nein">Nein</label>
+                    </div>
+                </div>
+                <div class="system-row hidden" id="buildingDataDetails">
+                    <div class="field-row single">
+                        <label for="buildingStreetDraw">Stra&szlig;e, Nr.</label>
+                        <div class="draw-wrap">
+                            <input type="hidden" id="buildingStreetDraw" name="buildingStreetDraw">
+                            <canvas class="draw-canvas" data-draw-target="buildingStreetDraw"></canvas>
+                        </div>
+                    </div>
+                    <div class="field-row single">
+                        <label for="buildingCityDraw">PLZ/Ort</label>
+                        <div class="draw-wrap">
+                            <input type="hidden" id="buildingCityDraw" name="buildingCityDraw">
+                            <canvas class="draw-canvas" data-draw-target="buildingCityDraw"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>Geb&auml;udetyp</span></summary>
+            <div class="section-body">
+                <div class="field-row dual">
+                    <label for="buildingYearDraw">Baujahr</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="buildingYearDraw" name="buildingYearDraw">
+                        <canvas class="draw-canvas" data-draw-target="buildingYearDraw"></canvas>
+                    </div>
+                    <label for="buildingUnits">Wohneinheiten</label>
+                    <select id="buildingUnits" name="buildingUnits">
+                        <option value="" selected disabled>Anzahl w&auml;hlen &hellip;</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                        <option>24</option>
+                        <option>25</option>
+                        <option>26</option>
+                        <option>27</option>
+                        <option>28</option>
+                        <option>29</option>
+                        <option>30</option>
+                        <option>31</option>
+                        <option>32</option>
+                        <option>33</option>
+                        <option>34</option>
+                        <option>35</option>
+                        <option>36</option>
+                        <option>37</option>
+                        <option>38</option>
+                        <option>39</option>
+                        <option>40</option>
+                        <option>41</option>
+                        <option>42</option>
+                        <option>43</option>
+                        <option>44</option>
+                        <option>45</option>
+                        <option>46</option>
+                        <option>47</option>
+                        <option>48</option>
+                        <option>49</option>
+                        <option>50</option>
+                    </select>
+                </div>
+                <div class="field-row single">
+                    <label>Geb&auml;udetyp</label>
+                    <div class="check-grid">
+                        <label><input type="checkbox" name="buildingTypeDetached">Freistehend</label>
+                        <label><input type="checkbox" name="buildingTypeMultiFamily">Mehrfamilienhaus</label>
+                        <label><input type="checkbox" name="buildingTypeEndTerrace">Reihenendhaus</label>
+                        <label><input type="checkbox" name="buildingTypeMidTerrace">Reihenmittelhaus</label>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>Geschossh&ouml;he, Kellerdecke/Bodenplatte, Au&szlig;enw&auml;nde</span></summary>
+            <div class="section-body">
+                <div class="field-row dual">
+                    <label for="floorHeightBasementDraw">Keller</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="floorHeightBasementDraw" name="floorHeightBasementDraw">
+                        <canvas class="draw-canvas" data-draw-target="floorHeightBasementDraw"></canvas>
+                    </div>
+                    <label for="floorHeightGroundDraw">Erdgeschoss</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="floorHeightGroundDraw" name="floorHeightGroundDraw">
+                        <canvas class="draw-canvas" data-draw-target="floorHeightGroundDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row dual">
+                    <label for="floorHeight1OgDraw">1.OG</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="floorHeight1OgDraw" name="floorHeight1OgDraw">
+                        <canvas class="draw-canvas" data-draw-target="floorHeight1OgDraw"></canvas>
+                    </div>
+                    <label for="floorHeight2OgDraw">2.OG</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="floorHeight2OgDraw" name="floorHeight2OgDraw">
+                        <canvas class="draw-canvas" data-draw-target="floorHeight2OgDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row dual">
+                    <label for="floorHeight3OgDraw">3.OG</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="floorHeight3OgDraw" name="floorHeight3OgDraw">
+                        <canvas class="draw-canvas" data-draw-target="floorHeight3OgDraw"></canvas>
+                    </div>
+                    <label for="floorHeightDgDraw">DG</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="floorHeightDgDraw" name="floorHeightDgDraw">
+                        <canvas class="draw-canvas" data-draw-target="floorHeightDgDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label>Art/Aufbau/Material</label>
+                    <div class="inline-options">
+                        <label><input type="checkbox" name="structureMassive">Massiv</label>
+                        <label><input type="checkbox" name="structureWooden">Holzbalken</label>
+                        <div class="inline-right">
+                            <label>Keller beheizt</label>
+                            <label><input type="radio" name="basementHeated" value="Ja">Ja</label>
+                            <label><input type="radio" name="basementHeated" value="Nein">Nein</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label for="notesDraw">Notizen</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="notesDraw" name="notesDraw">
+                        <canvas class="draw-canvas" data-draw-target="notesDraw"></canvas>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>Au&szlig;enw&auml;nde</span></summary>
+            <div class="section-body">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Aufbau</th>
+                            <th>Schicht 1</th>
+                            <th>Schicht 2</th>
+                            <th>Schicht 3</th>
+                            <th>Schicht 4</th>
+                            <th>Schicht 5</th>
+                            <th>Gesamtdicke</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nord</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallNorthL1Draw" name="wallNorthL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallNorthL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallNorthL2Draw" name="wallNorthL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallNorthL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallNorthL3Draw" name="wallNorthL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallNorthL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallNorthL4Draw" name="wallNorthL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallNorthL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallNorthL5Draw" name="wallNorthL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallNorthL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallNorthTotalDraw" name="wallNorthTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="wallNorthTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ost</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallEastL1Draw" name="wallEastL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallEastL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallEastL2Draw" name="wallEastL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallEastL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallEastL3Draw" name="wallEastL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallEastL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallEastL4Draw" name="wallEastL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallEastL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallEastL5Draw" name="wallEastL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallEastL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallEastTotalDraw" name="wallEastTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="wallEastTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>S&uuml;d</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallSouthL1Draw" name="wallSouthL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallSouthL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallSouthL2Draw" name="wallSouthL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallSouthL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallSouthL3Draw" name="wallSouthL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallSouthL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallSouthL4Draw" name="wallSouthL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallSouthL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallSouthL5Draw" name="wallSouthL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallSouthL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallSouthTotalDraw" name="wallSouthTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="wallSouthTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>West</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallWestL1Draw" name="wallWestL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallWestL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallWestL2Draw" name="wallWestL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallWestL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallWestL3Draw" name="wallWestL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallWestL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallWestL4Draw" name="wallWestL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallWestL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallWestL5Draw" name="wallWestL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="wallWestL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="wallWestTotalDraw" name="wallWestTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="wallWestTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </details>
         <details class="system-card" open>
@@ -1903,7 +2234,22 @@
   }
   surfaceHeatingRadios.forEach(r => r.addEventListener("change", toggleSurfaceHeating));
   toggleSurfaceHeating();
+  const buildingDataRadios = document.querySelectorAll('input[name="buildingData"]');
+  const buildingDataDetails = document.getElementById("buildingDataDetails");
+  function toggleBuildingData(){
+    if(!buildingDataDetails) return;
+    const checked = document.querySelector('input[name="buildingData"]:checked');
+    buildingDataDetails.classList.toggle("hidden", !(checked && checked.value === "Nein"));
+    if(checked && checked.value === "Nein"){
+      buildingDataDetails.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+        const ctx = canvas.getContext("2d");
+        if(ctx) resizeDrawCanvas(canvas, ctx);
+      });
+    }
+  }
+  buildingDataRadios.forEach(r => r.addEventListener("change", toggleBuildingData));
   restoreFormState();
+  toggleBuildingData();
 
   function collectFormState(){
     const roomCount = document.querySelectorAll(".room-card").length;
@@ -2131,10 +2477,52 @@
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
     const addressNameDraw = (document.getElementById("addressNameDraw") || {}).dataset ? (document.getElementById("addressNameDraw").dataset.drawing || "") : "";
     const addressStreetDraw = (document.getElementById("addressStreetDraw") || {}).dataset ? (document.getElementById("addressStreetDraw").dataset.drawing || "") : "";
-    const addressNumberDraw = (document.getElementById("addressNumberDraw") || {}).dataset ? (document.getElementById("addressNumberDraw").dataset.drawing || "") : "";
     const addressCityDraw = (document.getElementById("addressCityDraw") || {}).dataset ? (document.getElementById("addressCityDraw").dataset.drawing || "") : "";
     const addressPhoneDraw = (document.getElementById("addressPhoneDraw") || {}).dataset ? (document.getElementById("addressPhoneDraw").dataset.drawing || "") : "";
     const addressEmailDraw = (document.getElementById("addressEmailDraw") || {}).dataset ? (document.getElementById("addressEmailDraw").dataset.drawing || "") : "";
+    const buildingData = (document.querySelector('input[name="buildingData"]:checked') || {}).value || "";
+    const buildingStreetDraw = (document.getElementById("buildingStreetDraw") || {}).dataset ? (document.getElementById("buildingStreetDraw").dataset.drawing || "") : "";
+    const buildingCityDraw = (document.getElementById("buildingCityDraw") || {}).dataset ? (document.getElementById("buildingCityDraw").dataset.drawing || "") : "";
+    const buildingYearDraw = (document.getElementById("buildingYearDraw") || {}).dataset ? (document.getElementById("buildingYearDraw").dataset.drawing || "") : "";
+    const buildingUnits = (document.getElementById("buildingUnits") || {}).value || "";
+    const buildingTypeDetached = !!document.querySelector('input[name="buildingTypeDetached"]:checked');
+    const buildingTypeMultiFamily = !!document.querySelector('input[name="buildingTypeMultiFamily"]:checked');
+    const buildingTypeEndTerrace = !!document.querySelector('input[name="buildingTypeEndTerrace"]:checked');
+    const buildingTypeMidTerrace = !!document.querySelector('input[name="buildingTypeMidTerrace"]:checked');
+    const floorHeightBasementDraw = (document.getElementById("floorHeightBasementDraw") || {}).dataset ? (document.getElementById("floorHeightBasementDraw").dataset.drawing || "") : "";
+    const floorHeightGroundDraw = (document.getElementById("floorHeightGroundDraw") || {}).dataset ? (document.getElementById("floorHeightGroundDraw").dataset.drawing || "") : "";
+    const floorHeight1OgDraw = (document.getElementById("floorHeight1OgDraw") || {}).dataset ? (document.getElementById("floorHeight1OgDraw").dataset.drawing || "") : "";
+    const floorHeight2OgDraw = (document.getElementById("floorHeight2OgDraw") || {}).dataset ? (document.getElementById("floorHeight2OgDraw").dataset.drawing || "") : "";
+    const floorHeight3OgDraw = (document.getElementById("floorHeight3OgDraw") || {}).dataset ? (document.getElementById("floorHeight3OgDraw").dataset.drawing || "") : "";
+    const floorHeightDgDraw = (document.getElementById("floorHeightDgDraw") || {}).dataset ? (document.getElementById("floorHeightDgDraw").dataset.drawing || "") : "";
+    const structureMassive = !!document.querySelector('input[name="structureMassive"]:checked');
+    const structureWooden = !!document.querySelector('input[name="structureWooden"]:checked');
+    const basementHeated = (document.querySelector('input[name="basementHeated"]:checked') || {}).value || "";
+    const notesDraw = (document.getElementById("notesDraw") || {}).dataset ? (document.getElementById("notesDraw").dataset.drawing || "") : "";
+    const wallNorthL1Draw = (document.getElementById("wallNorthL1Draw") || {}).dataset ? (document.getElementById("wallNorthL1Draw").dataset.drawing || "") : "";
+    const wallNorthL2Draw = (document.getElementById("wallNorthL2Draw") || {}).dataset ? (document.getElementById("wallNorthL2Draw").dataset.drawing || "") : "";
+    const wallNorthL3Draw = (document.getElementById("wallNorthL3Draw") || {}).dataset ? (document.getElementById("wallNorthL3Draw").dataset.drawing || "") : "";
+    const wallNorthL4Draw = (document.getElementById("wallNorthL4Draw") || {}).dataset ? (document.getElementById("wallNorthL4Draw").dataset.drawing || "") : "";
+    const wallNorthL5Draw = (document.getElementById("wallNorthL5Draw") || {}).dataset ? (document.getElementById("wallNorthL5Draw").dataset.drawing || "") : "";
+    const wallNorthTotalDraw = (document.getElementById("wallNorthTotalDraw") || {}).dataset ? (document.getElementById("wallNorthTotalDraw").dataset.drawing || "") : "";
+    const wallEastL1Draw = (document.getElementById("wallEastL1Draw") || {}).dataset ? (document.getElementById("wallEastL1Draw").dataset.drawing || "") : "";
+    const wallEastL2Draw = (document.getElementById("wallEastL2Draw") || {}).dataset ? (document.getElementById("wallEastL2Draw").dataset.drawing || "") : "";
+    const wallEastL3Draw = (document.getElementById("wallEastL3Draw") || {}).dataset ? (document.getElementById("wallEastL3Draw").dataset.drawing || "") : "";
+    const wallEastL4Draw = (document.getElementById("wallEastL4Draw") || {}).dataset ? (document.getElementById("wallEastL4Draw").dataset.drawing || "") : "";
+    const wallEastL5Draw = (document.getElementById("wallEastL5Draw") || {}).dataset ? (document.getElementById("wallEastL5Draw").dataset.drawing || "") : "";
+    const wallEastTotalDraw = (document.getElementById("wallEastTotalDraw") || {}).dataset ? (document.getElementById("wallEastTotalDraw").dataset.drawing || "") : "";
+    const wallSouthL1Draw = (document.getElementById("wallSouthL1Draw") || {}).dataset ? (document.getElementById("wallSouthL1Draw").dataset.drawing || "") : "";
+    const wallSouthL2Draw = (document.getElementById("wallSouthL2Draw") || {}).dataset ? (document.getElementById("wallSouthL2Draw").dataset.drawing || "") : "";
+    const wallSouthL3Draw = (document.getElementById("wallSouthL3Draw") || {}).dataset ? (document.getElementById("wallSouthL3Draw").dataset.drawing || "") : "";
+    const wallSouthL4Draw = (document.getElementById("wallSouthL4Draw") || {}).dataset ? (document.getElementById("wallSouthL4Draw").dataset.drawing || "") : "";
+    const wallSouthL5Draw = (document.getElementById("wallSouthL5Draw") || {}).dataset ? (document.getElementById("wallSouthL5Draw").dataset.drawing || "") : "";
+    const wallSouthTotalDraw = (document.getElementById("wallSouthTotalDraw") || {}).dataset ? (document.getElementById("wallSouthTotalDraw").dataset.drawing || "") : "";
+    const wallWestL1Draw = (document.getElementById("wallWestL1Draw") || {}).dataset ? (document.getElementById("wallWestL1Draw").dataset.drawing || "") : "";
+    const wallWestL2Draw = (document.getElementById("wallWestL2Draw") || {}).dataset ? (document.getElementById("wallWestL2Draw").dataset.drawing || "") : "";
+    const wallWestL3Draw = (document.getElementById("wallWestL3Draw") || {}).dataset ? (document.getElementById("wallWestL3Draw").dataset.drawing || "") : "";
+    const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
+    const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
+    const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -2161,10 +2549,52 @@
     const system = {
       addressNameDraw,
       addressStreetDraw,
-      addressNumberDraw,
       addressCityDraw,
       addressPhoneDraw,
       addressEmailDraw,
+      buildingData,
+      buildingStreetDraw,
+      buildingCityDraw,
+      buildingYearDraw,
+      buildingUnits,
+      buildingTypeDetached,
+      buildingTypeMultiFamily,
+      buildingTypeEndTerrace,
+      buildingTypeMidTerrace,
+      floorHeightBasementDraw,
+      floorHeightGroundDraw,
+      floorHeight1OgDraw,
+      floorHeight2OgDraw,
+      floorHeight3OgDraw,
+      floorHeightDgDraw,
+      structureMassive,
+      structureWooden,
+      basementHeated,
+      notesDraw,
+      wallNorthL1Draw,
+      wallNorthL2Draw,
+      wallNorthL3Draw,
+      wallNorthL4Draw,
+      wallNorthL5Draw,
+      wallNorthTotalDraw,
+      wallEastL1Draw,
+      wallEastL2Draw,
+      wallEastL3Draw,
+      wallEastL4Draw,
+      wallEastL5Draw,
+      wallEastTotalDraw,
+      wallSouthL1Draw,
+      wallSouthL2Draw,
+      wallSouthL3Draw,
+      wallSouthL4Draw,
+      wallSouthL5Draw,
+      wallSouthTotalDraw,
+      wallWestL1Draw,
+      wallWestL2Draw,
+      wallWestL3Draw,
+      wallWestL4Draw,
+      wallWestL5Draw,
+      wallWestTotalDraw,
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
@@ -2258,10 +2688,52 @@
     const layingSpacingValue = ((document.getElementById("layingSpacing") || {}).value || "").trim();
     const addressNameDraw = (document.getElementById("addressNameDraw") || {}).dataset ? (document.getElementById("addressNameDraw").dataset.drawing || "") : "";
     const addressStreetDraw = (document.getElementById("addressStreetDraw") || {}).dataset ? (document.getElementById("addressStreetDraw").dataset.drawing || "") : "";
-    const addressNumberDraw = (document.getElementById("addressNumberDraw") || {}).dataset ? (document.getElementById("addressNumberDraw").dataset.drawing || "") : "";
     const addressCityDraw = (document.getElementById("addressCityDraw") || {}).dataset ? (document.getElementById("addressCityDraw").dataset.drawing || "") : "";
     const addressPhoneDraw = (document.getElementById("addressPhoneDraw") || {}).dataset ? (document.getElementById("addressPhoneDraw").dataset.drawing || "") : "";
     const addressEmailDraw = (document.getElementById("addressEmailDraw") || {}).dataset ? (document.getElementById("addressEmailDraw").dataset.drawing || "") : "";
+    const buildingData = ((document.querySelector('input[name="buildingData"]:checked') || {}).value || "").trim();
+    const buildingStreetDraw = (document.getElementById("buildingStreetDraw") || {}).dataset ? (document.getElementById("buildingStreetDraw").dataset.drawing || "") : "";
+    const buildingCityDraw = (document.getElementById("buildingCityDraw") || {}).dataset ? (document.getElementById("buildingCityDraw").dataset.drawing || "") : "";
+    const buildingYearDraw = (document.getElementById("buildingYearDraw") || {}).dataset ? (document.getElementById("buildingYearDraw").dataset.drawing || "") : "";
+    const buildingUnits = ((document.getElementById("buildingUnits") || {}).value || "").trim();
+    const buildingTypeDetached = !!document.querySelector('input[name="buildingTypeDetached"]:checked');
+    const buildingTypeMultiFamily = !!document.querySelector('input[name="buildingTypeMultiFamily"]:checked');
+    const buildingTypeEndTerrace = !!document.querySelector('input[name="buildingTypeEndTerrace"]:checked');
+    const buildingTypeMidTerrace = !!document.querySelector('input[name="buildingTypeMidTerrace"]:checked');
+    const floorHeightBasementDraw = (document.getElementById("floorHeightBasementDraw") || {}).dataset ? (document.getElementById("floorHeightBasementDraw").dataset.drawing || "") : "";
+    const floorHeightGroundDraw = (document.getElementById("floorHeightGroundDraw") || {}).dataset ? (document.getElementById("floorHeightGroundDraw").dataset.drawing || "") : "";
+    const floorHeight1OgDraw = (document.getElementById("floorHeight1OgDraw") || {}).dataset ? (document.getElementById("floorHeight1OgDraw").dataset.drawing || "") : "";
+    const floorHeight2OgDraw = (document.getElementById("floorHeight2OgDraw") || {}).dataset ? (document.getElementById("floorHeight2OgDraw").dataset.drawing || "") : "";
+    const floorHeight3OgDraw = (document.getElementById("floorHeight3OgDraw") || {}).dataset ? (document.getElementById("floorHeight3OgDraw").dataset.drawing || "") : "";
+    const floorHeightDgDraw = (document.getElementById("floorHeightDgDraw") || {}).dataset ? (document.getElementById("floorHeightDgDraw").dataset.drawing || "") : "";
+    const structureMassive = !!document.querySelector('input[name="structureMassive"]:checked');
+    const structureWooden = !!document.querySelector('input[name="structureWooden"]:checked');
+    const basementHeated = ((document.querySelector('input[name="basementHeated"]:checked') || {}).value || "").trim();
+    const notesDraw = (document.getElementById("notesDraw") || {}).dataset ? (document.getElementById("notesDraw").dataset.drawing || "") : "";
+    const wallNorthL1Draw = (document.getElementById("wallNorthL1Draw") || {}).dataset ? (document.getElementById("wallNorthL1Draw").dataset.drawing || "") : "";
+    const wallNorthL2Draw = (document.getElementById("wallNorthL2Draw") || {}).dataset ? (document.getElementById("wallNorthL2Draw").dataset.drawing || "") : "";
+    const wallNorthL3Draw = (document.getElementById("wallNorthL3Draw") || {}).dataset ? (document.getElementById("wallNorthL3Draw").dataset.drawing || "") : "";
+    const wallNorthL4Draw = (document.getElementById("wallNorthL4Draw") || {}).dataset ? (document.getElementById("wallNorthL4Draw").dataset.drawing || "") : "";
+    const wallNorthL5Draw = (document.getElementById("wallNorthL5Draw") || {}).dataset ? (document.getElementById("wallNorthL5Draw").dataset.drawing || "") : "";
+    const wallNorthTotalDraw = (document.getElementById("wallNorthTotalDraw") || {}).dataset ? (document.getElementById("wallNorthTotalDraw").dataset.drawing || "") : "";
+    const wallEastL1Draw = (document.getElementById("wallEastL1Draw") || {}).dataset ? (document.getElementById("wallEastL1Draw").dataset.drawing || "") : "";
+    const wallEastL2Draw = (document.getElementById("wallEastL2Draw") || {}).dataset ? (document.getElementById("wallEastL2Draw").dataset.drawing || "") : "";
+    const wallEastL3Draw = (document.getElementById("wallEastL3Draw") || {}).dataset ? (document.getElementById("wallEastL3Draw").dataset.drawing || "") : "";
+    const wallEastL4Draw = (document.getElementById("wallEastL4Draw") || {}).dataset ? (document.getElementById("wallEastL4Draw").dataset.drawing || "") : "";
+    const wallEastL5Draw = (document.getElementById("wallEastL5Draw") || {}).dataset ? (document.getElementById("wallEastL5Draw").dataset.drawing || "") : "";
+    const wallEastTotalDraw = (document.getElementById("wallEastTotalDraw") || {}).dataset ? (document.getElementById("wallEastTotalDraw").dataset.drawing || "") : "";
+    const wallSouthL1Draw = (document.getElementById("wallSouthL1Draw") || {}).dataset ? (document.getElementById("wallSouthL1Draw").dataset.drawing || "") : "";
+    const wallSouthL2Draw = (document.getElementById("wallSouthL2Draw") || {}).dataset ? (document.getElementById("wallSouthL2Draw").dataset.drawing || "") : "";
+    const wallSouthL3Draw = (document.getElementById("wallSouthL3Draw") || {}).dataset ? (document.getElementById("wallSouthL3Draw").dataset.drawing || "") : "";
+    const wallSouthL4Draw = (document.getElementById("wallSouthL4Draw") || {}).dataset ? (document.getElementById("wallSouthL4Draw").dataset.drawing || "") : "";
+    const wallSouthL5Draw = (document.getElementById("wallSouthL5Draw") || {}).dataset ? (document.getElementById("wallSouthL5Draw").dataset.drawing || "") : "";
+    const wallSouthTotalDraw = (document.getElementById("wallSouthTotalDraw") || {}).dataset ? (document.getElementById("wallSouthTotalDraw").dataset.drawing || "") : "";
+    const wallWestL1Draw = (document.getElementById("wallWestL1Draw") || {}).dataset ? (document.getElementById("wallWestL1Draw").dataset.drawing || "") : "";
+    const wallWestL2Draw = (document.getElementById("wallWestL2Draw") || {}).dataset ? (document.getElementById("wallWestL2Draw").dataset.drawing || "") : "";
+    const wallWestL3Draw = (document.getElementById("wallWestL3Draw") || {}).dataset ? (document.getElementById("wallWestL3Draw").dataset.drawing || "") : "";
+    const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
+    const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
+    const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
     const systemManufacturer = ((document.getElementById("systemManufacturer") || {}).value || "").trim();
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -2275,10 +2747,52 @@
     const system = {
       addressNameDraw,
       addressStreetDraw,
-      addressNumberDraw,
       addressCityDraw,
       addressPhoneDraw,
       addressEmailDraw,
+      buildingData,
+      buildingStreetDraw,
+      buildingCityDraw,
+      buildingYearDraw,
+      buildingUnits,
+      buildingTypeDetached,
+      buildingTypeMultiFamily,
+      buildingTypeEndTerrace,
+      buildingTypeMidTerrace,
+      floorHeightBasementDraw,
+      floorHeightGroundDraw,
+      floorHeight1OgDraw,
+      floorHeight2OgDraw,
+      floorHeight3OgDraw,
+      floorHeightDgDraw,
+      structureMassive,
+      structureWooden,
+      basementHeated,
+      notesDraw,
+      wallNorthL1Draw,
+      wallNorthL2Draw,
+      wallNorthL3Draw,
+      wallNorthL4Draw,
+      wallNorthL5Draw,
+      wallNorthTotalDraw,
+      wallEastL1Draw,
+      wallEastL2Draw,
+      wallEastL3Draw,
+      wallEastL4Draw,
+      wallEastL5Draw,
+      wallEastTotalDraw,
+      wallSouthL1Draw,
+      wallSouthL2Draw,
+      wallSouthL3Draw,
+      wallSouthL4Draw,
+      wallSouthL5Draw,
+      wallSouthTotalDraw,
+      wallWestL1Draw,
+      wallWestL2Draw,
+      wallWestL3Draw,
+      wallWestL4Draw,
+      wallWestL5Draw,
+      wallWestTotalDraw,
       systemManufacturer,
       systemManufacturerDraw,
       systemTypeDraw,
@@ -2323,22 +2837,42 @@
     );
     const sections = [];
     const hasAddress = !!(
-      system.addressNameDraw || system.addressStreetDraw || system.addressNumberDraw ||
-      system.addressCityDraw || system.addressPhoneDraw || system.addressEmailDraw
+      system.addressNameDraw || system.addressStreetDraw ||
+      system.addressCityDraw || system.addressPhoneDraw || system.addressEmailDraw ||
+      system.buildingData || system.buildingStreetDraw || system.buildingCityDraw ||
+      system.buildingYearDraw || system.buildingUnits ||
+      system.buildingTypeDetached || system.buildingTypeMultiFamily ||
+      system.buildingTypeEndTerrace || system.buildingTypeMidTerrace
     );
     if(hasAddress){
       const rows = [];
-      const addRow = (label, draw) => {
+      const addRowDraw = (label, draw) => {
         if(draw){
           rows.push('<tr><td>' + label + '</td><td>' + renderCell("", draw) + '</td></tr>');
         }
       };
-      addRow("Name", system.addressNameDraw);
-      addRow("Stra\u00dfe", system.addressStreetDraw);
-      addRow("Nr.", system.addressNumberDraw);
-      addRow("PLZ/Ort", system.addressCityDraw);
-      addRow("Telefon", system.addressPhoneDraw);
-      addRow("Email", system.addressEmailDraw);
+      const addRowValue = (label, value) => {
+        if(value){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value, "") + '</td></tr>');
+        }
+      };
+      const addFlag = (label, flag) => {
+        if(flag) rows.push('<tr><td>' + label + '</td><td>Ja</td></tr>');
+      };
+      addRowDraw("Name", system.addressNameDraw);
+      addRowDraw("Stra\u00dfe, Nr.", system.addressStreetDraw);
+      addRowDraw("PLZ/Ort", system.addressCityDraw);
+      addRowDraw("Telefon", system.addressPhoneDraw);
+      addRowDraw("Email", system.addressEmailDraw);
+      addRowValue("Geb\u00e4udedaten wie oben", system.buildingData);
+      addRowDraw("Geb\u00e4ude Stra\u00dfe, Nr.", system.buildingStreetDraw);
+      addRowDraw("Geb\u00e4ude PLZ/Ort", system.buildingCityDraw);
+      addRowDraw("Geb\u00e4ude Baujahr", system.buildingYearDraw);
+      addRowValue("Wohneinheiten", system.buildingUnits);
+      addFlag("Geb\u00e4udetyp freistehend", system.buildingTypeDetached);
+      addFlag("Geb\u00e4udetyp Mehrfamilienhaus", system.buildingTypeMultiFamily);
+      addFlag("Geb\u00e4udetyp Reihenendhaus", system.buildingTypeEndTerrace);
+      addFlag("Geb\u00e4udetyp Reihenmittelhaus", system.buildingTypeMidTerrace);
       if(rows.length){
         sections.push([
           '<section class="room">',
@@ -2353,6 +2887,127 @@
           '</tbody></table></section>'
         ].join(""));
       }
+    }
+    const hasStructure = !!(
+      system.floorHeightBasementDraw || system.floorHeightGroundDraw ||
+      system.floorHeight1OgDraw || system.floorHeight2OgDraw ||
+      system.floorHeight3OgDraw || system.floorHeightDgDraw ||
+      system.structureMassive || system.structureWooden || system.basementHeated
+    );
+    if(hasStructure){
+      const rows = [];
+      const addRowDraw = (label, draw) => {
+        if(draw){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell("", draw) + '</td></tr>');
+        }
+      };
+      const addRowValue = (label, value) => {
+        if(value){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value, "") + '</td></tr>');
+        }
+      };
+      const addFlag = (label, flag) => {
+        if(flag) rows.push('<tr><td>' + label + '</td><td>Ja</td></tr>');
+      };
+      addRowDraw("Keller", system.floorHeightBasementDraw);
+      addRowDraw("Erdgeschoss", system.floorHeightGroundDraw);
+      addRowDraw("1.OG", system.floorHeight1OgDraw);
+      addRowDraw("2.OG", system.floorHeight2OgDraw);
+      addRowDraw("3.OG", system.floorHeight3OgDraw);
+      addRowDraw("DG", system.floorHeightDgDraw);
+      addFlag("Massiv", system.structureMassive);
+      addFlag("Holzbalken", system.structureWooden);
+      addRowValue("Keller beheizt", system.basementHeated);
+      if(rows.length){
+        sections.push([
+          '<section class="room">',
+          '<div class="room-head">',
+          '<div><div class="room-title">Geschossh&ouml;he, Kellerdecke/Bodenplatte, Au&szlig;enw&auml;nde</div><div class="room-sub">Art/Aufbau/Material</div></div>',
+          '<div class="badge">Geb&auml;ude</div>',
+          '</div>',
+          '<table class="hk-table">',
+          '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
+          '<tbody>',
+          rows.join(""),
+          '</tbody></table></section>'
+        ].join(""));
+      }
+    }
+    const hasNotes = !!system.notesDraw;
+    if(hasNotes){
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Notizen</div><div class="room-sub">Freitext</div></div>',
+        '<div class="badge">Notiz</div>',
+        '</div>',
+        '<table class="hk-table">',
+        '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
+        '<tbody>',
+        '<tr><td>Notizen</td><td>' + renderCell("", system.notesDraw) + '</td></tr>',
+        '</tbody></table></section>'
+      ].join(""));
+    }
+    const hasWalls = !!(
+      system.wallNorthL1Draw || system.wallNorthL2Draw || system.wallNorthL3Draw ||
+      system.wallNorthL4Draw || system.wallNorthL5Draw || system.wallNorthTotalDraw ||
+      system.wallEastL1Draw || system.wallEastL2Draw || system.wallEastL3Draw ||
+      system.wallEastL4Draw || system.wallEastL5Draw || system.wallEastTotalDraw ||
+      system.wallSouthL1Draw || system.wallSouthL2Draw || system.wallSouthL3Draw ||
+      system.wallSouthL4Draw || system.wallSouthL5Draw || system.wallSouthTotalDraw ||
+      system.wallWestL1Draw || system.wallWestL2Draw || system.wallWestL3Draw ||
+      system.wallWestL4Draw || system.wallWestL5Draw || system.wallWestTotalDraw
+    );
+    if(hasWalls){
+      const buildRow = (label, values) => (
+        '<tr>' +
+        '<td>' + label + '</td>' +
+        values.map(draw => '<td>' + renderCell("", draw) + '</td>').join("") +
+        '</tr>'
+      );
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Au\u00dfenw\u00e4nde</div><div class="room-sub">Aufbau / Himmelsrichtungen</div></div>',
+        '<div class="badge">Wand</div>',
+        '</div>',
+        '<table class="hk-table">',
+        '<thead><tr><th>Aufbau</th><th>Schicht 1</th><th>Schicht 2</th><th>Schicht 3</th><th>Schicht 4</th><th>Schicht 5</th><th>Gesamtdicke</th></tr></thead>',
+        '<tbody>',
+        buildRow("Nord", [
+          system.wallNorthL1Draw,
+          system.wallNorthL2Draw,
+          system.wallNorthL3Draw,
+          system.wallNorthL4Draw,
+          system.wallNorthL5Draw,
+          system.wallNorthTotalDraw
+        ]),
+        buildRow("Ost", [
+          system.wallEastL1Draw,
+          system.wallEastL2Draw,
+          system.wallEastL3Draw,
+          system.wallEastL4Draw,
+          system.wallEastL5Draw,
+          system.wallEastTotalDraw
+        ]),
+        buildRow("S\u00fcd", [
+          system.wallSouthL1Draw,
+          system.wallSouthL2Draw,
+          system.wallSouthL3Draw,
+          system.wallSouthL4Draw,
+          system.wallSouthL5Draw,
+          system.wallSouthTotalDraw
+        ]),
+        buildRow("West", [
+          system.wallWestL1Draw,
+          system.wallWestL2Draw,
+          system.wallWestL3Draw,
+          system.wallWestL4Draw,
+          system.wallWestL5Draw,
+          system.wallWestTotalDraw
+        ]),
+        '</tbody></table></section>'
+      ].join(""));
     }
     if(hasSystem){
       const rows = [];
@@ -2523,7 +3178,29 @@
       if(
         !data.rooms.length &&
         !data.system.addressNameDraw && !data.system.addressStreetDraw &&
-        !data.system.addressNumberDraw && !data.system.addressCityDraw &&
+        !data.system.addressCityDraw && !data.system.buildingData &&
+        !data.system.buildingStreetDraw && !data.system.buildingCityDraw &&
+        !data.system.buildingYearDraw && !data.system.buildingUnits &&
+        !data.system.buildingTypeDetached && !data.system.buildingTypeMultiFamily &&
+        !data.system.buildingTypeEndTerrace && !data.system.buildingTypeMidTerrace &&
+        !data.system.floorHeightBasementDraw && !data.system.floorHeightGroundDraw &&
+        !data.system.floorHeight1OgDraw && !data.system.floorHeight2OgDraw &&
+        !data.system.floorHeight3OgDraw && !data.system.floorHeightDgDraw &&
+        !data.system.structureMassive && !data.system.structureWooden &&
+        !data.system.basementHeated &&
+        !data.system.notesDraw &&
+        !data.system.wallNorthL1Draw && !data.system.wallNorthL2Draw &&
+        !data.system.wallNorthL3Draw && !data.system.wallNorthL4Draw &&
+        !data.system.wallNorthL5Draw && !data.system.wallNorthTotalDraw &&
+        !data.system.wallEastL1Draw && !data.system.wallEastL2Draw &&
+        !data.system.wallEastL3Draw && !data.system.wallEastL4Draw &&
+        !data.system.wallEastL5Draw && !data.system.wallEastTotalDraw &&
+        !data.system.wallSouthL1Draw && !data.system.wallSouthL2Draw &&
+        !data.system.wallSouthL3Draw && !data.system.wallSouthL4Draw &&
+        !data.system.wallSouthL5Draw && !data.system.wallSouthTotalDraw &&
+        !data.system.wallWestL1Draw && !data.system.wallWestL2Draw &&
+        !data.system.wallWestL3Draw && !data.system.wallWestL4Draw &&
+        !data.system.wallWestL5Draw && !data.system.wallWestTotalDraw &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
         !data.system.systemTypeDraw &&
