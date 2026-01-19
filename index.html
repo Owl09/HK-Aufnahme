@@ -14,7 +14,7 @@
         p { margin: 0 0 20px; color: #4b5563; }
         form { display: flex; flex-direction: column; gap: 18px; }
         .room-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; }
-        .system-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px; }
+        .system-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; }
         .system-row { display: flex; flex-direction: column; gap: 10px; }
         textarea { width: 100%; min-height: 72px; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; resize: vertical; }
         .hidden { display: none; }
@@ -25,11 +25,14 @@
         details[open] summary::after { transform: rotate(45deg); }
         summary span { display: flex; flex-direction: column; }
         summary small { font-weight: normal; color: #6b7280; }
+        .section-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 16px; }
         .room-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 18px; }
         .field-row { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 12px; align-items: center; }
         .field-row.single { grid-template-columns: 170px 1fr; }
-        .field-row.dual { grid-template-columns: 170px 0.8fr 170px 0.8fr; column-gap: 8px; }
-        .field-row.pump { grid-template-columns: 170px 1fr 70px 50px 1fr; column-gap: 8px; }
+        .field-row.dual { grid-template-columns: 170px 0.8fr 170px 0.8fr; column-gap: 2px; }
+        .field-row.dual.type-row { grid-template-columns: 170px 1fr 170px 0.6fr; }
+        .field-row.pump { grid-template-columns: 170px 1fr 70px 1fr; column-gap: 8px; }
+        .label-shift-right { margin-left: 10px; }
         label { font-weight: 600; color: #1f2933; }
         select, input[type="text"] { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; }
         .inline-options { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
@@ -92,8 +95,56 @@
         <h1>Aufnahme HK Daten</h1>
     </header>
     <form>
-        <section class="system-card">
-            <h2 style="margin:0;font-size:18px;">Anlagentechnik</h2>
+        <details class="system-card" open>
+            <summary><span>Anschrift</span></summary>
+            <div class="section-body">
+                <div class="field-row single">
+                    <label for="addressNameDraw">Name</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="addressNameDraw" name="addressNameDraw">
+                        <canvas class="draw-canvas" data-draw-target="addressNameDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label for="addressStreetDraw">Stra&szlig;e</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="addressStreetDraw" name="addressStreetDraw">
+                        <canvas class="draw-canvas" data-draw-target="addressStreetDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label for="addressNumberDraw">Nr.</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="addressNumberDraw" name="addressNumberDraw">
+                        <canvas class="draw-canvas" data-draw-target="addressNumberDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label for="addressCityDraw">PLZ/Ort</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="addressCityDraw" name="addressCityDraw">
+                        <canvas class="draw-canvas" data-draw-target="addressCityDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label for="addressPhoneDraw">Telefon</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="addressPhoneDraw" name="addressPhoneDraw">
+                        <canvas class="draw-canvas" data-draw-target="addressPhoneDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label for="addressEmailDraw">Email</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="addressEmailDraw" name="addressEmailDraw">
+                        <canvas class="draw-canvas" data-draw-target="addressEmailDraw"></canvas>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>Anlagentechnik</span></summary>
+            <div class="section-body">
             <div class="field-row">
                 <label for="systemManufacturer">Hersteller</label>
                 <select id="systemManufacturer" name="systemManufacturer">
@@ -108,13 +159,13 @@
                     <canvas class="draw-canvas" data-draw-target="systemManufacturerDraw"></canvas>
                 </div>
             </div>
-            <div class="field-row dual">
+            <div class="field-row dual type-row">
                 <label for="systemTypeDraw">Typ</label>
                 <div class="draw-wrap">
                     <input type="hidden" id="systemTypeDraw" name="systemTypeDraw">
                     <canvas class="draw-canvas" data-draw-target="systemTypeDraw"></canvas>
                 </div>
-                <label for="systemPowerDraw">Leistung</label>
+                <label for="systemPowerDraw" class="label-shift-right">Leistung</label>
                 <div class="draw-wrap">
                     <input type="hidden" id="systemPowerDraw" name="systemPowerDraw">
                     <canvas class="draw-canvas" data-draw-target="systemPowerDraw"></canvas>
@@ -214,7 +265,7 @@
                     <option>1941</option>
                     <option>1940</option>
                 </select>
-                <label for="systemFuel">Brennstoff</label>
+                <label for="systemFuel" class="label-shift-right">Brennstoff</label>
                 <select id="systemFuel" name="systemFuel">
                     <option value="" selected disabled>Brennstoff w&auml;hlen &hellip;</option>
                     <option>Erdgas</option>
@@ -272,11 +323,19 @@
                     <canvas class="draw-canvas" data-draw-target="pumpCirculationDraw"></canvas>
                 </div>
                 <label><input type="checkbox" name="pumpCirculationHe">HE?</label>
-                <label>Stf</label>
-                <div class="draw-wrap">
-                    <input type="hidden" id="pumpCirculationStfDraw" name="pumpCirculationStfDraw">
-                    <canvas class="draw-canvas" data-draw-target="pumpCirculationStfDraw"></canvas>
-                </div>
+                <select id="pumpCirculationStf" name="pumpCirculationStf">
+                    <option value="" selected disabled>Stf w&auml;hlen &hellip;</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select>
             </div>
             <div class="field-row pump">
                 <label for="pumpStorageDraw">Speicherladepumpe</label>
@@ -285,11 +344,19 @@
                     <canvas class="draw-canvas" data-draw-target="pumpStorageDraw"></canvas>
                 </div>
                 <label><input type="checkbox" name="pumpStorageHe">HE?</label>
-                <label>Stf</label>
-                <div class="draw-wrap">
-                    <input type="hidden" id="pumpStorageStfDraw" name="pumpStorageStfDraw">
-                    <canvas class="draw-canvas" data-draw-target="pumpStorageStfDraw"></canvas>
-                </div>
+                <select id="pumpStorageStf" name="pumpStorageStf">
+                    <option value="" selected disabled>Stf w&auml;hlen &hellip;</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select>
             </div>
             <div class="field-row pump">
                 <label for="pumpRecircDraw">Zirkulationspumpe</label>
@@ -298,11 +365,19 @@
                     <canvas class="draw-canvas" data-draw-target="pumpRecircDraw"></canvas>
                 </div>
                 <label><input type="checkbox" name="pumpRecircHe">HE?</label>
-                <label>Stf</label>
-                <div class="draw-wrap">
-                    <input type="hidden" id="pumpRecircStfDraw" name="pumpRecircStfDraw">
-                    <canvas class="draw-canvas" data-draw-target="pumpRecircStfDraw"></canvas>
-                </div>
+                <select id="pumpRecircStf" name="pumpRecircStf">
+                    <option value="" selected disabled>Stf w&auml;hlen &hellip;</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select>
             </div>
             <div class="field-row dual">
                 <label for="heatDistribution">W&auml;rmeverteilung</label>
@@ -319,9 +394,7 @@
                     <option>ganze GEG</option>
                 </select>
             </div>
-        </section>
-        <section class="system-card">
-            <h2 style="margin:0;font-size:18px;">Fu&szlig;bodenheizung</h2>
+            <h3 style="margin:6px 0 0;font-size:16px;">Fu&szlig;bodenheizung</h3>
             <div class="system-row">
                 <label>Fl&auml;chenheizung vorhanden?</label>
                 <div class="inline-options">
@@ -329,7 +402,7 @@
                     <label><input type="radio" name="surfaceHeating" value="Nein">Nein</label>
                 </div>
             </div>
-            <div class="system-row hidden" id="surfaceHeatingDetails">
+            <div class="system-row" id="surfaceHeatingDetails">
                 <div class="inline-options">
                     <label><input type="checkbox" name="surfaceHeatingDistributorPhoto">Foto vom Verteiler</label>
                 </div>
@@ -416,7 +489,11 @@
                     </select>
                 </div>
             </div>
-        </section>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>R&auml;ume</span></summary>
+            <div class="section-body">
         <section class="room-card">
             <details open>
                 <summary><span data-room-label data-default="Raum 1">Raum 1 <small>Geschoss zuerst w&auml;hlen</small></span><span></span></summary>
@@ -1433,6 +1510,8 @@
             </details>
         </section>
         <button type="button" class="add-room-btn">+ Raum hinzuf&uuml;gen</button>
+            </div>
+        </details>
         <button type="button" class="share-btn">Teilen</button>
         <button type="button" class="eraser-btn">Radierer</button>
         <button type="button" class="reset-btn">Alles reseten</button>
@@ -1794,14 +1873,11 @@
   const surfaceHeatingDetails = document.getElementById("surfaceHeatingDetails");
   function toggleSurfaceHeating(){
     if(!surfaceHeatingDetails) return;
-    const checked = document.querySelector('input[name="surfaceHeating"]:checked');
-    surfaceHeatingDetails.classList.toggle("hidden", !(checked && checked.value === "Ja"));
-    if(checked && checked.value === "Ja"){
-      surfaceHeatingDetails.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
-        const ctx = canvas.getContext("2d");
-        if(ctx) resizeDrawCanvas(canvas, ctx);
-      });
-    }
+    surfaceHeatingDetails.classList.remove("hidden");
+    surfaceHeatingDetails.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+      const ctx = canvas.getContext("2d");
+      if(ctx) resizeDrawCanvas(canvas, ctx);
+    });
   }
   surfaceHeatingRadios.forEach(r => r.addEventListener("change", toggleSurfaceHeating));
   toggleSurfaceHeating();
@@ -2031,6 +2107,18 @@
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
+    const addressNameDraw = (document.getElementById("addressNameDraw") || {}).dataset ? (document.getElementById("addressNameDraw").dataset.drawing || "") : "";
+    const addressStreetDraw = (document.getElementById("addressStreetDraw") || {}).dataset ? (document.getElementById("addressStreetDraw").dataset.drawing || "") : "";
+    const addressNumberDraw = (document.getElementById("addressNumberDraw") || {}).dataset ? (document.getElementById("addressNumberDraw").dataset.drawing || "") : "";
+    const addressCityDraw = (document.getElementById("addressCityDraw") || {}).dataset ? (document.getElementById("addressCityDraw").dataset.drawing || "") : "";
+    const addressPhoneDraw = (document.getElementById("addressPhoneDraw") || {}).dataset ? (document.getElementById("addressPhoneDraw").dataset.drawing || "") : "";
+    const addressEmailDraw = (document.getElementById("addressEmailDraw") || {}).dataset ? (document.getElementById("addressEmailDraw").dataset.drawing || "") : "";
+    const addressNameDraw = (document.getElementById("addressNameDraw") || {}).dataset ? (document.getElementById("addressNameDraw").dataset.drawing || "") : "";
+    const addressStreetDraw = (document.getElementById("addressStreetDraw") || {}).dataset ? (document.getElementById("addressStreetDraw").dataset.drawing || "") : "";
+    const addressNumberDraw = (document.getElementById("addressNumberDraw") || {}).dataset ? (document.getElementById("addressNumberDraw").dataset.drawing || "") : "";
+    const addressCityDraw = (document.getElementById("addressCityDraw") || {}).dataset ? (document.getElementById("addressCityDraw").dataset.drawing || "") : "";
+    const addressPhoneDraw = (document.getElementById("addressPhoneDraw") || {}).dataset ? (document.getElementById("addressPhoneDraw").dataset.drawing || "") : "";
+    const addressEmailDraw = (document.getElementById("addressEmailDraw") || {}).dataset ? (document.getElementById("addressEmailDraw").dataset.drawing || "") : "";
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -2042,19 +2130,25 @@
     const pipeInsulation = (document.getElementById("pipeInsulation") || {}).value || "";
     const pumpCirculationDraw = (document.getElementById("pumpCirculationDraw") || {}).dataset ? (document.getElementById("pumpCirculationDraw").dataset.drawing || "") : "";
     const pumpCirculationHe = !!document.querySelector('input[name="pumpCirculationHe"]:checked');
-    const pumpCirculationStfDraw = (document.getElementById("pumpCirculationStfDraw") || {}).dataset ? (document.getElementById("pumpCirculationStfDraw").dataset.drawing || "") : "";
+    const pumpCirculationStf = (document.getElementById("pumpCirculationStf") || {}).value || "";
     const pumpStorageDraw = (document.getElementById("pumpStorageDraw") || {}).dataset ? (document.getElementById("pumpStorageDraw").dataset.drawing || "") : "";
     const pumpStorageHe = !!document.querySelector('input[name="pumpStorageHe"]:checked');
-    const pumpStorageStfDraw = (document.getElementById("pumpStorageStfDraw") || {}).dataset ? (document.getElementById("pumpStorageStfDraw").dataset.drawing || "") : "";
+    const pumpStorageStf = (document.getElementById("pumpStorageStf") || {}).value || "";
     const pumpRecircDraw = (document.getElementById("pumpRecircDraw") || {}).dataset ? (document.getElementById("pumpRecircDraw").dataset.drawing || "") : "";
     const pumpRecircHe = !!document.querySelector('input[name="pumpRecircHe"]:checked');
-    const pumpRecircStfDraw = (document.getElementById("pumpRecircStfDraw") || {}).dataset ? (document.getElementById("pumpRecircStfDraw").dataset.drawing || "") : "";
+    const pumpRecircStf = (document.getElementById("pumpRecircStf") || {}).value || "";
     const optionNightReduction = !!document.querySelector('input[name="optionNightReduction"]:checked');
     const optionHydraulicBalance = !!document.querySelector('input[name="optionHydraulicBalance"]:checked');
     const optionHeaterNiches = !!document.querySelector('input[name="optionHeaterNiches"]:checked');
     const optionCirculationTimed = !!document.querySelector('input[name="optionCirculationTimed"]:checked');
     const systemThermostatValves = (document.getElementById("systemThermostatValves") || {}).value || "";
     const system = {
+      addressNameDraw,
+      addressStreetDraw,
+      addressNumberDraw,
+      addressCityDraw,
+      addressPhoneDraw,
+      addressEmailDraw,
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
@@ -2078,13 +2172,13 @@
       systemThermostatValves,
       pumpCirculationDraw,
       pumpCirculationHe,
-      pumpCirculationStfDraw,
+      pumpCirculationStf,
       pumpStorageDraw,
       pumpStorageHe,
-      pumpStorageStfDraw,
+      pumpStorageStf,
       pumpRecircDraw,
       pumpRecircHe,
-      pumpRecircStfDraw
+      pumpRecircStf
     };
     document.querySelectorAll(".room-card").forEach((card, idx) => {
       const roomSel = card.querySelector('select[name$="Name"]');
@@ -2157,6 +2251,12 @@
     const pipeInsulation = ((document.getElementById("pipeInsulation") || {}).value || "").trim();
     const systemThermostatValves = ((document.getElementById("systemThermostatValves") || {}).value || "").trim();
     const system = {
+      addressNameDraw,
+      addressStreetDraw,
+      addressNumberDraw,
+      addressCityDraw,
+      addressPhoneDraw,
+      addressEmailDraw,
       systemManufacturer,
       systemManufacturerDraw,
       systemTypeDraw,
@@ -2173,13 +2273,13 @@
       systemThermostatValves,
       pumpCirculationDraw: (document.getElementById("pumpCirculationDraw") || {}).dataset ? (document.getElementById("pumpCirculationDraw").dataset.drawing || "") : "",
       pumpCirculationHe: !!document.querySelector('input[name="pumpCirculationHe"]:checked'),
-      pumpCirculationStfDraw: (document.getElementById("pumpCirculationStfDraw") || {}).dataset ? (document.getElementById("pumpCirculationStfDraw").dataset.drawing || "") : "",
+      pumpCirculationStf: ((document.getElementById("pumpCirculationStf") || {}).value || "").trim(),
       pumpStorageDraw: (document.getElementById("pumpStorageDraw") || {}).dataset ? (document.getElementById("pumpStorageDraw").dataset.drawing || "") : "",
       pumpStorageHe: !!document.querySelector('input[name="pumpStorageHe"]:checked'),
-      pumpStorageStfDraw: (document.getElementById("pumpStorageStfDraw") || {}).dataset ? (document.getElementById("pumpStorageStfDraw").dataset.drawing || "") : "",
+      pumpStorageStf: ((document.getElementById("pumpStorageStf") || {}).value || "").trim(),
       pumpRecircDraw: (document.getElementById("pumpRecircDraw") || {}).dataset ? (document.getElementById("pumpRecircDraw").dataset.drawing || "") : "",
       pumpRecircHe: !!document.querySelector('input[name="pumpRecircHe"]:checked'),
-      pumpRecircStfDraw: (document.getElementById("pumpRecircStfDraw") || {}).dataset ? (document.getElementById("pumpRecircStfDraw").dataset.drawing || "") : "",
+      pumpRecircStf: ((document.getElementById("pumpRecircStf") || {}).value || "").trim(),
       heatingCircuits: ((document.getElementById("heatingCircuits") || {}).value || "").trim(),
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: distributorPhotoChecked,
@@ -2191,15 +2291,47 @@
     const hasSystem = !!(
       system.systemManufacturer || system.systemManufacturerDraw || system.systemType || system.systemTypeDraw ||
       system.systemPowerDraw || system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
-      system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStfDraw ||
-      system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStfDraw ||
-      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStfDraw ||
+      system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
+      system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStf ||
+      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStf ||
       system.optionNightReduction || system.optionHydraulicBalance || system.optionHeaterNiches || system.optionCirculationTimed ||
       system.systemThermostatValves || system.heatingCircuits ||
       system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.distributorDnDraw ||
       system.layingSpacing || system.fbhLineDiameter || detailsOpen
     );
     const sections = [];
+    const hasAddress = !!(
+      system.addressNameDraw || system.addressStreetDraw || system.addressNumberDraw ||
+      system.addressCityDraw || system.addressPhoneDraw || system.addressEmailDraw
+    );
+    if(hasAddress){
+      const rows = [];
+      const addRow = (label, draw) => {
+        if(draw){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell("", draw) + '</td></tr>');
+        }
+      };
+      addRow("Name", system.addressNameDraw);
+      addRow("Stra\u00dfe", system.addressStreetDraw);
+      addRow("Nr.", system.addressNumberDraw);
+      addRow("PLZ/Ort", system.addressCityDraw);
+      addRow("Telefon", system.addressPhoneDraw);
+      addRow("Email", system.addressEmailDraw);
+      if(rows.length){
+        sections.push([
+          '<section class="room">',
+          '<div class="room-head">',
+          '<div><div class="room-title">Anschrift</div><div class="room-sub">Stammdaten</div></div>',
+          '<div class="badge">Adresse</div>',
+          '</div>',
+          '<table class="hk-table">',
+          '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
+          '<tbody>',
+          rows.join(""),
+          '</tbody></table></section>'
+        ].join(""));
+      }
+    }
     if(hasSystem){
       const rows = [];
       const addRow = (label, value, draw) => {
@@ -2231,13 +2363,13 @@
       addRow("Durchmesser Leitung FBH", system.fbhLineDiameter, "");
       addRow("Umw\u00e4lzpumpe", "", system.pumpCirculationDraw);
       addFlag("Umw\u00e4lzpumpe HE?", system.pumpCirculationHe);
-      addRow("Umw\u00e4lzpumpe Stf", "", system.pumpCirculationStfDraw);
+      addRow("Umw\u00e4lzpumpe Stf", system.pumpCirculationStf, "");
       addRow("Speicherladepumpe", "", system.pumpStorageDraw);
       addFlag("Speicherladepumpe HE?", system.pumpStorageHe);
-      addRow("Speicherladepumpe Stf", "", system.pumpStorageStfDraw);
+      addRow("Speicherladepumpe Stf", system.pumpStorageStf, "");
       addRow("Zirkulationspumpe", "", system.pumpRecircDraw);
       addFlag("Zirkulationspumpe HE?", system.pumpRecircHe);
-      addRow("Zirkulationspumpe Stf", "", system.pumpRecircStfDraw);
+      addRow("Zirkulationspumpe Stf", system.pumpRecircStf, "");
       if(rows.length){
         sections.push([
           '<section class="room">',
@@ -2368,6 +2500,9 @@
       const data = collectData();
       if(
         !data.rooms.length &&
+        !data.system.addressNameDraw && !data.system.addressStreetDraw &&
+        !data.system.addressNumberDraw && !data.system.addressCityDraw &&
+        !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
         !data.system.systemTypeDraw &&
         !data.system.systemPowerDraw &&
@@ -2377,9 +2512,9 @@
         !data.system.surfaceHeating && !data.system.distributorPhoto &&
         !data.system.heatingCircuits && !data.system.distributorDn &&
         !data.system.layingSpacing && !data.system.fbhLineDiameter &&
-        !data.system.pumpCirculationDraw && !data.system.pumpCirculationHe && !data.system.pumpCirculationStfDraw &&
-        !data.system.pumpStorageDraw && !data.system.pumpStorageHe && !data.system.pumpStorageStfDraw &&
-        !data.system.pumpRecircDraw && !data.system.pumpRecircHe && !data.system.pumpRecircStfDraw
+        !data.system.pumpCirculationDraw && !data.system.pumpCirculationHe && !data.system.pumpCirculationStf &&
+        !data.system.pumpStorageDraw && !data.system.pumpStorageHe && !data.system.pumpStorageStf &&
+        !data.system.pumpRecircDraw && !data.system.pumpRecircHe && !data.system.pumpRecircStf
       ){
         alert("Keine Daten erfasst.");
         return;
