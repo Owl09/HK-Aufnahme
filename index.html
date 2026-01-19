@@ -1932,7 +1932,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=9").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=10").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -3353,6 +3353,18 @@
     setTimeout(() => URL.revokeObjectURL(url), 15000);
   }
 
+  function downloadHtml(html, filename){
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename || "hk-uebersicht.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 15000);
+  }
+
   const shareBtn = document.querySelector(".share-btn");
   const resetBtn = document.querySelector(".reset-btn");
   window.addEventListener("afterprint", () => {
@@ -3430,15 +3442,15 @@
         '</body></html>'
       ].join("");
       try{
-        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        if(navigator.canShare && navigator.canShare({ files: [file] })){
-          await navigator.share({ files: [file] });
-        } else {
-          renderPrint(data);
+        if(navigator.share){
+          const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
+          if(!navigator.canShare || navigator.canShare({ files: [file] })){
+            await navigator.share({ files: [file] });
+            return;
+          }
         }
-      } catch(e){
-        renderPrint(data);
-      }
+      } catch(e){}
+      downloadHtml(html, "hk-uebersicht.html");
     });
   }
   if(resetBtn){
