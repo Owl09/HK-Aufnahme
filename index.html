@@ -2589,12 +2589,6 @@
     const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
-    const windowHrValue = ((document.getElementById("windowHr") || {}).value || "").trim();
-    const windowRoomDrawValue = (document.getElementById("windowRoomDraw") || {}).dataset ? (document.getElementById("windowRoomDraw").dataset.drawing || "") : "";
-    const windowVgValue = ((document.getElementById("windowVg") || {}).value || "").trim();
-    const windowMaterialValue = ((document.getElementById("windowMaterial") || {}).value || "").trim();
-    const windowSizeDrawValue = (document.getElementById("windowSizeDraw") || {}).dataset ? (document.getElementById("windowSizeDraw").dataset.drawing || "") : "";
-    const windowYearDrawValue = (document.getElementById("windowYearDraw") || {}).dataset ? (document.getElementById("windowYearDraw").dataset.drawing || "") : "";
     const windowHr = ((document.getElementById("windowHr") || {}).value || "").trim();
     const windowRoomDraw = (document.getElementById("windowRoomDraw") || {}).dataset ? (document.getElementById("windowRoomDraw").dataset.drawing || "") : "";
     const windowVg = ((document.getElementById("windowVg") || {}).value || "").trim();
@@ -2673,12 +2667,12 @@
       wallWestL4Draw,
       wallWestL5Draw,
       wallWestTotalDraw,
-      windowHr: windowHrValue,
-      windowRoomDraw: windowRoomDrawValue,
-      windowVg: windowVgValue,
-      windowMaterial: windowMaterialValue,
-      windowSizeDraw: windowSizeDrawValue,
-      windowYearDraw: windowYearDrawValue,
+      windowHr: data.system.windowHr || "",
+      windowRoomDraw: data.system.windowRoomDraw || "",
+      windowVg: data.system.windowVg || "",
+      windowMaterial: data.system.windowMaterial || "",
+      windowSizeDraw: data.system.windowSizeDraw || "",
+      windowYearDraw: data.system.windowYearDraw || "",
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
