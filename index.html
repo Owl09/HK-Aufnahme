@@ -3209,7 +3209,6 @@
   const STORAGE_KEY = "hkFormStateV1";
   let saveTimer = null;
   let eraserMode = false;
-  let systemPhotoFiles = [];
   const eraserBtn = document.querySelector(".eraser-btn");
   if(eraserBtn){
     eraserBtn.addEventListener("click", () => {
@@ -3230,7 +3229,6 @@
         reader.readAsDataURL(file);
       });
       for(const file of files){
-        systemPhotoFiles.push(file);
         const dataUrl = await readFile(file);
         if(dataUrl) stored.push(dataUrl);
       }
@@ -4977,21 +4975,11 @@
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
         const files = [file];
-        const photoList = systemPhotoFiles.length
-          ? systemPhotoFiles
-          : (Array.isArray(data.system.systemPhotoDraws) ? data.system.systemPhotoDraws : []);
-        if(photoList.length){
-          if(photoList[0] instanceof File){
-            photoList.forEach(photo => {
-              if(photo) files.push(photo);
-            });
-          } else {
-            photoList.forEach((dataUrl, idx) => {
-              const photoFile = dataUrlToFile(dataUrl, "anlagentechnik-foto-" + (idx + 1) + ".png");
-              if(photoFile) files.push(photoFile);
-            });
-          }
-        }
+        const photoList = Array.isArray(data.system.systemPhotoDraws) ? data.system.systemPhotoDraws : [];
+        photoList.forEach((dataUrl, idx) => {
+          const photoFile = dataUrlToFile(dataUrl, "anlagentechnik-foto-" + (idx + 1) + ".png");
+          if(photoFile) files.push(photoFile);
+        });
         if(navigator.canShare && !navigator.canShare({ files })){
           alert("Teilen mit mehreren Dateien ist nicht verf\u00fcgbar.");
           return;
