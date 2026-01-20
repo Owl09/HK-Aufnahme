@@ -54,7 +54,7 @@
         .matrix-table .col-narrow { width: 12%; }
         .draw-wrap { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
         .draw-canvas { width: 100%; height: 44px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; touch-action: none; }
-        .draw-canvas.large { height: 720px; }
+        .draw-canvas.large { height: 842px; }
         .draw-wrap { margin-top: 0; }
         .draw-actions { justify-content: flex-end; }
         .draw-actions { display: none; }
@@ -78,6 +78,7 @@
         .share-btn { border-color: #16a34a; color: #14532d; background: #dcfce7; }
         .share-btn.active { background: #bbf7d0; border-color: #86efac; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
+        .photo-input { display: none; }
         .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
         .print-view { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; padding: 18px; }
         .print-view .doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
@@ -1581,6 +1582,13 @@
                     <canvas class="draw-canvas" data-draw-target="systemManufacturerDraw"></canvas>
                 </div>
             </div>
+            <div class="field-row single">
+                <label>Foto</label>
+                <div>
+                    <input id="systemPhotoInput" class="photo-input" type="file" accept="image/*" capture="environment">
+                    <label for="systemPhotoInput" class="add-window-btn">Kamera &ouml;ffnen</label>
+                </div>
+            </div>
             <div class="field-row dual type-row">
                 <label for="systemTypeDraw">Typ</label>
                 <div class="draw-wrap">
@@ -2032,7 +2040,7 @@
             </div>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card">
             <summary><span>Sonstiges</span></summary>
             <div class="section-body">
                 <h3 style="margin:6px 0 0;font-size:16px;">Solarthermie</h3>
@@ -2159,7 +2167,7 @@
                 </table>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card">
             <summary><span>R&auml;ume</span></summary>
             <div class="section-body">
         <section class="room-card">
@@ -3180,14 +3188,12 @@
         <button type="button" class="add-room-btn">+ Raum hinzuf&uuml;gen</button>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card">
             <summary><span>Notizen</span></summary>
             <div class="section-body">
-                <div class="field-row single">
-                    <div class="draw-wrap">
-                        <input type="hidden" id="notesLargeDraw" name="notesLargeDraw">
-                        <canvas class="draw-canvas large" data-draw-target="notesLargeDraw"></canvas>
-                    </div>
+                <div class="draw-wrap">
+                    <input type="hidden" id="notesLargeDraw" name="notesLargeDraw">
+                    <canvas class="draw-canvas large" data-draw-target="notesLargeDraw"></canvas>
                 </div>
             </div>
         </details>
