@@ -4443,7 +4443,7 @@
       fbhLineDiameter: ((document.getElementById("fBHLineDiameter") || {}).value || "").trim()
     };
     const hasSystem = !!(
-      system.systemManufacturer || system.systemManufacturerDraw || system.systemPhotoDraw ||
+      system.systemManufacturer || system.systemManufacturerDraw ||
       system.systemType || system.systemTypeDraw ||
       system.systemPowerDraw || system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
       system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
@@ -4703,7 +4703,6 @@
         if(flag) rows.push('<tr><td>' + label + '</td><td>Ja</td></tr>');
       };
       addRow("Hersteller", system.systemManufacturer, system.systemManufacturerDraw);
-      addRow("Foto", "", system.systemPhotoDraw);
       addRow("Typ", "", system.systemTypeDraw);
       addRow("Leistung", "", system.systemPowerDraw);
       addRow("Baujahr", system.systemYear, "");
@@ -4851,6 +4850,21 @@
     setTimeout(() => URL.revokeObjectURL(url), 15000);
   }
 
+  function dataUrlToFile(dataUrl, filename){
+    if(!dataUrl) return null;
+    const parts = String(dataUrl).split(",");
+    if(parts.length < 2) return null;
+    const match = parts[0].match(/data:(.*?);base64/);
+    const mime = match ? match[1] : "application/octet-stream";
+    const binary = atob(parts[1]);
+    const len = binary.length;
+    const buffer = new Uint8Array(len);
+    for(let i = 0; i < len; i++){
+      buffer[i] = binary.charCodeAt(i);
+    }
+    return new File([buffer], filename, { type: mime });
+  }
+
   function downloadHtml(html, filename){
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -4949,7 +4963,12 @@
       }
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        await navigator.share({ files: [file] });
+        const files = [file];
+        if(data.system.systemPhotoDraw){
+          const photoFile = dataUrlToFile(data.system.systemPhotoDraw, "anlagentechnik-foto.png");
+          if(photoFile) files.push(photoFile);
+        }
+        await navigator.share({ files });
       } catch(e){
         alert("Teilen konnte nicht ge\u00f6ffnet werden.");
       }
