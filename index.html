@@ -307,14 +307,7 @@
         <details class="system-card" open>
             <summary><span>Au&szlig;enw&auml;nde</span></summary>
             <div class="section-body">
-                <table class="matrix-table gaube-table">
-                    <colgroup>
-                        <col style="width:12%;">
-                        <col style="width:22%;">
-                        <col style="width:22%;">
-                        <col style="width:22%;">
-                        <col style="width:22%;">
-                    </colgroup>
+                <table class="matrix-table">
                     <thead>
                         <tr>
                             <th>Aufbau</th>
@@ -562,7 +555,14 @@
         <details class="system-card" open>
             <summary><span>Dachgaube</span></summary>
             <div class="section-body">
-                <table class="matrix-table">
+                <table class="matrix-table gaube-table">
+                    <colgroup>
+                        <col style="width:12%;">
+                        <col style="width:22%;">
+                        <col style="width:22%;">
+                        <col style="width:22%;">
+                        <col style="width:22%;">
+                    </colgroup>
                     <thead>
                         <tr>
                             <th></th>
@@ -1055,6 +1055,66 @@
                         </tr>
                     </tbody>
                 </table>
+                <table class="matrix-table gaube-window-table">
+                    <thead>
+                        <tr>
+                            <th>HR</th>
+                            <th class="col-narrow">Raum</th>
+                            <th>VG</th>
+                            <th>Stoff</th>
+                            <th class="col-wide">Ma&szlig;e</th>
+                            <th class="col-narrow">Bj.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="gaube-window-row" data-gaube-window-index="1">
+                            <td>
+                                <select id="gaubeWindowHr1" name="gaubeWindowHr1" data-gaube-window-field="gaubeWindowHr">
+                                    <option value="" selected disabled>HR</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td class="col-narrow">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaubeWindowRoomDraw1" name="gaubeWindowRoomDraw1" data-gaube-window-field="gaubeWindowRoomDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaubeWindowRoomDraw1"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <select id="gaubeWindowVg1" name="gaubeWindowVg1" data-gaube-window-field="gaubeWindowVg">
+                                    <option value="" selected disabled>VG</option>
+                                    <option>EV</option>
+                                    <option>DV</option>
+                                    <option>3F</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="gaubeWindowMaterial1" name="gaubeWindowMaterial1" data-gaube-window-field="gaubeWindowMaterial">
+                                    <option value="" selected disabled>Stoff</option>
+                                    <option>KU</option>
+                                    <option>HO</option>
+                                    <option>ME</option>
+                                </select>
+                            </td>
+                            <td class="col-wide">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaubeWindowSizeDraw1" name="gaubeWindowSizeDraw1" data-gaube-window-field="gaubeWindowSizeDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaubeWindowSizeDraw1"></canvas>
+                                </div>
+                            </td>
+                            <td class="col-narrow">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaubeWindowYearDraw1" name="gaubeWindowYearDraw1" data-gaube-window-field="gaubeWindowYearDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaubeWindowYearDraw1"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="add-window-btn add-gaube-window-btn">+ Gaubenfenster hinzuf&uuml;gen</button>
             </div>
         </details>
         <details class="system-card" open>
@@ -2440,7 +2500,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=18").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=21").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -2832,6 +2892,7 @@
       hkCounts[String(idx + 1)] = card.querySelectorAll(".hk-card").length;
     });
     const windowCount = document.querySelectorAll(".window-row").length;
+    const gaubeWindowCount = document.querySelectorAll(".gaube-window-row").length;
     const values = {};
     document.querySelectorAll("input, select, textarea").forEach(el => {
       if(!el.name) return;
@@ -2849,7 +2910,7 @@
       }
       values[el.name] = { type: el.type, value: el.value };
     });
-    return { roomCount, hkCounts, windowCount, values };
+    return { roomCount, hkCounts, windowCount, gaubeWindowCount, values };
   }
 
   function scheduleSave(){
@@ -2906,6 +2967,15 @@
       if(state.windowCount > currentWindows){
         for(let i = currentWindows; i < state.windowCount; i++){
           addWindowBtnLocal.click();
+        }
+      }
+    }
+    const addGaubeWindowBtnLocal = document.querySelector(".add-gaube-window-btn");
+    if(addGaubeWindowBtnLocal && state.gaubeWindowCount){
+      const currentGaubeWindows = document.querySelectorAll(".gaube-window-row").length;
+      if(state.gaubeWindowCount > currentGaubeWindows){
+        for(let i = currentGaubeWindows; i < state.gaubeWindowCount; i++){
+          addGaubeWindowBtnLocal.click();
         }
       }
     }
@@ -3092,6 +3162,56 @@
       const clone = template.cloneNode(true);
       tbody.appendChild(clone);
       resetWindowRow(clone, nextIndex, lastRow);
+      scheduleSave();
+    });
+  }
+
+  function resetGaubeWindowRow(row, index, sourceRow){
+    row.dataset.gaubeWindowIndex = String(index);
+    row.querySelectorAll("[data-gaube-window-field]").forEach(el => {
+      const base = el.getAttribute("data-gaube-window-field");
+      if(!base) return;
+      const nextId = base + index;
+      el.id = nextId;
+      el.name = nextId;
+      if(el.tagName.toLowerCase() === "input" && el.type === "hidden"){
+        el.dataset.drawing = "";
+      }
+      if(el.tagName.toLowerCase() === "select"){
+        const sourceSelect = sourceRow
+          ? sourceRow.querySelector('select[data-gaube-window-field="' + base + '"]')
+          : null;
+        el.value = sourceSelect ? sourceSelect.value : "";
+      }
+    });
+    row.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+      const wrap = canvas.closest(".draw-wrap");
+      const hidden = wrap ? wrap.querySelector("input[type=\"hidden\"][data-gaube-window-field]") : null;
+      if(hidden){
+        canvas.setAttribute("data-draw-target", hidden.id);
+        const ctx = canvas.getContext("2d");
+        if(ctx){
+          resizeDrawCanvas(canvas, ctx);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        initDrawCanvas(canvas, hidden);
+      }
+    });
+  }
+
+  const addGaubeWindowBtn = document.querySelector(".add-gaube-window-btn");
+  if(addGaubeWindowBtn){
+    addGaubeWindowBtn.addEventListener("click", () => {
+      const tbody = document.querySelector(".gaube-window-table tbody");
+      if(!tbody) return;
+      const rows = tbody.querySelectorAll(".gaube-window-row");
+      const nextIndex = rows.length + 1;
+      const template = rows[0];
+      if(!template) return;
+      const lastRow = rows[rows.length - 1];
+      const clone = template.cloneNode(true);
+      tbody.appendChild(clone);
+      resetGaubeWindowRow(clone, nextIndex, lastRow);
       scheduleSave();
     });
   }
