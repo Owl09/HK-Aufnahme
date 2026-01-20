@@ -84,8 +84,15 @@
           top: calc(12px + env(safe-area-inset-top));
           left: 12px;
           z-index: 1000;
-          width: auto;
-          min-width: 140px;
+          width: 44px;
+          height: 44px;
+          min-width: 44px;
+          padding: 0;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
         }
         .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
         .print-view { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; padding: 18px; }
@@ -3204,13 +3211,14 @@
         <button type="button" class="reset-btn">Alles reseten</button>
     </form>
 </main>
-<button type="button" class="eraser-btn floating-eraser">Radierer</button>
+<button type="button" class="eraser-btn floating-eraser">R</button>
 <div id="printView" class="print-view" aria-hidden="true"></div>
 <script>
 (function(){
   const STORAGE_KEY = "hkFormStateV1";
   let saveTimer = null;
   let eraserMode = false;
+  let shareHtmlCache = "";
   const eraserButtons = document.querySelectorAll(".eraser-btn");
   if(eraserButtons.length){
     eraserButtons.forEach(btn => {
@@ -3642,6 +3650,7 @@
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormState()));
       } catch(e){}
+      updateShareCache();
     }, 300);
   }
 
@@ -3745,6 +3754,7 @@
     });
     toggleSurfaceHeating();
     updateLabels();
+    updateShareCache();
   }
 
   document.addEventListener("input", scheduleSave, true);
@@ -4001,6 +4011,7 @@
   restoreFormState();
   toggleSurfaceHeating();
   toggleBuildingData();
+  updateShareCache();
 
   function pickField(selectEl, customEl){
     const selectVal = selectEl && selectEl.value ? selectEl.value : "";
@@ -4804,6 +4815,15 @@
     });
   }
 
+  function updateShareCache(){
+    const data = collectData();
+    data.system.windows = collectWindowsFromDom();
+    data.system.gaubes = collectGaubesFromDom();
+    renderPrint(data, true);
+    const container = document.getElementById("printView");
+    shareHtmlCache = container ? container.innerHTML : "";
+  }
+
   function downloadFile(data){
     const now = new Date().toLocaleString();
     const markup = buildReportMarkup(data, now);
@@ -4906,7 +4926,7 @@
         alert("Keine Daten erfasst.");
         return;
       }
-      renderPrint(data, true);
+      const reportMarkup = shareHtmlCache || document.getElementById("printView").innerHTML;
       const html = [
         '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
         '<style>',
@@ -4926,7 +4946,7 @@
         'th { background: #f8fafc; font-weight: 700; }',
         '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
         '</style></head><body>',
-        document.getElementById("printView").innerHTML,
+        reportMarkup,
         '</body></html>'
       ].join("");
       if(!navigator.share){
