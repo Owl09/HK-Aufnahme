@@ -30,6 +30,8 @@
         .field-row { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 12px; align-items: center; }
         .field-row.single { grid-template-columns: 170px 1fr; }
         .field-row.dual { grid-template-columns: 170px 0.8fr 170px 0.8fr; column-gap: 2px; }
+        .field-row.annex-row { grid-template-columns: 150px 1fr 120px 1fr 110px 1fr; column-gap: 8px; }
+        .field-row.ogd-row { grid-template-columns: 170px 0.8fr 1fr; }
         .field-row.dual.type-row { grid-template-columns: 170px 1fr 170px 0.6fr; }
         .field-row.pump { grid-template-columns: 170px 1fr 70px 1fr; column-gap: 8px; }
         .label-shift-right { margin-left: 10px; }
@@ -40,7 +42,9 @@
         .inline-options input { width: auto; }
         .inline-right { margin-left: auto; display: inline-flex; gap: 16px; align-items: center; }
         .check-grid { display: grid; grid-template-columns: repeat(2, minmax(160px, 1fr)); gap: 8px 16px; }
+        .roof-type-grid { grid-template-columns: repeat(4, minmax(140px, 1fr)); }
         .matrix-table { width: 100%; border-collapse: collapse; }
+        .roof-table th, .roof-table td { width: 25%; }
         .gaube-table { table-layout: fixed; }
         .gaube-table th:first-child, .gaube-table td:first-child { width: 12%; }
         .gaube-table th:not(:first-child), .gaube-table td:not(:first-child) { width: 22%; }
@@ -50,6 +54,7 @@
         .matrix-table .col-narrow { width: 12%; }
         .draw-wrap { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
         .draw-canvas { width: 100%; height: 44px; border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; touch-action: none; }
+        .draw-canvas.large { height: 720px; }
         .draw-wrap { margin-top: 0; }
         .draw-actions { justify-content: flex-end; }
         .draw-actions { display: none; }
@@ -1118,6 +1123,448 @@
             </div>
         </details>
         <details class="system-card" open>
+            <summary><span>Dach/OGD</span></summary>
+            <div class="section-body">
+                <h3 style="margin:0 0 6px;font-size:16px;">Dachfl&auml;chenfenster</h3>
+                <table class="matrix-table roof-window-table">
+                    <thead>
+                        <tr>
+                            <th>HR</th>
+                            <th class="col-narrow">Raum</th>
+                            <th>VG</th>
+                            <th>Stoff</th>
+                            <th class="col-wide">Ma&szlig;e</th>
+                            <th class="col-narrow">Bj.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="roof-window-row" data-roof-window-index="1">
+                            <td>
+                                <select id="roofWindowHr1" name="roofWindowHr1" data-roof-window-field="roofWindowHr">
+                                    <option value="" selected disabled>HR</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td class="col-narrow">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofWindowRoomDraw1" name="roofWindowRoomDraw1" data-roof-window-field="roofWindowRoomDraw">
+                                    <canvas class="draw-canvas" data-draw-target="roofWindowRoomDraw1"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <select id="roofWindowVg1" name="roofWindowVg1" data-roof-window-field="roofWindowVg">
+                                    <option value="" selected disabled>VG</option>
+                                    <option>EV</option>
+                                    <option>DV</option>
+                                    <option>3F</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="roofWindowMaterial1" name="roofWindowMaterial1" data-roof-window-field="roofWindowMaterial">
+                                    <option value="" selected disabled>Stoff</option>
+                                    <option>KU</option>
+                                    <option>HO</option>
+                                    <option>ME</option>
+                                </select>
+                            </td>
+                            <td class="col-wide">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofWindowSizeDraw1" name="roofWindowSizeDraw1" data-roof-window-field="roofWindowSizeDraw">
+                                    <canvas class="draw-canvas" data-draw-target="roofWindowSizeDraw1"></canvas>
+                                </div>
+                            </td>
+                            <td class="col-narrow">
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofWindowYearDraw1" name="roofWindowYearDraw1" data-roof-window-field="roofWindowYearDraw">
+                                    <canvas class="draw-canvas" data-draw-target="roofWindowYearDraw1"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="add-window-btn add-roof-window-btn">Dachfl&auml;chenfenster</button>
+                <h3 style="margin:8px 0 0;font-size:16px;">OGD</h3>
+                <div class="field-row dual ogd-row">
+                    <label for="ogdStructure">Art/Aufbau/Material</label>
+                    <select id="ogdStructure" name="ogdStructure">
+                        <option value="" selected disabled>Auswahl &hellip;</option>
+                        <option>Massiv</option>
+                        <option>Holzbalken</option>
+                    </select>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="ogdStructureDraw" name="ogdStructureDraw">
+                        <canvas class="draw-canvas" data-draw-target="ogdStructureDraw"></canvas>
+                    </div>
+                </div>
+                <div class="field-row single">
+                    <label for="ogdInsulationDraw">D&auml;mmung</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="ogdInsulationDraw" name="ogdInsulationDraw">
+                        <canvas class="draw-canvas" data-draw-target="ogdInsulationDraw"></canvas>
+                    </div>
+                </div>
+                <h3 style="margin:8px 0 0;font-size:16px;">Dach</h3>
+                <div class="check-grid roof-type-grid">
+                    <label><input type="checkbox" name="roofTypeSatteldach">Satteldach</label>
+                    <label><input type="checkbox" name="roofTypeWalmdach">Walmdach</label>
+                    <label><input type="checkbox" name="roofTypePultdach">Pultdach</label>
+                    <label><input type="checkbox" name="roofTypeMansardendach">Mansardendach</label>
+                    <label><input type="checkbox" name="roofTypeFlachdach">Flachdach</label>
+                    <label><input type="checkbox" name="roofTypeKruppelwalmdach">Kr&uuml;ppelwalmdach</label>
+                    <label><input type="checkbox" name="roofTypeSheddach">Sheddach</label>
+                </div>
+                <table class="matrix-table roof-table">
+                    <thead>
+                        <tr>
+                            <th>Tiefe</th>
+                            <th>Breite</th>
+                            <th>Abstand</th>
+                            <th>Winkel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofDepthDraw" name="roofDepthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="roofDepthDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofWidthDraw" name="roofWidthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="roofWidthDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofSpacingDraw" name="roofSpacingDraw">
+                                    <canvas class="draw-canvas" data-draw-target="roofSpacingDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofAngleDraw" name="roofAngleDraw">
+                                    <canvas class="draw-canvas" data-draw-target="roofAngleDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofDepthDraw2" name="roofDepthDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="roofDepthDraw2"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofWidthDraw2" name="roofWidthDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="roofWidthDraw2"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofSpacingDraw2" name="roofSpacingDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="roofSpacingDraw2"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="roofAngleDraw2" name="roofAngleDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="roofAngleDraw2"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="field-row single">
+                    <label for="roofInsulationDraw">D&auml;mmung</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="roofInsulationDraw" name="roofInsulationDraw">
+                        <canvas class="draw-canvas" data-draw-target="roofInsulationDraw"></canvas>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details class="system-card">
+            <summary><span>Anbau</span></summary>
+            <div class="section-body">
+                <div class="field-row annex-row">
+                    <label>Anbau</label>
+                    <div class="inline-options">
+                        <label><input type="radio" name="annexExists" value="Ja">Ja</label>
+                        <label><input type="radio" name="annexExists" value="Nein">Nein</label>
+                    </div>
+                    <label for="annexYearDraw">Baujahr</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="annexYearDraw" name="annexYearDraw">
+                        <canvas class="draw-canvas" data-draw-target="annexYearDraw"></canvas>
+                    </div>
+                    <label for="annexType">Bodenplatte</label>
+                    <select id="annexType" name="annexType">
+                        <option value="" selected disabled>Auswahl &hellip;</option>
+                        <option>Massiv</option>
+                        <option>Holzbalken</option>
+                    </select>
+                </div>
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Aufbau</th>
+                            <th>Schicht 1</th>
+                            <th>Schicht 2</th>
+                            <th>Schicht 3</th>
+                            <th>Schicht 4</th>
+                            <th>Schicht 5</th>
+                            <th>Gesamtdicke</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nord</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallNorthL1Draw" name="annexWallNorthL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallNorthL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallNorthL2Draw" name="annexWallNorthL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallNorthL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallNorthL3Draw" name="annexWallNorthL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallNorthL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallNorthL4Draw" name="annexWallNorthL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallNorthL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallNorthL5Draw" name="annexWallNorthL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallNorthL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallNorthTotalDraw" name="annexWallNorthTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallNorthTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ost</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallEastL1Draw" name="annexWallEastL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallEastL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallEastL2Draw" name="annexWallEastL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallEastL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallEastL3Draw" name="annexWallEastL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallEastL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallEastL4Draw" name="annexWallEastL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallEastL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallEastL5Draw" name="annexWallEastL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallEastL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallEastTotalDraw" name="annexWallEastTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallEastTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>S&uuml;d</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallSouthL1Draw" name="annexWallSouthL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallSouthL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallSouthL2Draw" name="annexWallSouthL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallSouthL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallSouthL3Draw" name="annexWallSouthL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallSouthL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallSouthL4Draw" name="annexWallSouthL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallSouthL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallSouthL5Draw" name="annexWallSouthL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallSouthL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallSouthTotalDraw" name="annexWallSouthTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallSouthTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>West</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallWestL1Draw" name="annexWallWestL1Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallWestL1Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallWestL2Draw" name="annexWallWestL2Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallWestL2Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallWestL3Draw" name="annexWallWestL3Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallWestL3Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallWestL4Draw" name="annexWallWestL4Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallWestL4Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallWestL5Draw" name="annexWallWestL5Draw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallWestL5Draw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexWallWestTotalDraw" name="annexWallWestTotalDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexWallWestTotalDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 style="margin:8px 0 0;font-size:16px;">Dach</h3>
+                <div class="check-grid roof-type-grid">
+                    <label><input type="checkbox" name="annexRoofTypeSatteldach">Satteldach</label>
+                    <label><input type="checkbox" name="annexRoofTypeWalmdach">Walmdach</label>
+                    <label><input type="checkbox" name="annexRoofTypePultdach">Pultdach</label>
+                    <label><input type="checkbox" name="annexRoofTypeMansardendach">Mansardendach</label>
+                    <label><input type="checkbox" name="annexRoofTypeFlachdach">Flachdach</label>
+                    <label><input type="checkbox" name="annexRoofTypeKruppelwalmdach">Kr&uuml;ppelwalmdach</label>
+                    <label><input type="checkbox" name="annexRoofTypeSheddach">Sheddach</label>
+                </div>
+                <table class="matrix-table roof-table">
+                    <thead>
+                        <tr>
+                            <th>Tiefe</th>
+                            <th>Breite</th>
+                            <th>Abstand</th>
+                            <th>Winkel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofDepthDraw" name="annexRoofDepthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofDepthDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofWidthDraw" name="annexRoofWidthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofWidthDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofSpacingDraw" name="annexRoofSpacingDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofSpacingDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofAngleDraw" name="annexRoofAngleDraw">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofAngleDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofDepthDraw2" name="annexRoofDepthDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofDepthDraw2"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofWidthDraw2" name="annexRoofWidthDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofWidthDraw2"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofSpacingDraw2" name="annexRoofSpacingDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofSpacingDraw2"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="annexRoofAngleDraw2" name="annexRoofAngleDraw2">
+                                    <canvas class="draw-canvas" data-draw-target="annexRoofAngleDraw2"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="field-row single">
+                    <label for="annexRoofInsulationDraw">D&auml;mmung</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="annexRoofInsulationDraw" name="annexRoofInsulationDraw">
+                        <canvas class="draw-canvas" data-draw-target="annexRoofInsulationDraw"></canvas>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details class="system-card" open>
             <summary><span>Anlagentechnik</span></summary>
             <div class="section-body">
             <div class="field-row">
@@ -1369,6 +1816,132 @@
                     <option>ganze GEG</option>
                 </select>
             </div>
+            <h3 style="margin:6px 0 0;font-size:16px;">Brauchwasser</h3>
+            <div class="system-row">
+                <div class="inline-options">
+                    <label><input type="radio" name="hotWaterType" value="Direkt">Direkt</label>
+                    <label><input type="radio" name="hotWaterType" value="Indirekt">Indirekt</label>
+                </div>
+            </div>
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Hersteller</th>
+                        <th>Typ</th>
+                        <th>Leistung</th>
+                        <th>Brennstoff</th>
+                        <th>Speicher in L</th>
+                        <th>D&auml;mmung Leitung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="hotWaterManufacturerDraw" name="hotWaterManufacturerDraw">
+                                <canvas class="draw-canvas" data-draw-target="hotWaterManufacturerDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="hotWaterTypeDraw" name="hotWaterTypeDraw">
+                                <canvas class="draw-canvas" data-draw-target="hotWaterTypeDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="hotWaterPowerDraw" name="hotWaterPowerDraw">
+                                <canvas class="draw-canvas" data-draw-target="hotWaterPowerDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="hotWaterFuelDraw" name="hotWaterFuelDraw">
+                                <canvas class="draw-canvas" data-draw-target="hotWaterFuelDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="hotWaterStorageDraw" name="hotWaterStorageDraw">
+                                <canvas class="draw-canvas" data-draw-target="hotWaterStorageDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <select id="hotWaterPipeInsulation" name="hotWaterPipeInsulation">
+                                <option value="" selected disabled>D&auml;mmung &hellip;</option>
+                                <option>Keine D&auml;mmung</option>
+                                <option>halbe GEG</option>
+                                <option>ganze GEG</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 style="margin:6px 0 0;font-size:16px;">Zus&auml;tzlicher W&auml;rmeerzeuger</h3>
+            <div class="field-row">
+                <label>Kaminofen?</label>
+                <div class="inline-options">
+                    <label><input type="radio" name="extraHeaterStove" value="Ja">Ja</label>
+                    <label><input type="radio" name="extraHeaterStove" value="Nein">Nein</label>
+                </div>
+                <div class="inline-options">
+                    <label><input type="radio" name="extraHeaterType" value="Zentral">Zentral</label>
+                    <label><input type="radio" name="extraHeaterType" value="Dezentral">Dezentral</label>
+                </div>
+            </div>
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Hersteller</th>
+                        <th>Typ</th>
+                        <th>Leistung</th>
+                        <th>Baujahr</th>
+                        <th>Brennstoff</th>
+                        <th>Brauchwasserbereitung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="extraHeaterManufacturerDraw" name="extraHeaterManufacturerDraw">
+                                <canvas class="draw-canvas" data-draw-target="extraHeaterManufacturerDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="extraHeaterTypeDraw" name="extraHeaterTypeDraw">
+                                <canvas class="draw-canvas" data-draw-target="extraHeaterTypeDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="extraHeaterPowerDraw" name="extraHeaterPowerDraw">
+                                <canvas class="draw-canvas" data-draw-target="extraHeaterPowerDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="extraHeaterYearDraw" name="extraHeaterYearDraw">
+                                <canvas class="draw-canvas" data-draw-target="extraHeaterYearDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="draw-wrap">
+                                <input type="hidden" id="extraHeaterFuelDraw" name="extraHeaterFuelDraw">
+                                <canvas class="draw-canvas" data-draw-target="extraHeaterFuelDraw"></canvas>
+                            </div>
+                        </td>
+                        <td>
+                            <select id="extraHeaterHotWater" name="extraHeaterHotWater">
+                                <option value="" selected disabled>Auswahl &hellip;</option>
+                                <option>Ja</option>
+                                <option>Nein</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <h3 style="margin:6px 0 0;font-size:16px;">Fu&szlig;bodenheizung</h3>
             <div class="system-row" id="surfaceHeatingDetails">
                 <div class="inline-options">
@@ -1457,6 +2030,133 @@
                     </select>
                 </div>
             </div>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>Sonstiges</span></summary>
+            <div class="section-body">
+                <h3 style="margin:6px 0 0;font-size:16px;">Solarthermie</h3>
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Baujahr</th>
+                            <th>Speicher</th>
+                            <th>Pumpe</th>
+                            <th>Module</th>
+                            <th>Module m&sup2;</th>
+                            <th>Ausrichtung</th>
+                            <th>Kollektorart</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="solarYearDraw" name="solarYearDraw">
+                                    <canvas class="draw-canvas" data-draw-target="solarYearDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="solarStorageDraw" name="solarStorageDraw">
+                                    <canvas class="draw-canvas" data-draw-target="solarStorageDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="solarPumpDraw" name="solarPumpDraw">
+                                    <canvas class="draw-canvas" data-draw-target="solarPumpDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="solarModulesDraw" name="solarModulesDraw">
+                                    <canvas class="draw-canvas" data-draw-target="solarModulesDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="solarModulesAreaDraw" name="solarModulesAreaDraw">
+                                    <canvas class="draw-canvas" data-draw-target="solarModulesAreaDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <select id="solarOrientation" name="solarOrientation">
+                                    <option value="" selected disabled>Ausrichtung</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="solarCollectorType" name="solarCollectorType">
+                                    <option value="" selected disabled>Auswahl &hellip;</option>
+                                    <option>Flachkollektor</option>
+                                    <option>R&ouml;hrenkollektor</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 style="margin:6px 0 0;font-size:16px;">Photovoltaik</h3>
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Module</th>
+                            <th>Module m&sup2;</th>
+                            <th>Leistung</th>
+                            <th>Bel&uuml;ftung</th>
+                            <th>Ausrichtung</th>
+                            <th>Batteriespeicher</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="pvModulesDraw" name="pvModulesDraw">
+                                    <canvas class="draw-canvas" data-draw-target="pvModulesDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="pvModulesAreaDraw" name="pvModulesAreaDraw">
+                                    <canvas class="draw-canvas" data-draw-target="pvModulesAreaDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="pvPowerDraw" name="pvPowerDraw">
+                                    <canvas class="draw-canvas" data-draw-target="pvPowerDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <select id="pvVentilation" name="pvVentilation">
+                                    <option value="" selected disabled>Bel&uuml;ftung</option>
+                                    <option>Unbel&uuml;ftet</option>
+                                    <option>M&auml;&szlig;ig</option>
+                                    <option>Stark</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="pvOrientation" name="pvOrientation">
+                                    <option value="" selected disabled>Ausrichtung</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="pvBatteryDraw" name="pvBatteryDraw">
+                                    <canvas class="draw-canvas" data-draw-target="pvBatteryDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </details>
         <details class="system-card" open>
@@ -2480,6 +3180,17 @@
         <button type="button" class="add-room-btn">+ Raum hinzuf&uuml;gen</button>
             </div>
         </details>
+        <details class="system-card" open>
+            <summary><span>Notizen</span></summary>
+            <div class="section-body">
+                <div class="field-row single">
+                    <div class="draw-wrap">
+                        <input type="hidden" id="notesLargeDraw" name="notesLargeDraw">
+                        <canvas class="draw-canvas large" data-draw-target="notesLargeDraw"></canvas>
+                    </div>
+                </div>
+            </div>
+        </details>
         <button type="button" class="share-btn">Teilen</button>
         <button type="button" class="eraser-btn">Radierer</button>
         <button type="button" class="reset-btn">Alles reseten</button>
@@ -2500,7 +3211,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=21").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=35").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -2893,6 +3604,7 @@
     });
     const windowCount = document.querySelectorAll(".window-row").length;
     const gaubeWindowCount = document.querySelectorAll(".gaube-window-row").length;
+    const roofWindowCount = document.querySelectorAll(".roof-window-row").length;
     const values = {};
     document.querySelectorAll("input, select, textarea").forEach(el => {
       if(!el.name) return;
@@ -2910,7 +3622,7 @@
       }
       values[el.name] = { type: el.type, value: el.value };
     });
-    return { roomCount, hkCounts, windowCount, gaubeWindowCount, values };
+    return { roomCount, hkCounts, windowCount, gaubeWindowCount, roofWindowCount, values };
   }
 
   function scheduleSave(){
@@ -2976,6 +3688,15 @@
       if(state.gaubeWindowCount > currentGaubeWindows){
         for(let i = currentGaubeWindows; i < state.gaubeWindowCount; i++){
           addGaubeWindowBtnLocal.click();
+        }
+      }
+    }
+    const addRoofWindowBtnLocal = document.querySelector(".add-roof-window-btn");
+    if(addRoofWindowBtnLocal && state.roofWindowCount){
+      const currentRoofWindows = document.querySelectorAll(".roof-window-row").length;
+      if(state.roofWindowCount > currentRoofWindows){
+        for(let i = currentRoofWindows; i < state.roofWindowCount; i++){
+          addRoofWindowBtnLocal.click();
         }
       }
     }
@@ -3212,6 +3933,56 @@
       const clone = template.cloneNode(true);
       tbody.appendChild(clone);
       resetGaubeWindowRow(clone, nextIndex, lastRow);
+      scheduleSave();
+    });
+  }
+
+  function resetRoofWindowRow(row, index, sourceRow){
+    row.dataset.roofWindowIndex = String(index);
+    row.querySelectorAll("[data-roof-window-field]").forEach(el => {
+      const base = el.getAttribute("data-roof-window-field");
+      if(!base) return;
+      const nextId = base + index;
+      el.id = nextId;
+      el.name = nextId;
+      if(el.tagName.toLowerCase() === "input" && el.type === "hidden"){
+        el.dataset.drawing = "";
+      }
+      if(el.tagName.toLowerCase() === "select"){
+        const sourceSelect = sourceRow
+          ? sourceRow.querySelector('select[data-roof-window-field="' + base + '"]')
+          : null;
+        el.value = sourceSelect ? sourceSelect.value : "";
+      }
+    });
+    row.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+      const wrap = canvas.closest(".draw-wrap");
+      const hidden = wrap ? wrap.querySelector("input[type=\"hidden\"][data-roof-window-field]") : null;
+      if(hidden){
+        canvas.setAttribute("data-draw-target", hidden.id);
+        const ctx = canvas.getContext("2d");
+        if(ctx){
+          resizeDrawCanvas(canvas, ctx);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        initDrawCanvas(canvas, hidden);
+      }
+    });
+  }
+
+  const addRoofWindowBtn = document.querySelector(".add-roof-window-btn");
+  if(addRoofWindowBtn){
+    addRoofWindowBtn.addEventListener("click", () => {
+      const tbody = document.querySelector(".roof-window-table tbody");
+      if(!tbody) return;
+      const rows = tbody.querySelectorAll(".roof-window-row");
+      const nextIndex = rows.length + 1;
+      const template = rows[0];
+      if(!template) return;
+      const lastRow = rows[rows.length - 1];
+      const clone = template.cloneNode(true);
+      tbody.appendChild(clone);
+      resetRoofWindowRow(clone, nextIndex, lastRow);
       scheduleSave();
     });
   }
