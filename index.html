@@ -1582,12 +1582,12 @@
                     <canvas class="draw-canvas" data-draw-target="systemManufacturerDraw"></canvas>
                 </div>
             </div>
-            <div class="field-row single">
+                <div class="field-row single">
                 <label>Foto</label>
                 <div>
-                    <input id="systemPhotoInput" class="photo-input" type="file" accept="image/*" capture="environment">
+                    <input id="systemPhotoInput" class="photo-input" type="file" accept="image/*" capture="environment" multiple>
                     <label for="systemPhotoInput" class="add-window-btn">Kamera &ouml;ffnen</label>
-                    <input type="hidden" id="systemPhotoDraw" name="systemPhotoDraw">
+                    <input type="hidden" id="systemPhotoDraws" name="systemPhotoDraws">
                 </div>
             </div>
             <div class="field-row dual type-row">
@@ -3217,17 +3217,23 @@
     });
   }
   const systemPhotoInput = document.getElementById("systemPhotoInput");
-  const systemPhotoDraw = document.getElementById("systemPhotoDraw");
-  if(systemPhotoInput && systemPhotoDraw){
-    systemPhotoInput.addEventListener("change", () => {
-      const file = systemPhotoInput.files && systemPhotoInput.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        systemPhotoDraw.dataset.drawing = String(reader.result || "");
-        scheduleSave();
-      };
-      reader.readAsDataURL(file);
+  const systemPhotoDraws = document.getElementById("systemPhotoDraws");
+  if(systemPhotoInput && systemPhotoDraws){
+    systemPhotoInput.addEventListener("change", async () => {
+      const files = Array.from(systemPhotoInput.files || []);
+      if(!files.length) return;
+      const dataUrls = [];
+      const readFile = file => new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.readAsDataURL(file);
+      });
+      for(const file of files){
+        const dataUrl = await readFile(file);
+        if(dataUrl) dataUrls.push(dataUrl);
+      }
+      systemPhotoDraws.value = JSON.stringify(dataUrls);
+      scheduleSave();
     });
   }
   if ("serviceWorker" in navigator) {
@@ -4078,7 +4084,11 @@
     const windows = collectWindowsFromDom();
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
-    const systemPhotoDraw = (document.getElementById("systemPhotoDraw") || {}).dataset ? (document.getElementById("systemPhotoDraw").dataset.drawing || "") : "";
+    let systemPhotoDraws = [];
+    const systemPhotoDrawsInput = document.getElementById("systemPhotoDraws");
+    if(systemPhotoDrawsInput && systemPhotoDrawsInput.value){
+      try { systemPhotoDraws = JSON.parse(systemPhotoDrawsInput.value) || []; } catch(e){ systemPhotoDraws = []; }
+    }
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
     const systemPowerDraw = (document.getElementById("systemPowerDraw") || {}).dataset ? (document.getElementById("systemPowerDraw").dataset.drawing || "") : "";
     const systemYear = (document.getElementById("systemYear") || {}).value || "";
@@ -4161,7 +4171,7 @@
       heatingCircuits: (document.getElementById("heatingCircuits") || {}).value || "",
       systemManufacturer,
       systemManufacturerDraw,
-      systemPhotoDraw,
+      systemPhotoDraws,
       systemTypeDraw,
       systemPowerDraw,
       systemYear,
@@ -4918,7 +4928,7 @@
         !hasGaubeData(data.system.gaubes) &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
-        !data.system.systemPhotoDraw &&
+        !(data.system.systemPhotoDraws && data.system.systemPhotoDraws.length) &&
         !data.system.systemTypeDraw &&
         !data.system.systemPowerDraw &&
         !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
@@ -4964,10 +4974,11 @@
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
         const files = [file];
-        if(data.system.systemPhotoDraw){
-          const photoFile = dataUrlToFile(data.system.systemPhotoDraw, "anlagentechnik-foto.png");
+        const photoList = Array.isArray(data.system.systemPhotoDraws) ? data.system.systemPhotoDraws : [];
+        photoList.forEach((dataUrl, idx) => {
+          const photoFile = dataUrlToFile(dataUrl, "anlagentechnik-foto-" + (idx + 1) + ".png");
           if(photoFile) files.push(photoFile);
-        }
+        });
         await navigator.share({ files });
       } catch(e){
         alert("Teilen konnte nicht ge\u00f6ffnet werden.");
