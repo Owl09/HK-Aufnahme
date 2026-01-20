@@ -1587,6 +1587,7 @@
                 <div>
                     <input id="systemPhotoInput" class="photo-input" type="file" accept="image/*" capture="environment">
                     <label for="systemPhotoInput" class="add-window-btn">Kamera &ouml;ffnen</label>
+                    <input type="hidden" id="systemPhotoDraw" name="systemPhotoDraw">
                 </div>
             </div>
             <div class="field-row dual type-row">
@@ -3215,6 +3216,20 @@
       eraserBtn.classList.toggle("active", eraserMode);
     });
   }
+  const systemPhotoInput = document.getElementById("systemPhotoInput");
+  const systemPhotoDraw = document.getElementById("systemPhotoDraw");
+  if(systemPhotoInput && systemPhotoDraw){
+    systemPhotoInput.addEventListener("change", () => {
+      const file = systemPhotoInput.files && systemPhotoInput.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        systemPhotoDraw.dataset.drawing = String(reader.result || "");
+        scheduleSave();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js?v=35").then(reg => {
@@ -4063,6 +4078,7 @@
     const windows = collectWindowsFromDom();
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
+    const systemPhotoDraw = (document.getElementById("systemPhotoDraw") || {}).dataset ? (document.getElementById("systemPhotoDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
     const systemPowerDraw = (document.getElementById("systemPowerDraw") || {}).dataset ? (document.getElementById("systemPowerDraw").dataset.drawing || "") : "";
     const systemYear = (document.getElementById("systemYear") || {}).value || "";
@@ -4145,6 +4161,7 @@
       heatingCircuits: (document.getElementById("heatingCircuits") || {}).value || "",
       systemManufacturer,
       systemManufacturerDraw,
+      systemPhotoDraw,
       systemTypeDraw,
       systemPowerDraw,
       systemYear,
@@ -4426,7 +4443,8 @@
       fbhLineDiameter: ((document.getElementById("fBHLineDiameter") || {}).value || "").trim()
     };
     const hasSystem = !!(
-      system.systemManufacturer || system.systemManufacturerDraw || system.systemType || system.systemTypeDraw ||
+      system.systemManufacturer || system.systemManufacturerDraw || system.systemPhotoDraw ||
+      system.systemType || system.systemTypeDraw ||
       system.systemPowerDraw || system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
       system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
       system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStf ||
@@ -4685,6 +4703,7 @@
         if(flag) rows.push('<tr><td>' + label + '</td><td>Ja</td></tr>');
       };
       addRow("Hersteller", system.systemManufacturer, system.systemManufacturerDraw);
+      addRow("Foto", "", system.systemPhotoDraw);
       addRow("Typ", "", system.systemTypeDraw);
       addRow("Leistung", "", system.systemPowerDraw);
       addRow("Baujahr", system.systemYear, "");
@@ -4885,6 +4904,7 @@
         !hasGaubeData(data.system.gaubes) &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
+        !data.system.systemPhotoDraw &&
         !data.system.systemTypeDraw &&
         !data.system.systemPowerDraw &&
         !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
