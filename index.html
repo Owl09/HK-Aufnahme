@@ -8,8 +8,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>
         :root { font-family: "Segoe UI", Arial, sans-serif; -webkit-text-size-adjust: 100%; }
-        body { margin: 0; padding: calc(24px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom)); background: #f4f5f7; color: #1f2933; display: flex; justify-content: center; }
-        .card { width: min(940px, 100%); background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 18px 40px rgba(15,23,42,0.12); border: 1px solid #e5e7eb; }
+        body { margin: 0; padding: calc(24px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom)); background: #f4f5f7; color: #1f2933; }
+        .card { width: 100%; max-width: 100%; background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 18px 40px rgba(15,23,42,0.12); border: 1px solid #e5e7eb; }
         h1 { margin: 0 0 6px; }
         p { margin: 0 0 20px; color: #4b5563; }
         form { display: flex; flex-direction: column; gap: 18px; }
@@ -3218,9 +3218,6 @@
   const STORAGE_KEY = "hkFormStateV1";
   let saveTimer = null;
   let eraserMode = false;
-  let shareHtmlCache = "";
-  let shareFileCache = null;
-  let shareHasData = false;
   const eraserButtons = document.querySelectorAll(".eraser-btn");
   if(eraserButtons.length){
     eraserButtons.forEach(btn => {
@@ -3653,7 +3650,6 @@
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormState()));
       } catch(e){}
-      updateShareCache();
     }, 300);
   }
 
@@ -3791,7 +3787,6 @@
     });
     toggleSurfaceHeating();
     updateLabels();
-    updateShareCache();
   }
 
   document.addEventListener("input", scheduleSave, true);
@@ -4048,7 +4043,6 @@
   restoreFormState();
   toggleSurfaceHeating();
   toggleBuildingData();
-  updateShareCache();
 
   function pickField(selectEl, customEl){
     const selectVal = selectEl && selectEl.value ? selectEl.value : "";
@@ -4900,27 +4894,6 @@
     });
   }
 
-  function updateShareCache(){
-    const data = collectData();
-    data.system.windows = collectWindowsFromDom();
-    data.system.gaubes = collectGaubesFromDom();
-    shareHasData = hasAnyData(data);
-    if(!shareHasData){
-      shareHtmlCache = "";
-      shareFileCache = null;
-      return;
-    }
-    renderPrint(data, true);
-    const container = document.getElementById("printView");
-    shareHtmlCache = container ? container.innerHTML : "";
-    if(shareHtmlCache){
-      const html = buildShareHtml(shareHtmlCache);
-      shareFileCache = new File([html], "hk-uebersicht.html", { type: "text/html" });
-    } else {
-      shareFileCache = null;
-    }
-  }
-
   function buildShareHtml(reportMarkup){
     return [
       '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
@@ -4999,22 +4972,22 @@
   });
   if(shareBtn){
     shareBtn.addEventListener("click", () => {
-      if(!shareHasData){
+      const data = collectData();
+      data.system.windows = collectWindowsFromDom();
+      data.system.gaubes = collectGaubesFromDom();
+      if(!hasAnyData(data)){
         alert("Keine Daten erfasst.");
         return;
       }
-      let file = shareFileCache;
-      if(!file){
-        const reportMarkup = shareHtmlCache || document.getElementById("printView").innerHTML || "";
-        const html = buildShareHtml(reportMarkup);
-        file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        shareFileCache = file;
-      }
+      renderPrint(data, true);
+      const reportMarkup = document.getElementById("printView").innerHTML || "";
+      const html = buildShareHtml(reportMarkup);
       if(!navigator.share){
         alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar.");
         return;
       }
       try{
+        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
         const files = [file];
         if(navigator.canShare && !navigator.canShare({ files })){
           alert("Teilen mit mehreren Dateien ist nicht verf\u00fcgbar.");
