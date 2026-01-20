@@ -29,12 +29,13 @@
         .room-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 18px; }
         .field-row { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 12px; align-items: center; }
         .field-row.single { grid-template-columns: 170px 1fr; }
-        .field-row.dual { grid-template-columns: 170px 0.8fr 170px 0.8fr; column-gap: 2px; }
+        .field-row.dual { grid-template-columns: 170px 1fr 170px 1fr; column-gap: 12px; }
         .field-row.annex-row { grid-template-columns: 150px 1fr 120px 1fr 110px 1fr; column-gap: 8px; }
         .field-row.ogd-row { grid-template-columns: 170px 0.8fr 1fr; }
-        .field-row.dual.type-row { grid-template-columns: 170px 1fr 170px 0.6fr; }
+        .field-row.dual.type-row { grid-template-columns: 170px 1fr 170px 1fr; }
         .field-row.pump { grid-template-columns: 170px 1fr 70px 1fr; column-gap: 8px; }
         .label-shift-right { margin-left: 10px; }
+        .field-spacer { display: block; }
         label { font-weight: 600; color: #1f2933; }
         select, input[type="text"] { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; }
         .inline-options { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
@@ -78,7 +79,14 @@
         .share-btn { border-color: #16a34a; color: #14532d; background: #dcfce7; }
         .share-btn.active { background: #bbf7d0; border-color: #86efac; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
-        .photo-input { display: none; }
+        .floating-eraser {
+          position: fixed;
+          top: calc(12px + env(safe-area-inset-top));
+          left: 12px;
+          z-index: 1000;
+          width: auto;
+          min-width: 140px;
+        }
         .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
         .print-view { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; padding: 18px; }
         .print-view .doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
@@ -1568,7 +1576,7 @@
         <details class="system-card" open>
             <summary><span>Anlagentechnik</span></summary>
             <div class="section-body">
-            <div class="field-row">
+            <div class="field-row dual">
                 <label for="systemManufacturer">Hersteller</label>
                 <select id="systemManufacturer" name="systemManufacturer">
                     <option value="" selected disabled>Hersteller w&auml;hlen &hellip;</option>
@@ -1577,17 +1585,10 @@
                     <option>Buderus</option>
                     <option>Junkers</option>
                 </select>
+                <span class="field-spacer" aria-hidden="true"></span>
                 <div class="draw-wrap">
                     <input type="hidden" id="systemManufacturerDraw" name="systemManufacturerDraw">
                     <canvas class="draw-canvas" data-draw-target="systemManufacturerDraw"></canvas>
-                </div>
-            </div>
-                <div class="field-row single">
-                <label>Foto</label>
-                <div>
-                    <input id="systemPhotoInput" class="photo-input" type="file" accept="image/*" capture="environment" multiple>
-                    <label for="systemPhotoInput" class="add-window-btn">Kamera &ouml;ffnen</label>
-                    <input type="hidden" id="systemPhotoDraws" name="systemPhotoDraws">
                 </div>
             </div>
             <div class="field-row dual type-row">
@@ -3203,38 +3204,20 @@
         <button type="button" class="reset-btn">Alles reseten</button>
     </form>
 </main>
+<button type="button" class="eraser-btn floating-eraser">Radierer</button>
 <div id="printView" class="print-view" aria-hidden="true"></div>
 <script>
 (function(){
   const STORAGE_KEY = "hkFormStateV1";
   let saveTimer = null;
   let eraserMode = false;
-  const eraserBtn = document.querySelector(".eraser-btn");
-  if(eraserBtn){
-    eraserBtn.addEventListener("click", () => {
-      eraserMode = !eraserMode;
-      eraserBtn.classList.toggle("active", eraserMode);
-    });
-  }
-  const systemPhotoInput = document.getElementById("systemPhotoInput");
-  const systemPhotoDraws = document.getElementById("systemPhotoDraws");
-  if(systemPhotoInput && systemPhotoDraws){
-    systemPhotoInput.addEventListener("change", async () => {
-      const files = Array.from(systemPhotoInput.files || []);
-      if(!files.length) return;
-      const stored = systemPhotoDraws.value ? JSON.parse(systemPhotoDraws.value) : [];
-      const readFile = file => new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result || ""));
-        reader.readAsDataURL(file);
+  const eraserButtons = document.querySelectorAll(".eraser-btn");
+  if(eraserButtons.length){
+    eraserButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        eraserMode = !eraserMode;
+        eraserButtons.forEach(b => b.classList.toggle("active", eraserMode));
       });
-      for(const file of files){
-        const dataUrl = await readFile(file);
-        if(dataUrl) stored.push(dataUrl);
-      }
-      systemPhotoDraws.value = JSON.stringify(stored);
-      systemPhotoInput.value = "";
-      scheduleSave();
     });
   }
   if ("serviceWorker" in navigator) {
@@ -4085,11 +4068,6 @@
     const windows = collectWindowsFromDom();
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
-    let systemPhotoDraws = [];
-    const systemPhotoDrawsInput = document.getElementById("systemPhotoDraws");
-    if(systemPhotoDrawsInput && systemPhotoDrawsInput.value){
-      try { systemPhotoDraws = JSON.parse(systemPhotoDrawsInput.value) || []; } catch(e){ systemPhotoDraws = []; }
-    }
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
     const systemPowerDraw = (document.getElementById("systemPowerDraw") || {}).dataset ? (document.getElementById("systemPowerDraw").dataset.drawing || "") : "";
     const systemYear = (document.getElementById("systemYear") || {}).value || "";
@@ -4172,7 +4150,6 @@
       heatingCircuits: (document.getElementById("heatingCircuits") || {}).value || "",
       systemManufacturer,
       systemManufacturerDraw,
-      systemPhotoDraws,
       systemTypeDraw,
       systemPowerDraw,
       systemYear,
@@ -4861,21 +4838,6 @@
     setTimeout(() => URL.revokeObjectURL(url), 15000);
   }
 
-  function dataUrlToFile(dataUrl, filename){
-    if(!dataUrl) return null;
-    const parts = String(dataUrl).split(",");
-    if(parts.length < 2) return null;
-    const match = parts[0].match(/data:(.*?);base64/);
-    const mime = match ? match[1] : "application/octet-stream";
-    const binary = atob(parts[1]);
-    const len = binary.length;
-    const buffer = new Uint8Array(len);
-    for(let i = 0; i < len; i++){
-      buffer[i] = binary.charCodeAt(i);
-    }
-    return new File([buffer], filename, { type: mime });
-  }
-
   function downloadHtml(html, filename){
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -4929,7 +4891,6 @@
         !hasGaubeData(data.system.gaubes) &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
-        !(data.system.systemPhotoDraws && data.system.systemPhotoDraws.length) &&
         !data.system.systemTypeDraw &&
         !data.system.systemPowerDraw &&
         !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
@@ -4975,11 +4936,6 @@
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
         const files = [file];
-        const photoList = Array.isArray(data.system.systemPhotoDraws) ? data.system.systemPhotoDraws : [];
-        photoList.forEach((dataUrl, idx) => {
-          const photoFile = dataUrlToFile(dataUrl, "anlagentechnik-foto-" + (idx + 1) + ".png");
-          if(photoFile) files.push(photoFile);
-        });
         if(navigator.canShare && !navigator.canShare({ files })){
           alert("Teilen mit mehreren Dateien ist nicht verf\u00fcgbar.");
           return;
