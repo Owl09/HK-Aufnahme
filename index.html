@@ -3223,18 +3223,19 @@
     systemPhotoInput.addEventListener("change", async () => {
       const files = Array.from(systemPhotoInput.files || []);
       if(!files.length) return;
-      systemPhotoFiles = files;
-      const dataUrls = [];
+      const stored = systemPhotoDraws.value ? JSON.parse(systemPhotoDraws.value) : [];
       const readFile = file => new Promise(resolve => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result || ""));
         reader.readAsDataURL(file);
       });
       for(const file of files){
+        systemPhotoFiles.push(file);
         const dataUrl = await readFile(file);
-        if(dataUrl) dataUrls.push(dataUrl);
+        if(dataUrl) stored.push(dataUrl);
       }
-      systemPhotoDraws.value = JSON.stringify(dataUrls);
+      systemPhotoDraws.value = JSON.stringify(stored);
+      systemPhotoInput.value = "";
       scheduleSave();
     });
   }
@@ -4895,7 +4896,7 @@
     document.body.classList.remove("show-print");
   });
   if(shareBtn){
-    shareBtn.addEventListener("click", async () => {
+    shareBtn.addEventListener("click", () => {
       const data = collectData();
       data.system.windows = collectWindowsFromDom();
       data.system.gaubes = collectGaubesFromDom();
@@ -4995,7 +4996,9 @@
           alert("Teilen mit mehreren Dateien ist nicht verf\u00fcgbar.");
           return;
         }
-        await navigator.share({ files });
+        navigator.share({ files }).catch(() => {
+          alert("Teilen konnte nicht ge\u00f6ffnet werden.");
+        });
       } catch(e){
         alert("Teilen konnte nicht ge\u00f6ffnet werden.");
       }
