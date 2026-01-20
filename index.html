@@ -57,7 +57,7 @@
         .gaube-table { table-layout: fixed; }
         .gaube-table th:first-child, .gaube-table td:first-child { width: 12%; }
         .gaube-table th:not(:first-child), .gaube-table td:not(:first-child) { width: 22%; }
-        .matrix-table th, .matrix-table td { border: 1px solid #0f172a; padding: 8px; vertical-align: top; text-align: left; }
+        .matrix-table th, .matrix-table td { border: 1px solid #94a3b8; padding: 8px; vertical-align: top; text-align: left; }
         .matrix-table th { background: #f8fafc; font-weight: 700; }
         .matrix-table .col-wide { width: 40%; }
         .matrix-table .col-narrow { width: 12%; }
@@ -4114,8 +4114,164 @@
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
     const wallNotesDraw = (document.getElementById("wallNotesDraw") || {}).dataset ? (document.getElementById("wallNotesDraw").dataset.drawing || "") : "";
+    const notesLargeDraw = (document.getElementById("notesLargeDraw") || {}).dataset ? (document.getElementById("notesLargeDraw").dataset.drawing || "") : "";
+    const gaubeWindows = collectGaubeWindowsFromDom();
+    const roofWindows = collectRoofWindowsFromDom();
+    const solarYearDraw = (document.getElementById("solarYearDraw") || {}).dataset ? (document.getElementById("solarYearDraw").dataset.drawing || "") : "";
+    const solarStorageDraw = (document.getElementById("solarStorageDraw") || {}).dataset ? (document.getElementById("solarStorageDraw").dataset.drawing || "") : "";
+    const solarPumpDraw = (document.getElementById("solarPumpDraw") || {}).dataset ? (document.getElementById("solarPumpDraw").dataset.drawing || "") : "";
+    const solarModulesDraw = (document.getElementById("solarModulesDraw") || {}).dataset ? (document.getElementById("solarModulesDraw").dataset.drawing || "") : "";
+    const solarModulesAreaDraw = (document.getElementById("solarModulesAreaDraw") || {}).dataset ? (document.getElementById("solarModulesAreaDraw").dataset.drawing || "") : "";
+    const solarOrientation = ((document.getElementById("solarOrientation") || {}).value || "").trim();
+    const solarCollectorType = ((document.getElementById("solarCollectorType") || {}).value || "").trim();
+    const pvModulesDraw = (document.getElementById("pvModulesDraw") || {}).dataset ? (document.getElementById("pvModulesDraw").dataset.drawing || "") : "";
+    const pvModulesAreaDraw = (document.getElementById("pvModulesAreaDraw") || {}).dataset ? (document.getElementById("pvModulesAreaDraw").dataset.drawing || "") : "";
+    const pvPowerDraw = (document.getElementById("pvPowerDraw") || {}).dataset ? (document.getElementById("pvPowerDraw").dataset.drawing || "") : "";
+    const pvVentilation = ((document.getElementById("pvVentilation") || {}).value || "").trim();
+    const pvOrientation = ((document.getElementById("pvOrientation") || {}).value || "").trim();
+    const pvBatteryDraw = (document.getElementById("pvBatteryDraw") || {}).dataset ? (document.getElementById("pvBatteryDraw").dataset.drawing || "") : "";
+    const ogdStructure = ((document.getElementById("ogdStructure") || {}).value || "").trim();
+    const ogdStructureDraw = (document.getElementById("ogdStructureDraw") || {}).dataset ? (document.getElementById("ogdStructureDraw").dataset.drawing || "") : "";
+    const ogdInsulationDraw = (document.getElementById("ogdInsulationDraw") || {}).dataset ? (document.getElementById("ogdInsulationDraw").dataset.drawing || "") : "";
+    const roofTypeSatteldach = !!document.querySelector('input[name="roofTypeSatteldach"]:checked');
+    const roofTypeWalmdach = !!document.querySelector('input[name="roofTypeWalmdach"]:checked');
+    const roofTypeKruppelwalmdach = !!document.querySelector('input[name="roofTypeKruppelwalmdach"]:checked');
+    const roofTypeMansardendach = !!document.querySelector('input[name="roofTypeMansardendach"]:checked');
+    const roofTypePultdach = !!document.querySelector('input[name="roofTypePultdach"]:checked');
+    const roofTypeFlachdach = !!document.querySelector('input[name="roofTypeFlachdach"]:checked');
+    const roofTypeSheddach = !!document.querySelector('input[name="roofTypeSheddach"]:checked');
+    const roofDepthDraw = (document.getElementById("roofDepthDraw") || {}).dataset ? (document.getElementById("roofDepthDraw").dataset.drawing || "") : "";
+    const roofWidthDraw = (document.getElementById("roofWidthDraw") || {}).dataset ? (document.getElementById("roofWidthDraw").dataset.drawing || "") : "";
+    const roofSpacingDraw = (document.getElementById("roofSpacingDraw") || {}).dataset ? (document.getElementById("roofSpacingDraw").dataset.drawing || "") : "";
+    const roofAngleDraw = (document.getElementById("roofAngleDraw") || {}).dataset ? (document.getElementById("roofAngleDraw").dataset.drawing || "") : "";
+    const roofDepthDraw2 = (document.getElementById("roofDepthDraw2") || {}).dataset ? (document.getElementById("roofDepthDraw2").dataset.drawing || "") : "";
+    const roofWidthDraw2 = (document.getElementById("roofWidthDraw2") || {}).dataset ? (document.getElementById("roofWidthDraw2").dataset.drawing || "") : "";
+    const roofSpacingDraw2 = (document.getElementById("roofSpacingDraw2") || {}).dataset ? (document.getElementById("roofSpacingDraw2").dataset.drawing || "") : "";
+    const roofAngleDraw2 = (document.getElementById("roofAngleDraw2") || {}).dataset ? (document.getElementById("roofAngleDraw2").dataset.drawing || "") : "";
+    const roofInsulationDraw = (document.getElementById("roofInsulationDraw") || {}).dataset ? (document.getElementById("roofInsulationDraw").dataset.drawing || "") : "";
+    const annexExists = ((document.querySelector('input[name="annexExists"]:checked') || {}).value || "").trim();
+    const annexYearDraw = (document.getElementById("annexYearDraw") || {}).dataset ? (document.getElementById("annexYearDraw").dataset.drawing || "") : "";
+    const annexType = ((document.getElementById("annexType") || {}).value || "").trim();
+    const annexWallNorthL1Draw = (document.getElementById("annexWallNorthL1Draw") || {}).dataset ? (document.getElementById("annexWallNorthL1Draw").dataset.drawing || "") : "";
+    const annexWallNorthL2Draw = (document.getElementById("annexWallNorthL2Draw") || {}).dataset ? (document.getElementById("annexWallNorthL2Draw").dataset.drawing || "") : "";
+    const annexWallNorthL3Draw = (document.getElementById("annexWallNorthL3Draw") || {}).dataset ? (document.getElementById("annexWallNorthL3Draw").dataset.drawing || "") : "";
+    const annexWallNorthL4Draw = (document.getElementById("annexWallNorthL4Draw") || {}).dataset ? (document.getElementById("annexWallNorthL4Draw").dataset.drawing || "") : "";
+    const annexWallNorthL5Draw = (document.getElementById("annexWallNorthL5Draw") || {}).dataset ? (document.getElementById("annexWallNorthL5Draw").dataset.drawing || "") : "";
+    const annexWallNorthTotalDraw = (document.getElementById("annexWallNorthTotalDraw") || {}).dataset ? (document.getElementById("annexWallNorthTotalDraw").dataset.drawing || "") : "";
+    const annexWallEastL1Draw = (document.getElementById("annexWallEastL1Draw") || {}).dataset ? (document.getElementById("annexWallEastL1Draw").dataset.drawing || "") : "";
+    const annexWallEastL2Draw = (document.getElementById("annexWallEastL2Draw") || {}).dataset ? (document.getElementById("annexWallEastL2Draw").dataset.drawing || "") : "";
+    const annexWallEastL3Draw = (document.getElementById("annexWallEastL3Draw") || {}).dataset ? (document.getElementById("annexWallEastL3Draw").dataset.drawing || "") : "";
+    const annexWallEastL4Draw = (document.getElementById("annexWallEastL4Draw") || {}).dataset ? (document.getElementById("annexWallEastL4Draw").dataset.drawing || "") : "";
+    const annexWallEastL5Draw = (document.getElementById("annexWallEastL5Draw") || {}).dataset ? (document.getElementById("annexWallEastL5Draw").dataset.drawing || "") : "";
+    const annexWallEastTotalDraw = (document.getElementById("annexWallEastTotalDraw") || {}).dataset ? (document.getElementById("annexWallEastTotalDraw").dataset.drawing || "") : "";
+    const annexWallSouthL1Draw = (document.getElementById("annexWallSouthL1Draw") || {}).dataset ? (document.getElementById("annexWallSouthL1Draw").dataset.drawing || "") : "";
+    const annexWallSouthL2Draw = (document.getElementById("annexWallSouthL2Draw") || {}).dataset ? (document.getElementById("annexWallSouthL2Draw").dataset.drawing || "") : "";
+    const annexWallSouthL3Draw = (document.getElementById("annexWallSouthL3Draw") || {}).dataset ? (document.getElementById("annexWallSouthL3Draw").dataset.drawing || "") : "";
+    const annexWallSouthL4Draw = (document.getElementById("annexWallSouthL4Draw") || {}).dataset ? (document.getElementById("annexWallSouthL4Draw").dataset.drawing || "") : "";
+    const annexWallSouthL5Draw = (document.getElementById("annexWallSouthL5Draw") || {}).dataset ? (document.getElementById("annexWallSouthL5Draw").dataset.drawing || "") : "";
+    const annexWallSouthTotalDraw = (document.getElementById("annexWallSouthTotalDraw") || {}).dataset ? (document.getElementById("annexWallSouthTotalDraw").dataset.drawing || "") : "";
+    const annexWallWestL1Draw = (document.getElementById("annexWallWestL1Draw") || {}).dataset ? (document.getElementById("annexWallWestL1Draw").dataset.drawing || "") : "";
+    const annexWallWestL2Draw = (document.getElementById("annexWallWestL2Draw") || {}).dataset ? (document.getElementById("annexWallWestL2Draw").dataset.drawing || "") : "";
+    const annexWallWestL3Draw = (document.getElementById("annexWallWestL3Draw") || {}).dataset ? (document.getElementById("annexWallWestL3Draw").dataset.drawing || "") : "";
+    const annexWallWestL4Draw = (document.getElementById("annexWallWestL4Draw") || {}).dataset ? (document.getElementById("annexWallWestL4Draw").dataset.drawing || "") : "";
+    const annexWallWestL5Draw = (document.getElementById("annexWallWestL5Draw") || {}).dataset ? (document.getElementById("annexWallWestL5Draw").dataset.drawing || "") : "";
+    const annexWallWestTotalDraw = (document.getElementById("annexWallWestTotalDraw") || {}).dataset ? (document.getElementById("annexWallWestTotalDraw").dataset.drawing || "") : "";
+    const annexRoofTypeSatteldach = !!document.querySelector('input[name="annexRoofTypeSatteldach"]:checked');
+    const annexRoofTypeWalmdach = !!document.querySelector('input[name="annexRoofTypeWalmdach"]:checked');
+    const annexRoofTypeKruppelwalmdach = !!document.querySelector('input[name="annexRoofTypeKruppelwalmdach"]:checked');
+    const annexRoofTypeMansardendach = !!document.querySelector('input[name="annexRoofTypeMansardendach"]:checked');
+    const annexRoofTypePultdach = !!document.querySelector('input[name="annexRoofTypePultdach"]:checked');
+    const annexRoofTypeFlachdach = !!document.querySelector('input[name="annexRoofTypeFlachdach"]:checked');
+    const annexRoofTypeSheddach = !!document.querySelector('input[name="annexRoofTypeSheddach"]:checked');
+    const annexRoofDepthDraw = (document.getElementById("annexRoofDepthDraw") || {}).dataset ? (document.getElementById("annexRoofDepthDraw").dataset.drawing || "") : "";
+    const annexRoofWidthDraw = (document.getElementById("annexRoofWidthDraw") || {}).dataset ? (document.getElementById("annexRoofWidthDraw").dataset.drawing || "") : "";
+    const annexRoofSpacingDraw = (document.getElementById("annexRoofSpacingDraw") || {}).dataset ? (document.getElementById("annexRoofSpacingDraw").dataset.drawing || "") : "";
+    const annexRoofAngleDraw = (document.getElementById("annexRoofAngleDraw") || {}).dataset ? (document.getElementById("annexRoofAngleDraw").dataset.drawing || "") : "";
+    const annexRoofDepthDraw2 = (document.getElementById("annexRoofDepthDraw2") || {}).dataset ? (document.getElementById("annexRoofDepthDraw2").dataset.drawing || "") : "";
+    const annexRoofWidthDraw2 = (document.getElementById("annexRoofWidthDraw2") || {}).dataset ? (document.getElementById("annexRoofWidthDraw2").dataset.drawing || "") : "";
+    const annexRoofSpacingDraw2 = (document.getElementById("annexRoofSpacingDraw2") || {}).dataset ? (document.getElementById("annexRoofSpacingDraw2").dataset.drawing || "") : "";
+    const annexRoofAngleDraw2 = (document.getElementById("annexRoofAngleDraw2") || {}).dataset ? (document.getElementById("annexRoofAngleDraw2").dataset.drawing || "") : "";
+    const annexRoofInsulationDraw = (document.getElementById("annexRoofInsulationDraw") || {}).dataset ? (document.getElementById("annexRoofInsulationDraw").dataset.drawing || "") : "";
+    const notesLargeDraw = (document.getElementById("notesLargeDraw") || {}).dataset ? (document.getElementById("notesLargeDraw").dataset.drawing || "") : "";
     const gaubes = collectGaubesFromDom();
     const windows = collectWindowsFromDom();
+    const gaubeWindows = collectGaubeWindowsFromDom();
+    const roofWindows = collectRoofWindowsFromDom();
+    const solarYearDraw = (document.getElementById("solarYearDraw") || {}).dataset ? (document.getElementById("solarYearDraw").dataset.drawing || "") : "";
+    const solarStorageDraw = (document.getElementById("solarStorageDraw") || {}).dataset ? (document.getElementById("solarStorageDraw").dataset.drawing || "") : "";
+    const solarPumpDraw = (document.getElementById("solarPumpDraw") || {}).dataset ? (document.getElementById("solarPumpDraw").dataset.drawing || "") : "";
+    const solarModulesDraw = (document.getElementById("solarModulesDraw") || {}).dataset ? (document.getElementById("solarModulesDraw").dataset.drawing || "") : "";
+    const solarModulesAreaDraw = (document.getElementById("solarModulesAreaDraw") || {}).dataset ? (document.getElementById("solarModulesAreaDraw").dataset.drawing || "") : "";
+    const solarOrientation = (document.getElementById("solarOrientation") || {}).value || "";
+    const solarCollectorType = (document.getElementById("solarCollectorType") || {}).value || "";
+    const pvModulesDraw = (document.getElementById("pvModulesDraw") || {}).dataset ? (document.getElementById("pvModulesDraw").dataset.drawing || "") : "";
+    const pvModulesAreaDraw = (document.getElementById("pvModulesAreaDraw") || {}).dataset ? (document.getElementById("pvModulesAreaDraw").dataset.drawing || "") : "";
+    const pvPowerDraw = (document.getElementById("pvPowerDraw") || {}).dataset ? (document.getElementById("pvPowerDraw").dataset.drawing || "") : "";
+    const pvVentilation = (document.getElementById("pvVentilation") || {}).value || "";
+    const pvOrientation = (document.getElementById("pvOrientation") || {}).value || "";
+    const pvBatteryDraw = (document.getElementById("pvBatteryDraw") || {}).dataset ? (document.getElementById("pvBatteryDraw").dataset.drawing || "") : "";
+    const ogdStructure = (document.getElementById("ogdStructure") || {}).value || "";
+    const ogdStructureDraw = (document.getElementById("ogdStructureDraw") || {}).dataset ? (document.getElementById("ogdStructureDraw").dataset.drawing || "") : "";
+    const ogdInsulationDraw = (document.getElementById("ogdInsulationDraw") || {}).dataset ? (document.getElementById("ogdInsulationDraw").dataset.drawing || "") : "";
+    const roofTypeSatteldach = !!document.querySelector('input[name="roofTypeSatteldach"]:checked');
+    const roofTypeWalmdach = !!document.querySelector('input[name="roofTypeWalmdach"]:checked');
+    const roofTypeKruppelwalmdach = !!document.querySelector('input[name="roofTypeKruppelwalmdach"]:checked');
+    const roofTypeMansardendach = !!document.querySelector('input[name="roofTypeMansardendach"]:checked');
+    const roofTypePultdach = !!document.querySelector('input[name="roofTypePultdach"]:checked');
+    const roofTypeFlachdach = !!document.querySelector('input[name="roofTypeFlachdach"]:checked');
+    const roofTypeSheddach = !!document.querySelector('input[name="roofTypeSheddach"]:checked');
+    const roofDepthDraw = (document.getElementById("roofDepthDraw") || {}).dataset ? (document.getElementById("roofDepthDraw").dataset.drawing || "") : "";
+    const roofWidthDraw = (document.getElementById("roofWidthDraw") || {}).dataset ? (document.getElementById("roofWidthDraw").dataset.drawing || "") : "";
+    const roofSpacingDraw = (document.getElementById("roofSpacingDraw") || {}).dataset ? (document.getElementById("roofSpacingDraw").dataset.drawing || "") : "";
+    const roofAngleDraw = (document.getElementById("roofAngleDraw") || {}).dataset ? (document.getElementById("roofAngleDraw").dataset.drawing || "") : "";
+    const roofDepthDraw2 = (document.getElementById("roofDepthDraw2") || {}).dataset ? (document.getElementById("roofDepthDraw2").dataset.drawing || "") : "";
+    const roofWidthDraw2 = (document.getElementById("roofWidthDraw2") || {}).dataset ? (document.getElementById("roofWidthDraw2").dataset.drawing || "") : "";
+    const roofSpacingDraw2 = (document.getElementById("roofSpacingDraw2") || {}).dataset ? (document.getElementById("roofSpacingDraw2").dataset.drawing || "") : "";
+    const roofAngleDraw2 = (document.getElementById("roofAngleDraw2") || {}).dataset ? (document.getElementById("roofAngleDraw2").dataset.drawing || "") : "";
+    const roofInsulationDraw = (document.getElementById("roofInsulationDraw") || {}).dataset ? (document.getElementById("roofInsulationDraw").dataset.drawing || "") : "";
+    const annexExists = (document.querySelector('input[name="annexExists"]:checked') || {}).value || "";
+    const annexYearDraw = (document.getElementById("annexYearDraw") || {}).dataset ? (document.getElementById("annexYearDraw").dataset.drawing || "") : "";
+    const annexType = (document.getElementById("annexType") || {}).value || "";
+    const annexWallNorthL1Draw = (document.getElementById("annexWallNorthL1Draw") || {}).dataset ? (document.getElementById("annexWallNorthL1Draw").dataset.drawing || "") : "";
+    const annexWallNorthL2Draw = (document.getElementById("annexWallNorthL2Draw") || {}).dataset ? (document.getElementById("annexWallNorthL2Draw").dataset.drawing || "") : "";
+    const annexWallNorthL3Draw = (document.getElementById("annexWallNorthL3Draw") || {}).dataset ? (document.getElementById("annexWallNorthL3Draw").dataset.drawing || "") : "";
+    const annexWallNorthL4Draw = (document.getElementById("annexWallNorthL4Draw") || {}).dataset ? (document.getElementById("annexWallNorthL4Draw").dataset.drawing || "") : "";
+    const annexWallNorthL5Draw = (document.getElementById("annexWallNorthL5Draw") || {}).dataset ? (document.getElementById("annexWallNorthL5Draw").dataset.drawing || "") : "";
+    const annexWallNorthTotalDraw = (document.getElementById("annexWallNorthTotalDraw") || {}).dataset ? (document.getElementById("annexWallNorthTotalDraw").dataset.drawing || "") : "";
+    const annexWallEastL1Draw = (document.getElementById("annexWallEastL1Draw") || {}).dataset ? (document.getElementById("annexWallEastL1Draw").dataset.drawing || "") : "";
+    const annexWallEastL2Draw = (document.getElementById("annexWallEastL2Draw") || {}).dataset ? (document.getElementById("annexWallEastL2Draw").dataset.drawing || "") : "";
+    const annexWallEastL3Draw = (document.getElementById("annexWallEastL3Draw") || {}).dataset ? (document.getElementById("annexWallEastL3Draw").dataset.drawing || "") : "";
+    const annexWallEastL4Draw = (document.getElementById("annexWallEastL4Draw") || {}).dataset ? (document.getElementById("annexWallEastL4Draw").dataset.drawing || "") : "";
+    const annexWallEastL5Draw = (document.getElementById("annexWallEastL5Draw") || {}).dataset ? (document.getElementById("annexWallEastL5Draw").dataset.drawing || "") : "";
+    const annexWallEastTotalDraw = (document.getElementById("annexWallEastTotalDraw") || {}).dataset ? (document.getElementById("annexWallEastTotalDraw").dataset.drawing || "") : "";
+    const annexWallSouthL1Draw = (document.getElementById("annexWallSouthL1Draw") || {}).dataset ? (document.getElementById("annexWallSouthL1Draw").dataset.drawing || "") : "";
+    const annexWallSouthL2Draw = (document.getElementById("annexWallSouthL2Draw") || {}).dataset ? (document.getElementById("annexWallSouthL2Draw").dataset.drawing || "") : "";
+    const annexWallSouthL3Draw = (document.getElementById("annexWallSouthL3Draw") || {}).dataset ? (document.getElementById("annexWallSouthL3Draw").dataset.drawing || "") : "";
+    const annexWallSouthL4Draw = (document.getElementById("annexWallSouthL4Draw") || {}).dataset ? (document.getElementById("annexWallSouthL4Draw").dataset.drawing || "") : "";
+    const annexWallSouthL5Draw = (document.getElementById("annexWallSouthL5Draw") || {}).dataset ? (document.getElementById("annexWallSouthL5Draw").dataset.drawing || "") : "";
+    const annexWallSouthTotalDraw = (document.getElementById("annexWallSouthTotalDraw") || {}).dataset ? (document.getElementById("annexWallSouthTotalDraw").dataset.drawing || "") : "";
+    const annexWallWestL1Draw = (document.getElementById("annexWallWestL1Draw") || {}).dataset ? (document.getElementById("annexWallWestL1Draw").dataset.drawing || "") : "";
+    const annexWallWestL2Draw = (document.getElementById("annexWallWestL2Draw") || {}).dataset ? (document.getElementById("annexWallWestL2Draw").dataset.drawing || "") : "";
+    const annexWallWestL3Draw = (document.getElementById("annexWallWestL3Draw") || {}).dataset ? (document.getElementById("annexWallWestL3Draw").dataset.drawing || "") : "";
+    const annexWallWestL4Draw = (document.getElementById("annexWallWestL4Draw") || {}).dataset ? (document.getElementById("annexWallWestL4Draw").dataset.drawing || "") : "";
+    const annexWallWestL5Draw = (document.getElementById("annexWallWestL5Draw") || {}).dataset ? (document.getElementById("annexWallWestL5Draw").dataset.drawing || "") : "";
+    const annexWallWestTotalDraw = (document.getElementById("annexWallWestTotalDraw") || {}).dataset ? (document.getElementById("annexWallWestTotalDraw").dataset.drawing || "") : "";
+    const annexRoofTypeSatteldach = !!document.querySelector('input[name="annexRoofTypeSatteldach"]:checked');
+    const annexRoofTypeWalmdach = !!document.querySelector('input[name="annexRoofTypeWalmdach"]:checked');
+    const annexRoofTypeKruppelwalmdach = !!document.querySelector('input[name="annexRoofTypeKruppelwalmdach"]:checked');
+    const annexRoofTypeMansardendach = !!document.querySelector('input[name="annexRoofTypeMansardendach"]:checked');
+    const annexRoofTypePultdach = !!document.querySelector('input[name="annexRoofTypePultdach"]:checked');
+    const annexRoofTypeFlachdach = !!document.querySelector('input[name="annexRoofTypeFlachdach"]:checked');
+    const annexRoofTypeSheddach = !!document.querySelector('input[name="annexRoofTypeSheddach"]:checked');
+    const annexRoofDepthDraw = (document.getElementById("annexRoofDepthDraw") || {}).dataset ? (document.getElementById("annexRoofDepthDraw").dataset.drawing || "") : "";
+    const annexRoofWidthDraw = (document.getElementById("annexRoofWidthDraw") || {}).dataset ? (document.getElementById("annexRoofWidthDraw").dataset.drawing || "") : "";
+    const annexRoofSpacingDraw = (document.getElementById("annexRoofSpacingDraw") || {}).dataset ? (document.getElementById("annexRoofSpacingDraw").dataset.drawing || "") : "";
+    const annexRoofAngleDraw = (document.getElementById("annexRoofAngleDraw") || {}).dataset ? (document.getElementById("annexRoofAngleDraw").dataset.drawing || "") : "";
+    const annexRoofDepthDraw2 = (document.getElementById("annexRoofDepthDraw2") || {}).dataset ? (document.getElementById("annexRoofDepthDraw2").dataset.drawing || "") : "";
+    const annexRoofWidthDraw2 = (document.getElementById("annexRoofWidthDraw2") || {}).dataset ? (document.getElementById("annexRoofWidthDraw2").dataset.drawing || "") : "";
+    const annexRoofSpacingDraw2 = (document.getElementById("annexRoofSpacingDraw2") || {}).dataset ? (document.getElementById("annexRoofSpacingDraw2").dataset.drawing || "") : "";
+    const annexRoofAngleDraw2 = (document.getElementById("annexRoofAngleDraw2") || {}).dataset ? (document.getElementById("annexRoofAngleDraw2").dataset.drawing || "") : "";
+    const annexRoofInsulationDraw = (document.getElementById("annexRoofInsulationDraw") || {}).dataset ? (document.getElementById("annexRoofInsulationDraw").dataset.drawing || "") : "";
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -4189,8 +4345,86 @@
       wallWestL5Draw,
       wallWestTotalDraw,
       wallNotesDraw,
+      notesLargeDraw,
       gaubes,
       windows,
+      gaubeWindows,
+      roofWindows,
+      solarYearDraw,
+      solarStorageDraw,
+      solarPumpDraw,
+      solarModulesDraw,
+      solarModulesAreaDraw,
+      solarOrientation,
+      solarCollectorType,
+      pvModulesDraw,
+      pvModulesAreaDraw,
+      pvPowerDraw,
+      pvVentilation,
+      pvOrientation,
+      pvBatteryDraw,
+      ogdStructure,
+      ogdStructureDraw,
+      ogdInsulationDraw,
+      roofTypeSatteldach,
+      roofTypeWalmdach,
+      roofTypeKruppelwalmdach,
+      roofTypeMansardendach,
+      roofTypePultdach,
+      roofTypeFlachdach,
+      roofTypeSheddach,
+      roofDepthDraw,
+      roofWidthDraw,
+      roofSpacingDraw,
+      roofAngleDraw,
+      roofDepthDraw2,
+      roofWidthDraw2,
+      roofSpacingDraw2,
+      roofAngleDraw2,
+      roofInsulationDraw,
+      annexExists,
+      annexYearDraw,
+      annexType,
+      annexWallNorthL1Draw,
+      annexWallNorthL2Draw,
+      annexWallNorthL3Draw,
+      annexWallNorthL4Draw,
+      annexWallNorthL5Draw,
+      annexWallNorthTotalDraw,
+      annexWallEastL1Draw,
+      annexWallEastL2Draw,
+      annexWallEastL3Draw,
+      annexWallEastL4Draw,
+      annexWallEastL5Draw,
+      annexWallEastTotalDraw,
+      annexWallSouthL1Draw,
+      annexWallSouthL2Draw,
+      annexWallSouthL3Draw,
+      annexWallSouthL4Draw,
+      annexWallSouthL5Draw,
+      annexWallSouthTotalDraw,
+      annexWallWestL1Draw,
+      annexWallWestL2Draw,
+      annexWallWestL3Draw,
+      annexWallWestL4Draw,
+      annexWallWestL5Draw,
+      annexWallWestTotalDraw,
+      annexRoofTypeSatteldach,
+      annexRoofTypeWalmdach,
+      annexRoofTypeKruppelwalmdach,
+      annexRoofTypeMansardendach,
+      annexRoofTypePultdach,
+      annexRoofTypeFlachdach,
+      annexRoofTypeSheddach,
+      annexRoofDepthDraw,
+      annexRoofWidthDraw,
+      annexRoofSpacingDraw,
+      annexRoofAngleDraw,
+      annexRoofDepthDraw2,
+      annexRoofWidthDraw2,
+      annexRoofSpacingDraw2,
+      annexRoofAngleDraw2,
+      annexRoofInsulationDraw,
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
@@ -4283,6 +4517,42 @@
     return windows;
   }
 
+  function collectGaubeWindowsFromDom(){
+    const windows = [];
+    const readDraw = (row, field) => {
+      const hidden = row.querySelector('input[type="hidden"][data-gaube-window-field="' + field + '"]');
+      return hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
+    };
+    document.querySelectorAll(".gaube-window-row").forEach(row => {
+      const hr = (row.querySelector('select[data-gaube-window-field="gaubeWindowHr"]') || {}).value || "";
+      const vg = (row.querySelector('select[data-gaube-window-field="gaubeWindowVg"]') || {}).value || "";
+      const material = (row.querySelector('select[data-gaube-window-field="gaubeWindowMaterial"]') || {}).value || "";
+      const roomDraw = readDraw(row, "gaubeWindowRoomDraw");
+      const sizeDraw = readDraw(row, "gaubeWindowSizeDraw");
+      const yearDraw = readDraw(row, "gaubeWindowYearDraw");
+      windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
+    });
+    return windows;
+  }
+
+  function collectRoofWindowsFromDom(){
+    const windows = [];
+    const readDraw = (row, field) => {
+      const hidden = row.querySelector('input[type="hidden"][data-roof-window-field="' + field + '"]');
+      return hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
+    };
+    document.querySelectorAll(".roof-window-row").forEach(row => {
+      const hr = (row.querySelector('select[data-roof-window-field="roofWindowHr"]') || {}).value || "";
+      const vg = (row.querySelector('select[data-roof-window-field="roofWindowVg"]') || {}).value || "";
+      const material = (row.querySelector('select[data-roof-window-field="roofWindowMaterial"]') || {}).value || "";
+      const roomDraw = readDraw(row, "roofWindowRoomDraw");
+      const sizeDraw = readDraw(row, "roofWindowSizeDraw");
+      const yearDraw = readDraw(row, "roofWindowYearDraw");
+      windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
+    });
+    return windows;
+  }
+
   function hasWindowData(windows){
     if(!Array.isArray(windows)) return false;
     return windows.some(entry => entry && (
@@ -4343,7 +4613,10 @@
       system.wallWestL3Draw || system.wallWestL4Draw ||
       system.wallWestL5Draw || system.wallWestTotalDraw ||
       system.wallNotesDraw ||
+      system.notesLargeDraw ||
       hasWindowData(system.windows) ||
+      hasWindowData(system.gaubeWindows) ||
+      hasWindowData(system.roofWindows) ||
       hasGaubeData(system.gaubes) ||
       system.addressPhoneDraw || system.addressEmailDraw ||
       system.systemManufacturer || system.systemManufacturerDraw ||
@@ -4357,7 +4630,32 @@
       system.layingSpacing || system.fbhLineDiameter ||
       system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
       system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStf ||
-      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStf
+      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStf ||
+      system.solarYearDraw || system.solarStorageDraw || system.solarPumpDraw ||
+      system.solarModulesDraw || system.solarModulesAreaDraw || system.solarOrientation || system.solarCollectorType ||
+      system.pvModulesDraw || system.pvModulesAreaDraw || system.pvPowerDraw ||
+      system.pvVentilation || system.pvOrientation || system.pvBatteryDraw ||
+      system.ogdStructure || system.ogdStructureDraw || system.ogdInsulationDraw ||
+      system.roofTypeSatteldach || system.roofTypeWalmdach || system.roofTypeKruppelwalmdach ||
+      system.roofTypeMansardendach || system.roofTypePultdach || system.roofTypeFlachdach || system.roofTypeSheddach ||
+      system.roofDepthDraw || system.roofWidthDraw || system.roofSpacingDraw || system.roofAngleDraw ||
+      system.roofDepthDraw2 || system.roofWidthDraw2 || system.roofSpacingDraw2 || system.roofAngleDraw2 ||
+      system.roofInsulationDraw ||
+      system.annexExists || system.annexYearDraw || system.annexType ||
+      system.annexWallNorthL1Draw || system.annexWallNorthL2Draw || system.annexWallNorthL3Draw ||
+      system.annexWallNorthL4Draw || system.annexWallNorthL5Draw || system.annexWallNorthTotalDraw ||
+      system.annexWallEastL1Draw || system.annexWallEastL2Draw || system.annexWallEastL3Draw ||
+      system.annexWallEastL4Draw || system.annexWallEastL5Draw || system.annexWallEastTotalDraw ||
+      system.annexWallSouthL1Draw || system.annexWallSouthL2Draw || system.annexWallSouthL3Draw ||
+      system.annexWallSouthL4Draw || system.annexWallSouthL5Draw || system.annexWallSouthTotalDraw ||
+      system.annexWallWestL1Draw || system.annexWallWestL2Draw || system.annexWallWestL3Draw ||
+      system.annexWallWestL4Draw || system.annexWallWestL5Draw || system.annexWallWestTotalDraw ||
+      system.annexRoofTypeSatteldach || system.annexRoofTypeWalmdach || system.annexRoofTypeKruppelwalmdach ||
+      system.annexRoofTypeMansardendach || system.annexRoofTypePultdach || system.annexRoofTypeFlachdach ||
+      system.annexRoofTypeSheddach ||
+      system.annexRoofDepthDraw || system.annexRoofWidthDraw || system.annexRoofSpacingDraw || system.annexRoofAngleDraw ||
+      system.annexRoofDepthDraw2 || system.annexRoofWidthDraw2 || system.annexRoofSpacingDraw2 || system.annexRoofAngleDraw2 ||
+      system.annexRoofInsulationDraw
     );
   }
 
@@ -4377,6 +4675,14 @@
     const domGaubes = collectGaubesFromDom();
     if(domGaubes.length){
       data.system.gaubes = domGaubes;
+    }
+    const domGaubeWindows = collectGaubeWindowsFromDom();
+    if(domGaubeWindows.length){
+      data.system.gaubeWindows = domGaubeWindows;
+    }
+    const domRoofWindows = collectRoofWindowsFromDom();
+    if(domRoofWindows.length){
+      data.system.roofWindows = domRoofWindows;
     }
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
@@ -4495,8 +4801,86 @@
       wallWestL5Draw,
       wallWestTotalDraw,
       wallNotesDraw,
+      notesLargeDraw,
       gaubes: Array.isArray(data.system.gaubes) ? data.system.gaubes : [],
       windows: Array.isArray(data.system.windows) ? data.system.windows : [],
+      gaubeWindows,
+      roofWindows,
+      solarYearDraw,
+      solarStorageDraw,
+      solarPumpDraw,
+      solarModulesDraw,
+      solarModulesAreaDraw,
+      solarOrientation,
+      solarCollectorType,
+      pvModulesDraw,
+      pvModulesAreaDraw,
+      pvPowerDraw,
+      pvVentilation,
+      pvOrientation,
+      pvBatteryDraw,
+      ogdStructure,
+      ogdStructureDraw,
+      ogdInsulationDraw,
+      roofTypeSatteldach,
+      roofTypeWalmdach,
+      roofTypeKruppelwalmdach,
+      roofTypeMansardendach,
+      roofTypePultdach,
+      roofTypeFlachdach,
+      roofTypeSheddach,
+      roofDepthDraw,
+      roofWidthDraw,
+      roofSpacingDraw,
+      roofAngleDraw,
+      roofDepthDraw2,
+      roofWidthDraw2,
+      roofSpacingDraw2,
+      roofAngleDraw2,
+      roofInsulationDraw,
+      annexExists,
+      annexYearDraw,
+      annexType,
+      annexWallNorthL1Draw,
+      annexWallNorthL2Draw,
+      annexWallNorthL3Draw,
+      annexWallNorthL4Draw,
+      annexWallNorthL5Draw,
+      annexWallNorthTotalDraw,
+      annexWallEastL1Draw,
+      annexWallEastL2Draw,
+      annexWallEastL3Draw,
+      annexWallEastL4Draw,
+      annexWallEastL5Draw,
+      annexWallEastTotalDraw,
+      annexWallSouthL1Draw,
+      annexWallSouthL2Draw,
+      annexWallSouthL3Draw,
+      annexWallSouthL4Draw,
+      annexWallSouthL5Draw,
+      annexWallSouthTotalDraw,
+      annexWallWestL1Draw,
+      annexWallWestL2Draw,
+      annexWallWestL3Draw,
+      annexWallWestL4Draw,
+      annexWallWestL5Draw,
+      annexWallWestTotalDraw,
+      annexRoofTypeSatteldach,
+      annexRoofTypeWalmdach,
+      annexRoofTypeKruppelwalmdach,
+      annexRoofTypeMansardendach,
+      annexRoofTypePultdach,
+      annexRoofTypeFlachdach,
+      annexRoofTypeSheddach,
+      annexRoofDepthDraw,
+      annexRoofWidthDraw,
+      annexRoofSpacingDraw,
+      annexRoofAngleDraw,
+      annexRoofDepthDraw2,
+      annexRoofWidthDraw2,
+      annexRoofSpacingDraw2,
+      annexRoofAngleDraw2,
+      annexRoofInsulationDraw,
       systemManufacturer,
       systemManufacturerDraw,
       systemTypeDraw,
@@ -4752,13 +5136,71 @@
         '</tbody></table></section>'
       ].join(""));
     }
+    const gaubeWindows = Array.isArray(data.system.gaubeWindows)
+      ? data.system.gaubeWindows.filter(entry => entry && (
+        entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
+      ))
+      : [];
+    if(gaubeWindows.length){
+      const windowRows = gaubeWindows.map(entry => [
+        '<tr>',
+        '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
+        '<td>' + renderCell(normalizeText(entry.vg), "") + '</td>',
+        '<td>' + renderCell(normalizeText(entry.material), "") + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.sizeDraw)) + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.yearDraw)) + '</td>',
+        '</tr>'
+      ].join("")).join("");
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Gaubenfenster</div><div class="room-sub">Dachgaube</div></div>',
+        '<div class="badge">Fenster</div>',
+        '</div>',
+        '<table class="hk-table window-table">',
+        '<thead><tr><th>HR</th><th>Raum</th><th>VG</th><th>Stoff</th><th>Ma\u00dfe</th><th>Bj.</th></tr></thead>',
+        '<tbody>',
+        windowRows,
+        '</tbody></table></section>'
+      ].join(""));
+    }
+    const roofWindows = Array.isArray(data.system.roofWindows)
+      ? data.system.roofWindows.filter(entry => entry && (
+        entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
+      ))
+      : [];
+    if(roofWindows.length){
+      const windowRows = roofWindows.map(entry => [
+        '<tr>',
+        '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
+        '<td>' + renderCell(normalizeText(entry.vg), "") + '</td>',
+        '<td>' + renderCell(normalizeText(entry.material), "") + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.sizeDraw)) + '</td>',
+        '<td>' + renderCell("", normalizeDraw(entry.yearDraw)) + '</td>',
+        '</tr>'
+      ].join("")).join("");
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Dachfl\u00e4chenfenster</div><div class="room-sub">Dach/OGD</div></div>',
+        '<div class="badge">Fenster</div>',
+        '</div>',
+        '<table class="hk-table window-table">',
+        '<thead><tr><th>HR</th><th>Raum</th><th>VG</th><th>Stoff</th><th>Ma\u00dfe</th><th>Bj.</th></tr></thead>',
+        '<tbody>',
+        windowRows,
+        '</tbody></table></section>'
+      ].join(""));
+    }
     const gaubes = Array.isArray(data.system.gaubes)
       ? data.system.gaubes.filter(entry => entry && (
         entry.hr || entry.angle || entry.widthDraw || entry.heightDraw
       ))
       : [];
     if(gaubes.length){
-      const headerTitles = ["Gaube1", "Gaube2", "Gaube3", "Gaube2"];
+      const headerTitles = ["Gaube1", "Gaube2", "Gaube3", "Gaube4"];
       const cells = (key, isDraw) => gaubes.map(entry => (
         '<td>' + renderCell(isDraw ? "" : (entry[key] || ""), isDraw ? (entry[key] || "") : "") + '</td>'
       )).join("");
@@ -4776,6 +5218,290 @@
         '<tr><td>H\u00f6he</td>' + cells("heightDraw", true) + '</tr>',
         '<tr><td>Winkel</td>' + cells("angle", false) + '</tr>',
         '</tbody></table></section>'
+      ].join(""));
+    }
+    const roofTypes = [];
+    if(system.roofTypeSatteldach) roofTypes.push("Satteldach");
+    if(system.roofTypeWalmdach) roofTypes.push("Walmdach");
+    if(system.roofTypeKruppelwalmdach) roofTypes.push("Kr\u00fcppelwalmdach");
+    if(system.roofTypeMansardendach) roofTypes.push("Mansardendach");
+    if(system.roofTypePultdach) roofTypes.push("Pultdach");
+    if(system.roofTypeFlachdach) roofTypes.push("Flachdach");
+    if(system.roofTypeSheddach) roofTypes.push("Sheddach");
+    const hasOgd = !!(
+      system.ogdStructure || system.ogdStructureDraw || system.ogdInsulationDraw ||
+      roofTypes.length ||
+      system.roofDepthDraw || system.roofWidthDraw || system.roofSpacingDraw || system.roofAngleDraw ||
+      system.roofDepthDraw2 || system.roofWidthDraw2 || system.roofSpacingDraw2 || system.roofAngleDraw2 ||
+      system.roofInsulationDraw
+    );
+    if(hasOgd){
+      const ogdRows = [];
+      if(system.ogdStructure || system.ogdStructureDraw){
+        ogdRows.push('<tr><td>Art/Aufbau/Material</td><td>' + renderCell(system.ogdStructure || "", system.ogdStructureDraw || "") + '</td></tr>');
+      }
+      if(system.ogdInsulationDraw){
+        ogdRows.push('<tr><td>D\u00e4mmung</td><td>' + renderCell("", system.ogdInsulationDraw) + '</td></tr>');
+      }
+      const roofRows = [];
+      if(roofTypes.length){
+        roofRows.push('<tr><td>Dachform</td><td>' + roofTypes.join(", ") + '</td></tr>');
+      }
+      if(system.roofDepthDraw || system.roofWidthDraw || system.roofSpacingDraw || system.roofAngleDraw){
+        roofRows.push(
+          '<tr>' +
+          '<td>Tiefe</td><td>' + renderCell("", system.roofDepthDraw) + '</td>' +
+          '<td>Breite</td><td>' + renderCell("", system.roofWidthDraw) + '</td>' +
+          '</tr>' +
+          '<tr>' +
+          '<td>Abstand</td><td>' + renderCell("", system.roofSpacingDraw) + '</td>' +
+          '<td>Winkel</td><td>' + renderCell("", system.roofAngleDraw) + '</td>' +
+          '</tr>'
+        );
+      }
+      if(system.roofDepthDraw2 || system.roofWidthDraw2 || system.roofSpacingDraw2 || system.roofAngleDraw2){
+        roofRows.push(
+          '<tr>' +
+          '<td>Tiefe</td><td>' + renderCell("", system.roofDepthDraw2) + '</td>' +
+          '<td>Breite</td><td>' + renderCell("", system.roofWidthDraw2) + '</td>' +
+          '</tr>' +
+          '<tr>' +
+          '<td>Abstand</td><td>' + renderCell("", system.roofSpacingDraw2) + '</td>' +
+          '<td>Winkel</td><td>' + renderCell("", system.roofAngleDraw2) + '</td>' +
+          '</tr>'
+        );
+      }
+      if(system.roofInsulationDraw){
+        roofRows.push('<tr><td>D\u00e4mmung</td><td colspan="3">' + renderCell("", system.roofInsulationDraw) + '</td></tr>');
+      }
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Dach/OGD</div><div class="room-sub">Aufbau / Dach</div></div>',
+        '<div class="badge">Dach</div>',
+        '</div>',
+        (ogdRows.length ? [
+          '<table class="hk-table">',
+          '<thead><tr><th>OGD</th><th>Wert</th></tr></thead>',
+          '<tbody>',
+          ogdRows.join(""),
+          '</tbody></table>'
+        ].join("") : ""),
+        (roofRows.length ? [
+          '<table class="hk-table" style="margin-top:10px;">',
+          '<thead><tr><th colspan="4">Dach</th></tr></thead>',
+          '<tbody>',
+          roofRows.join(""),
+          '</tbody></table>'
+        ].join("") : ""),
+        '</section>'
+      ].join(""));
+    }
+    const annexRoofTypes = [];
+    if(system.annexRoofTypeSatteldach) annexRoofTypes.push("Satteldach");
+    if(system.annexRoofTypeWalmdach) annexRoofTypes.push("Walmdach");
+    if(system.annexRoofTypeKruppelwalmdach) annexRoofTypes.push("Kr\u00fcppelwalmdach");
+    if(system.annexRoofTypeMansardendach) annexRoofTypes.push("Mansardendach");
+    if(system.annexRoofTypePultdach) annexRoofTypes.push("Pultdach");
+    if(system.annexRoofTypeFlachdach) annexRoofTypes.push("Flachdach");
+    if(system.annexRoofTypeSheddach) annexRoofTypes.push("Sheddach");
+    const hasAnnexWalls = !!(
+      system.annexWallNorthL1Draw || system.annexWallNorthL2Draw || system.annexWallNorthL3Draw ||
+      system.annexWallNorthL4Draw || system.annexWallNorthL5Draw || system.annexWallNorthTotalDraw ||
+      system.annexWallEastL1Draw || system.annexWallEastL2Draw || system.annexWallEastL3Draw ||
+      system.annexWallEastL4Draw || system.annexWallEastL5Draw || system.annexWallEastTotalDraw ||
+      system.annexWallSouthL1Draw || system.annexWallSouthL2Draw || system.annexWallSouthL3Draw ||
+      system.annexWallSouthL4Draw || system.annexWallSouthL5Draw || system.annexWallSouthTotalDraw ||
+      system.annexWallWestL1Draw || system.annexWallWestL2Draw || system.annexWallWestL3Draw ||
+      system.annexWallWestL4Draw || system.annexWallWestL5Draw || system.annexWallWestTotalDraw
+    );
+    const hasAnnexRoof = !!(
+      annexRoofTypes.length ||
+      system.annexRoofDepthDraw || system.annexRoofWidthDraw || system.annexRoofSpacingDraw || system.annexRoofAngleDraw ||
+      system.annexRoofDepthDraw2 || system.annexRoofWidthDraw2 || system.annexRoofSpacingDraw2 || system.annexRoofAngleDraw2 ||
+      system.annexRoofInsulationDraw
+    );
+    const hasAnnex = !!(system.annexExists || system.annexYearDraw || system.annexType || hasAnnexWalls || hasAnnexRoof);
+    if(hasAnnex){
+      const annexRows = [];
+      if(system.annexExists) annexRows.push('<tr><td>Anbau vorhanden</td><td>' + system.annexExists + '</td></tr>');
+      if(system.annexYearDraw) annexRows.push('<tr><td>Baujahr</td><td>' + renderCell("", system.annexYearDraw) + '</td></tr>');
+      if(system.annexType) annexRows.push('<tr><td>Bodenplatte</td><td>' + renderCell(system.annexType, "") + '</td></tr>');
+      if(annexRows.length){
+        sections.push([
+          '<section class="room">',
+          '<div class="room-head">',
+          '<div><div class="room-title">Anbau</div><div class="room-sub">Stammdaten</div></div>',
+          '<div class="badge">Anbau</div>',
+          '</div>',
+          '<table class="hk-table">',
+          '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
+          '<tbody>',
+          annexRows.join(""),
+          '</tbody></table></section>'
+        ].join(""));
+      }
+      if(hasAnnexWalls){
+        const buildRow = (label, values) => (
+          '<tr>' +
+          '<td>' + label + '</td>' +
+          values.map(draw => '<td>' + renderCell("", draw) + '</td>').join("") +
+          '</tr>'
+        );
+        sections.push([
+          '<section class="room">',
+          '<div class="room-head">',
+          '<div><div class="room-title">Anbau Au\u00dfenw\u00e4nde</div><div class="room-sub">Aufbau</div></div>',
+          '<div class="badge">Anbau</div>',
+          '</div>',
+          '<table class="hk-table">',
+          '<thead><tr><th>Aufbau</th><th>Schicht 1</th><th>Schicht 2</th><th>Schicht 3</th><th>Schicht 4</th><th>Schicht 5</th><th>Gesamtdicke</th></tr></thead>',
+          '<tbody>',
+          buildRow("Nord", [
+            system.annexWallNorthL1Draw,
+            system.annexWallNorthL2Draw,
+            system.annexWallNorthL3Draw,
+            system.annexWallNorthL4Draw,
+            system.annexWallNorthL5Draw,
+            system.annexWallNorthTotalDraw
+          ]),
+          buildRow("Ost", [
+            system.annexWallEastL1Draw,
+            system.annexWallEastL2Draw,
+            system.annexWallEastL3Draw,
+            system.annexWallEastL4Draw,
+            system.annexWallEastL5Draw,
+            system.annexWallEastTotalDraw
+          ]),
+          buildRow("S\u00fcd", [
+            system.annexWallSouthL1Draw,
+            system.annexWallSouthL2Draw,
+            system.annexWallSouthL3Draw,
+            system.annexWallSouthL4Draw,
+            system.annexWallSouthL5Draw,
+            system.annexWallSouthTotalDraw
+          ]),
+          buildRow("West", [
+            system.annexWallWestL1Draw,
+            system.annexWallWestL2Draw,
+            system.annexWallWestL3Draw,
+            system.annexWallWestL4Draw,
+            system.annexWallWestL5Draw,
+            system.annexWallWestTotalDraw
+          ]),
+          '</tbody></table></section>'
+        ].join(""));
+      }
+      if(hasAnnexRoof){
+        const roofRows = [];
+        if(annexRoofTypes.length){
+          roofRows.push('<tr><td>Dachform</td><td>' + annexRoofTypes.join(", ") + '</td></tr>');
+        }
+        if(system.annexRoofDepthDraw || system.annexRoofWidthDraw || system.annexRoofSpacingDraw || system.annexRoofAngleDraw){
+          roofRows.push(
+            '<tr>' +
+            '<td>Tiefe</td><td>' + renderCell("", system.annexRoofDepthDraw) + '</td>' +
+            '<td>Breite</td><td>' + renderCell("", system.annexRoofWidthDraw) + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Abstand</td><td>' + renderCell("", system.annexRoofSpacingDraw) + '</td>' +
+            '<td>Winkel</td><td>' + renderCell("", system.annexRoofAngleDraw) + '</td>' +
+            '</tr>'
+          );
+        }
+        if(system.annexRoofDepthDraw2 || system.annexRoofWidthDraw2 || system.annexRoofSpacingDraw2 || system.annexRoofAngleDraw2){
+          roofRows.push(
+            '<tr>' +
+            '<td>Tiefe</td><td>' + renderCell("", system.annexRoofDepthDraw2) + '</td>' +
+            '<td>Breite</td><td>' + renderCell("", system.annexRoofWidthDraw2) + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Abstand</td><td>' + renderCell("", system.annexRoofSpacingDraw2) + '</td>' +
+            '<td>Winkel</td><td>' + renderCell("", system.annexRoofAngleDraw2) + '</td>' +
+            '</tr>'
+          );
+        }
+        if(system.annexRoofInsulationDraw){
+          roofRows.push('<tr><td>D\u00e4mmung</td><td colspan="3">' + renderCell("", system.annexRoofInsulationDraw) + '</td></tr>');
+        }
+        if(roofRows.length){
+          sections.push([
+            '<section class="room">',
+            '<div class="room-head">',
+            '<div><div class="room-title">Anbau Dach</div><div class="room-sub">Aufbau</div></div>',
+            '<div class="badge">Anbau</div>',
+            '</div>',
+            '<table class="hk-table">',
+            '<thead><tr><th colspan="4">Dach</th></tr></thead>',
+            '<tbody>',
+            roofRows.join(""),
+            '</tbody></table></section>'
+          ].join(""));
+        }
+      }
+    }
+    const hasSolar = !!(
+      system.solarYearDraw || system.solarStorageDraw || system.solarPumpDraw ||
+      system.solarModulesDraw || system.solarModulesAreaDraw || system.solarOrientation || system.solarCollectorType
+    );
+    const hasPv = !!(
+      system.pvModulesDraw || system.pvModulesAreaDraw || system.pvPowerDraw ||
+      system.pvVentilation || system.pvOrientation || system.pvBatteryDraw
+    );
+    if(hasSolar || hasPv){
+      const blocks = [];
+      if(hasSolar){
+        blocks.push([
+          '<table class="hk-table">',
+          '<thead><tr><th colspan="7">Solarthermie</th></tr>',
+          '<tr><th>Baujahr</th><th>Speicher</th><th>Pumpe</th><th>Module</th><th>Module m\u00b2</th><th>Ausrichtung</th><th>Kollektorart</th></tr></thead>',
+          '<tbody><tr>',
+          '<td>' + renderCell("", system.solarYearDraw) + '</td>',
+          '<td>' + renderCell("", system.solarStorageDraw) + '</td>',
+          '<td>' + renderCell("", system.solarPumpDraw) + '</td>',
+          '<td>' + renderCell("", system.solarModulesDraw) + '</td>',
+          '<td>' + renderCell("", system.solarModulesAreaDraw) + '</td>',
+          '<td>' + renderCell(system.solarOrientation || "", "") + '</td>',
+          '<td>' + renderCell(system.solarCollectorType || "", "") + '</td>',
+          '</tr></tbody></table>'
+        ].join(""));
+      }
+      if(hasPv){
+        blocks.push([
+          '<table class="hk-table" style="margin-top:10px;">',
+          '<thead><tr><th colspan="6">Photovoltaik</th></tr>',
+          '<tr><th>Module</th><th>Module m\u00b2</th><th>Leistung</th><th>Bel\u00fcftung</th><th>Ausrichtung</th><th>Batteriespeicher</th></tr></thead>',
+          '<tbody><tr>',
+          '<td>' + renderCell("", system.pvModulesDraw) + '</td>',
+          '<td>' + renderCell("", system.pvModulesAreaDraw) + '</td>',
+          '<td>' + renderCell("", system.pvPowerDraw) + '</td>',
+          '<td>' + renderCell(system.pvVentilation || "", "") + '</td>',
+          '<td>' + renderCell(system.pvOrientation || "", "") + '</td>',
+          '<td>' + renderCell("", system.pvBatteryDraw) + '</td>',
+          '</tr></tbody></table>'
+        ].join(""));
+      }
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Sonstiges</div><div class="room-sub">Solar / PV</div></div>',
+        '<div class="badge">Zusatz</div>',
+        '</div>',
+        blocks.join(""),
+        '</section>'
+      ].join(""));
+    }
+    if(system.notesLargeDraw){
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Notizen</div><div class="room-sub">Zusatz</div></div>',
+        '<div class="badge">Notiz</div>',
+        '</div>',
+        '<table class="hk-table">',
+        '<thead><tr><th>Notizen</th></tr></thead>',
+        '<tbody><tr><td>' + renderCell("", system.notesLargeDraw) + '</td></tr></tbody>',
+        '</table></section>'
       ].join(""));
     }
     if(hasSystem){
