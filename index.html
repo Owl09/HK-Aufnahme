@@ -3219,6 +3219,8 @@
   let saveTimer = null;
   let eraserMode = false;
   let shareHtmlCache = "";
+  let shareFileCache = null;
+  let shareHasData = false;
   const eraserButtons = document.querySelectorAll(".eraser-btn");
   if(eraserButtons.length){
     eraserButtons.forEach(btn => {
@@ -3520,6 +3522,7 @@
 
   function resizeDrawCanvas(canvas, ctx){
     const rect = canvas.getBoundingClientRect();
+    if(rect.width < 1 || rect.height < 1) return;
     const dpr = (window.devicePixelRatio || 1) * 2;
     canvas.width = Math.max(1, Math.floor(rect.width * dpr));
     canvas.height = Math.max(1, Math.floor(rect.height * dpr));
@@ -3678,6 +3681,40 @@
     };
     img.src = dataUrl;
   }
+
+  function refreshDrawCanvases(){
+    document.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+      const targetId = canvas.getAttribute("data-draw-target");
+      const hidden = targetId ? document.getElementById(targetId) : null;
+      const dataUrl = hidden && hidden.dataset ? hidden.dataset.drawing : "";
+      if(dataUrl){
+        drawDataUrl(canvas, dataUrl);
+      } else {
+        const ctx = canvas.getContext("2d");
+        if(ctx) resizeDrawCanvas(canvas, ctx);
+      }
+    });
+  }
+
+  function scheduleCanvasRefresh(){
+    requestAnimationFrame(() => {
+      requestAnimationFrame(refreshDrawCanvases);
+    });
+  }
+
+  window.addEventListener("pageshow", scheduleCanvasRefresh);
+  window.addEventListener("orientationchange", scheduleCanvasRefresh);
+  document.addEventListener("visibilitychange", () => {
+    if(!document.hidden) scheduleCanvasRefresh();
+  });
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", scheduleCanvasRefresh);
+  }
+  document.querySelectorAll("details").forEach(detail => {
+    detail.addEventListener("toggle", () => {
+      if(detail.open) scheduleCanvasRefresh();
+    });
+  });
 
   function restoreFormState(){
     let raw = null;
@@ -4274,6 +4311,54 @@
     ));
   }
 
+  function hasAnyData(data){
+    if(!data) return false;
+    const system = data.system || {};
+    return !!(
+      data.rooms.length ||
+      system.addressNameDraw || system.addressStreetDraw ||
+      system.addressCityDraw || system.buildingData ||
+      system.buildingStreetDraw || system.buildingCityDraw ||
+      system.buildingYearDraw || system.buildingUnits ||
+      system.buildingTypeDetached || system.buildingTypeMultiFamily ||
+      system.buildingTypeEndTerrace || system.buildingTypeMidTerrace ||
+      system.floorHeightBasementDraw || system.floorHeightGroundDraw ||
+      system.floorHeight1OgDraw || system.floorHeight2OgDraw ||
+      system.floorHeight3OgDraw || system.floorHeightDgDraw ||
+      system.structureMassive || system.structureWooden ||
+      system.basementHeated ||
+      system.notesDraw ||
+      system.wallNorthL1Draw || system.wallNorthL2Draw ||
+      system.wallNorthL3Draw || system.wallNorthL4Draw ||
+      system.wallNorthL5Draw || system.wallNorthTotalDraw ||
+      system.wallEastL1Draw || system.wallEastL2Draw ||
+      system.wallEastL3Draw || system.wallEastL4Draw ||
+      system.wallEastL5Draw || system.wallEastTotalDraw ||
+      system.wallSouthL1Draw || system.wallSouthL2Draw ||
+      system.wallSouthL3Draw || system.wallSouthL4Draw ||
+      system.wallSouthL5Draw || system.wallSouthTotalDraw ||
+      system.wallWestL1Draw || system.wallWestL2Draw ||
+      system.wallWestL3Draw || system.wallWestL4Draw ||
+      system.wallWestL5Draw || system.wallWestTotalDraw ||
+      system.wallNotesDraw ||
+      hasWindowData(system.windows) ||
+      hasGaubeData(system.gaubes) ||
+      system.addressPhoneDraw || system.addressEmailDraw ||
+      system.systemManufacturer || system.systemManufacturerDraw ||
+      system.systemTypeDraw ||
+      system.systemPowerDraw ||
+      system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
+      system.optionNightReduction || system.optionHydraulicBalance || system.optionHeaterNiches || system.optionCirculationTimed ||
+      system.systemThermostatValves ||
+      system.surfaceHeating || system.distributorPhoto ||
+      system.heatingCircuits || system.distributorDn ||
+      system.layingSpacing || system.fbhLineDiameter ||
+      system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
+      system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStf ||
+      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStf
+    );
+  }
+
   function renderCell(value, draw){
     if(draw) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
     return value || "";
@@ -4819,9 +4904,46 @@
     const data = collectData();
     data.system.windows = collectWindowsFromDom();
     data.system.gaubes = collectGaubesFromDom();
+    shareHasData = hasAnyData(data);
+    if(!shareHasData){
+      shareHtmlCache = "";
+      shareFileCache = null;
+      return;
+    }
     renderPrint(data, true);
     const container = document.getElementById("printView");
     shareHtmlCache = container ? container.innerHTML : "";
+    if(shareHtmlCache){
+      const html = buildShareHtml(shareHtmlCache);
+      shareFileCache = new File([html], "hk-uebersicht.html", { type: "text/html" });
+    } else {
+      shareFileCache = null;
+    }
+  }
+
+  function buildShareHtml(reportMarkup){
+    return [
+      '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
+      '<style>',
+      'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
+      '.doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }',
+      'h1 { margin: 0; font-size: 22px; }',
+      '.meta { color: #6b7280; font-size: 13px; }',
+      '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
+      '.room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }',
+      '.room-title { font-size: 18px; font-weight: 700; }',
+      '.room-sub { color: #6b7280; font-size: 14px; }',
+      '.badge { background: #eef2ff; color: #1d4ed8; border: 1px solid #c7d2fe; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 13px; }',
+      'table { width: 100%; border-collapse: collapse; }',
+      'th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }',
+      '.window-table th, .window-table td { padding: 4px 6px; }',
+      '.window-table .draw-img { max-height: 36px; max-width: 120px; }',
+      'th { background: #f8fafc; font-weight: 700; }',
+      '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
+      '</style></head><body>',
+      reportMarkup || "",
+      '</body></html>'
+    ].join("");
   }
 
   function downloadFile(data){
@@ -4877,84 +4999,22 @@
   });
   if(shareBtn){
     shareBtn.addEventListener("click", () => {
-      const data = collectData();
-      data.system.windows = collectWindowsFromDom();
-      data.system.gaubes = collectGaubesFromDom();
-      if(
-        !data.rooms.length &&
-        !data.system.addressNameDraw && !data.system.addressStreetDraw &&
-        !data.system.addressCityDraw && !data.system.buildingData &&
-        !data.system.buildingStreetDraw && !data.system.buildingCityDraw &&
-        !data.system.buildingYearDraw && !data.system.buildingUnits &&
-        !data.system.buildingTypeDetached && !data.system.buildingTypeMultiFamily &&
-        !data.system.buildingTypeEndTerrace && !data.system.buildingTypeMidTerrace &&
-        !data.system.floorHeightBasementDraw && !data.system.floorHeightGroundDraw &&
-        !data.system.floorHeight1OgDraw && !data.system.floorHeight2OgDraw &&
-        !data.system.floorHeight3OgDraw && !data.system.floorHeightDgDraw &&
-        !data.system.structureMassive && !data.system.structureWooden &&
-        !data.system.basementHeated &&
-        !data.system.notesDraw &&
-        !data.system.wallNorthL1Draw && !data.system.wallNorthL2Draw &&
-        !data.system.wallNorthL3Draw && !data.system.wallNorthL4Draw &&
-        !data.system.wallNorthL5Draw && !data.system.wallNorthTotalDraw &&
-        !data.system.wallEastL1Draw && !data.system.wallEastL2Draw &&
-        !data.system.wallEastL3Draw && !data.system.wallEastL4Draw &&
-        !data.system.wallEastL5Draw && !data.system.wallEastTotalDraw &&
-        !data.system.wallSouthL1Draw && !data.system.wallSouthL2Draw &&
-        !data.system.wallSouthL3Draw && !data.system.wallSouthL4Draw &&
-        !data.system.wallSouthL5Draw && !data.system.wallSouthTotalDraw &&
-        !data.system.wallWestL1Draw && !data.system.wallWestL2Draw &&
-        !data.system.wallWestL3Draw && !data.system.wallWestL4Draw &&
-        !data.system.wallWestL5Draw && !data.system.wallWestTotalDraw &&
-        !data.system.wallNotesDraw &&
-        !hasWindowData(data.system.windows) &&
-        !hasGaubeData(data.system.gaubes) &&
-        !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
-        !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
-        !data.system.systemTypeDraw &&
-        !data.system.systemPowerDraw &&
-        !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
-        !data.system.optionNightReduction && !data.system.optionHydraulicBalance && !data.system.optionHeaterNiches && !data.system.optionCirculationTimed &&
-        !data.system.systemThermostatValves &&
-        !data.system.surfaceHeating && !data.system.distributorPhoto &&
-        !data.system.heatingCircuits && !data.system.distributorDn &&
-        !data.system.layingSpacing && !data.system.fbhLineDiameter &&
-        !data.system.pumpCirculationDraw && !data.system.pumpCirculationHe && !data.system.pumpCirculationStf &&
-        !data.system.pumpStorageDraw && !data.system.pumpStorageHe && !data.system.pumpStorageStf &&
-        !data.system.pumpRecircDraw && !data.system.pumpRecircHe && !data.system.pumpRecircStf
-      ){
+      if(!shareHasData){
         alert("Keine Daten erfasst.");
         return;
       }
-      const reportMarkup = shareHtmlCache || document.getElementById("printView").innerHTML;
-      const html = [
-        '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
-        '<style>',
-        'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
-        '.doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }',
-        'h1 { margin: 0; font-size: 22px; }',
-        '.meta { color: #6b7280; font-size: 13px; }',
-        '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
-        '.room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }',
-        '.room-title { font-size: 18px; font-weight: 700; }',
-        '.room-sub { color: #6b7280; font-size: 14px; }',
-        '.badge { background: #eef2ff; color: #1d4ed8; border: 1px solid #c7d2fe; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 13px; }',
-        'table { width: 100%; border-collapse: collapse; }',
-        'th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }',
-        '.window-table th, .window-table td { padding: 4px 6px; }',
-        '.window-table .draw-img { max-height: 36px; max-width: 120px; }',
-        'th { background: #f8fafc; font-weight: 700; }',
-        '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
-        '</style></head><body>',
-        reportMarkup,
-        '</body></html>'
-      ].join("");
+      let file = shareFileCache;
+      if(!file){
+        const reportMarkup = shareHtmlCache || document.getElementById("printView").innerHTML || "";
+        const html = buildShareHtml(reportMarkup);
+        file = new File([html], "hk-uebersicht.html", { type: "text/html" });
+        shareFileCache = file;
+      }
       if(!navigator.share){
         alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar.");
         return;
       }
       try{
-        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
         const files = [file];
         if(navigator.canShare && !navigator.canShare({ files })){
           alert("Teilen mit mehreren Dateien ist nicht verf\u00fcgbar.");
