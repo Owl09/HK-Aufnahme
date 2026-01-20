@@ -41,6 +41,9 @@
         .inline-right { margin-left: auto; display: inline-flex; gap: 16px; align-items: center; }
         .check-grid { display: grid; grid-template-columns: repeat(2, minmax(160px, 1fr)); gap: 8px 16px; }
         .matrix-table { width: 100%; border-collapse: collapse; }
+        .gaube-table { table-layout: fixed; }
+        .gaube-table th:first-child, .gaube-table td:first-child { width: 12%; }
+        .gaube-table th:not(:first-child), .gaube-table td:not(:first-child) { width: 22%; }
         .matrix-table th, .matrix-table td { border: 1px solid #e5e7eb; padding: 8px; vertical-align: top; text-align: left; }
         .matrix-table th { background: #f8fafc; font-weight: 700; }
         .matrix-table .col-wide { width: 40%; }
@@ -304,7 +307,14 @@
         <details class="system-card" open>
             <summary><span>Au&szlig;enw&auml;nde</span></summary>
             <div class="section-body">
-                <table class="matrix-table">
+                <table class="matrix-table gaube-table">
+                    <colgroup>
+                        <col style="width:12%;">
+                        <col style="width:22%;">
+                        <col style="width:22%;">
+                        <col style="width:22%;">
+                        <col style="width:22%;">
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>Aufbau</th>
@@ -475,6 +485,13 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="field-row single">
+                    <label for="wallNotesDraw">Notizen</label>
+                    <div class="draw-wrap">
+                        <input type="hidden" id="wallNotesDraw" name="wallNotesDraw">
+                        <canvas class="draw-canvas" data-draw-target="wallNotesDraw"></canvas>
+                    </div>
+                </div>
             </div>
         </details>
         <details class="system-card" open>
@@ -540,6 +557,504 @@
                     </tbody>
                 </table>
                 <button type="button" class="add-window-btn">+ Fenster hinzuf&uuml;gen</button>
+            </div>
+        </details>
+        <details class="system-card" open>
+            <summary><span>Dachgaube</span></summary>
+            <div class="section-body">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Gaube1</th>
+                            <th>Gaube2</th>
+                            <th>Gaube3</th>
+                            <th>Gaube4</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>HR</td>
+                            <td>
+                                <select id="gaube1Hr" name="gaube1Hr">
+                                    <option value="" selected disabled>HR</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="gaube2Hr" name="gaube2Hr">
+                                    <option value="" selected disabled>HR</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="gaube3Hr" name="gaube3Hr">
+                                    <option value="" selected disabled>HR</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="gaube4Hr" name="gaube4Hr">
+                                    <option value="" selected disabled>HR</option>
+                                    <option>N</option>
+                                    <option>O</option>
+                                    <option>S</option>
+                                    <option>W</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Breite</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube1WidthDraw" name="gaube1WidthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube1WidthDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube2WidthDraw" name="gaube2WidthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube2WidthDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube3WidthDraw" name="gaube3WidthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube3WidthDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube4WidthDraw" name="gaube4WidthDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube4WidthDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>H&ouml;he</td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube1HeightDraw" name="gaube1HeightDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube1HeightDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube2HeightDraw" name="gaube2HeightDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube2HeightDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube3HeightDraw" name="gaube3HeightDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube3HeightDraw"></canvas>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="draw-wrap">
+                                    <input type="hidden" id="gaube4HeightDraw" name="gaube4HeightDraw">
+                                    <canvas class="draw-canvas" data-draw-target="gaube4HeightDraw"></canvas>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Winkel</td>
+                            <td>
+                                <select id="gaube1Angle" name="gaube1Angle">
+                                    <option value="" selected disabled>Winkel</option>
+                                    <option>0&deg;</option>
+                                    <option>1&deg;</option>
+                                    <option>2&deg;</option>
+                                    <option>3&deg;</option>
+                                    <option>4&deg;</option>
+                                    <option>5&deg;</option>
+                                    <option>6&deg;</option>
+                                    <option>7&deg;</option>
+                                    <option>8&deg;</option>
+                                    <option>9&deg;</option>
+                                    <option>10&deg;</option>
+                                    <option>11&deg;</option>
+                                    <option>12&deg;</option>
+                                    <option>13&deg;</option>
+                                    <option>14&deg;</option>
+                                    <option>15&deg;</option>
+                                    <option>16&deg;</option>
+                                    <option>17&deg;</option>
+                                    <option>18&deg;</option>
+                                    <option>19&deg;</option>
+                                    <option>20&deg;</option>
+                                    <option>21&deg;</option>
+                                    <option>22&deg;</option>
+                                    <option>23&deg;</option>
+                                    <option>24&deg;</option>
+                                    <option>25&deg;</option>
+                                    <option>26&deg;</option>
+                                    <option>27&deg;</option>
+                                    <option>28&deg;</option>
+                                    <option>29&deg;</option>
+                                    <option>30&deg;</option>
+                                    <option>31&deg;</option>
+                                    <option>32&deg;</option>
+                                    <option>33&deg;</option>
+                                    <option>34&deg;</option>
+                                    <option>35&deg;</option>
+                                    <option>36&deg;</option>
+                                    <option>37&deg;</option>
+                                    <option>38&deg;</option>
+                                    <option>39&deg;</option>
+                                    <option>40&deg;</option>
+                                    <option>41&deg;</option>
+                                    <option>42&deg;</option>
+                                    <option>43&deg;</option>
+                                    <option>44&deg;</option>
+                                    <option>45&deg;</option>
+                                    <option>46&deg;</option>
+                                    <option>47&deg;</option>
+                                    <option>48&deg;</option>
+                                    <option>49&deg;</option>
+                                    <option>50&deg;</option>
+                                    <option>51&deg;</option>
+                                    <option>52&deg;</option>
+                                    <option>53&deg;</option>
+                                    <option>54&deg;</option>
+                                    <option>55&deg;</option>
+                                    <option>56&deg;</option>
+                                    <option>57&deg;</option>
+                                    <option>58&deg;</option>
+                                    <option>59&deg;</option>
+                                    <option>60&deg;</option>
+                                    <option>61&deg;</option>
+                                    <option>62&deg;</option>
+                                    <option>63&deg;</option>
+                                    <option>64&deg;</option>
+                                    <option>65&deg;</option>
+                                    <option>66&deg;</option>
+                                    <option>67&deg;</option>
+                                    <option>68&deg;</option>
+                                    <option>69&deg;</option>
+                                    <option>70&deg;</option>
+                                    <option>71&deg;</option>
+                                    <option>72&deg;</option>
+                                    <option>73&deg;</option>
+                                    <option>74&deg;</option>
+                                    <option>75&deg;</option>
+                                    <option>76&deg;</option>
+                                    <option>77&deg;</option>
+                                    <option>78&deg;</option>
+                                    <option>79&deg;</option>
+                                    <option>80&deg;</option>
+                                    <option>81&deg;</option>
+                                    <option>82&deg;</option>
+                                    <option>83&deg;</option>
+                                    <option>84&deg;</option>
+                                    <option>85&deg;</option>
+                                    <option>86&deg;</option>
+                                    <option>87&deg;</option>
+                                    <option>88&deg;</option>
+                                    <option>89&deg;</option>
+                                    <option>90&deg;</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="gaube2Angle" name="gaube2Angle">
+                                    <option value="" selected disabled>Winkel</option>
+                                    <option>0&deg;</option>
+                                    <option>1&deg;</option>
+                                    <option>2&deg;</option>
+                                    <option>3&deg;</option>
+                                    <option>4&deg;</option>
+                                    <option>5&deg;</option>
+                                    <option>6&deg;</option>
+                                    <option>7&deg;</option>
+                                    <option>8&deg;</option>
+                                    <option>9&deg;</option>
+                                    <option>10&deg;</option>
+                                    <option>11&deg;</option>
+                                    <option>12&deg;</option>
+                                    <option>13&deg;</option>
+                                    <option>14&deg;</option>
+                                    <option>15&deg;</option>
+                                    <option>16&deg;</option>
+                                    <option>17&deg;</option>
+                                    <option>18&deg;</option>
+                                    <option>19&deg;</option>
+                                    <option>20&deg;</option>
+                                    <option>21&deg;</option>
+                                    <option>22&deg;</option>
+                                    <option>23&deg;</option>
+                                    <option>24&deg;</option>
+                                    <option>25&deg;</option>
+                                    <option>26&deg;</option>
+                                    <option>27&deg;</option>
+                                    <option>28&deg;</option>
+                                    <option>29&deg;</option>
+                                    <option>30&deg;</option>
+                                    <option>31&deg;</option>
+                                    <option>32&deg;</option>
+                                    <option>33&deg;</option>
+                                    <option>34&deg;</option>
+                                    <option>35&deg;</option>
+                                    <option>36&deg;</option>
+                                    <option>37&deg;</option>
+                                    <option>38&deg;</option>
+                                    <option>39&deg;</option>
+                                    <option>40&deg;</option>
+                                    <option>41&deg;</option>
+                                    <option>42&deg;</option>
+                                    <option>43&deg;</option>
+                                    <option>44&deg;</option>
+                                    <option>45&deg;</option>
+                                    <option>46&deg;</option>
+                                    <option>47&deg;</option>
+                                    <option>48&deg;</option>
+                                    <option>49&deg;</option>
+                                    <option>50&deg;</option>
+                                    <option>51&deg;</option>
+                                    <option>52&deg;</option>
+                                    <option>53&deg;</option>
+                                    <option>54&deg;</option>
+                                    <option>55&deg;</option>
+                                    <option>56&deg;</option>
+                                    <option>57&deg;</option>
+                                    <option>58&deg;</option>
+                                    <option>59&deg;</option>
+                                    <option>60&deg;</option>
+                                    <option>61&deg;</option>
+                                    <option>62&deg;</option>
+                                    <option>63&deg;</option>
+                                    <option>64&deg;</option>
+                                    <option>65&deg;</option>
+                                    <option>66&deg;</option>
+                                    <option>67&deg;</option>
+                                    <option>68&deg;</option>
+                                    <option>69&deg;</option>
+                                    <option>70&deg;</option>
+                                    <option>71&deg;</option>
+                                    <option>72&deg;</option>
+                                    <option>73&deg;</option>
+                                    <option>74&deg;</option>
+                                    <option>75&deg;</option>
+                                    <option>76&deg;</option>
+                                    <option>77&deg;</option>
+                                    <option>78&deg;</option>
+                                    <option>79&deg;</option>
+                                    <option>80&deg;</option>
+                                    <option>81&deg;</option>
+                                    <option>82&deg;</option>
+                                    <option>83&deg;</option>
+                                    <option>84&deg;</option>
+                                    <option>85&deg;</option>
+                                    <option>86&deg;</option>
+                                    <option>87&deg;</option>
+                                    <option>88&deg;</option>
+                                    <option>89&deg;</option>
+                                    <option>90&deg;</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="gaube3Angle" name="gaube3Angle">
+                                    <option value="" selected disabled>Winkel</option>
+                                    <option>0&deg;</option>
+                                    <option>1&deg;</option>
+                                    <option>2&deg;</option>
+                                    <option>3&deg;</option>
+                                    <option>4&deg;</option>
+                                    <option>5&deg;</option>
+                                    <option>6&deg;</option>
+                                    <option>7&deg;</option>
+                                    <option>8&deg;</option>
+                                    <option>9&deg;</option>
+                                    <option>10&deg;</option>
+                                    <option>11&deg;</option>
+                                    <option>12&deg;</option>
+                                    <option>13&deg;</option>
+                                    <option>14&deg;</option>
+                                    <option>15&deg;</option>
+                                    <option>16&deg;</option>
+                                    <option>17&deg;</option>
+                                    <option>18&deg;</option>
+                                    <option>19&deg;</option>
+                                    <option>20&deg;</option>
+                                    <option>21&deg;</option>
+                                    <option>22&deg;</option>
+                                    <option>23&deg;</option>
+                                    <option>24&deg;</option>
+                                    <option>25&deg;</option>
+                                    <option>26&deg;</option>
+                                    <option>27&deg;</option>
+                                    <option>28&deg;</option>
+                                    <option>29&deg;</option>
+                                    <option>30&deg;</option>
+                                    <option>31&deg;</option>
+                                    <option>32&deg;</option>
+                                    <option>33&deg;</option>
+                                    <option>34&deg;</option>
+                                    <option>35&deg;</option>
+                                    <option>36&deg;</option>
+                                    <option>37&deg;</option>
+                                    <option>38&deg;</option>
+                                    <option>39&deg;</option>
+                                    <option>40&deg;</option>
+                                    <option>41&deg;</option>
+                                    <option>42&deg;</option>
+                                    <option>43&deg;</option>
+                                    <option>44&deg;</option>
+                                    <option>45&deg;</option>
+                                    <option>46&deg;</option>
+                                    <option>47&deg;</option>
+                                    <option>48&deg;</option>
+                                    <option>49&deg;</option>
+                                    <option>50&deg;</option>
+                                    <option>51&deg;</option>
+                                    <option>52&deg;</option>
+                                    <option>53&deg;</option>
+                                    <option>54&deg;</option>
+                                    <option>55&deg;</option>
+                                    <option>56&deg;</option>
+                                    <option>57&deg;</option>
+                                    <option>58&deg;</option>
+                                    <option>59&deg;</option>
+                                    <option>60&deg;</option>
+                                    <option>61&deg;</option>
+                                    <option>62&deg;</option>
+                                    <option>63&deg;</option>
+                                    <option>64&deg;</option>
+                                    <option>65&deg;</option>
+                                    <option>66&deg;</option>
+                                    <option>67&deg;</option>
+                                    <option>68&deg;</option>
+                                    <option>69&deg;</option>
+                                    <option>70&deg;</option>
+                                    <option>71&deg;</option>
+                                    <option>72&deg;</option>
+                                    <option>73&deg;</option>
+                                    <option>74&deg;</option>
+                                    <option>75&deg;</option>
+                                    <option>76&deg;</option>
+                                    <option>77&deg;</option>
+                                    <option>78&deg;</option>
+                                    <option>79&deg;</option>
+                                    <option>80&deg;</option>
+                                    <option>81&deg;</option>
+                                    <option>82&deg;</option>
+                                    <option>83&deg;</option>
+                                    <option>84&deg;</option>
+                                    <option>85&deg;</option>
+                                    <option>86&deg;</option>
+                                    <option>87&deg;</option>
+                                    <option>88&deg;</option>
+                                    <option>89&deg;</option>
+                                    <option>90&deg;</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="gaube4Angle" name="gaube4Angle">
+                                    <option value="" selected disabled>Winkel</option>
+                                    <option>0&deg;</option>
+                                    <option>1&deg;</option>
+                                    <option>2&deg;</option>
+                                    <option>3&deg;</option>
+                                    <option>4&deg;</option>
+                                    <option>5&deg;</option>
+                                    <option>6&deg;</option>
+                                    <option>7&deg;</option>
+                                    <option>8&deg;</option>
+                                    <option>9&deg;</option>
+                                    <option>10&deg;</option>
+                                    <option>11&deg;</option>
+                                    <option>12&deg;</option>
+                                    <option>13&deg;</option>
+                                    <option>14&deg;</option>
+                                    <option>15&deg;</option>
+                                    <option>16&deg;</option>
+                                    <option>17&deg;</option>
+                                    <option>18&deg;</option>
+                                    <option>19&deg;</option>
+                                    <option>20&deg;</option>
+                                    <option>21&deg;</option>
+                                    <option>22&deg;</option>
+                                    <option>23&deg;</option>
+                                    <option>24&deg;</option>
+                                    <option>25&deg;</option>
+                                    <option>26&deg;</option>
+                                    <option>27&deg;</option>
+                                    <option>28&deg;</option>
+                                    <option>29&deg;</option>
+                                    <option>30&deg;</option>
+                                    <option>31&deg;</option>
+                                    <option>32&deg;</option>
+                                    <option>33&deg;</option>
+                                    <option>34&deg;</option>
+                                    <option>35&deg;</option>
+                                    <option>36&deg;</option>
+                                    <option>37&deg;</option>
+                                    <option>38&deg;</option>
+                                    <option>39&deg;</option>
+                                    <option>40&deg;</option>
+                                    <option>41&deg;</option>
+                                    <option>42&deg;</option>
+                                    <option>43&deg;</option>
+                                    <option>44&deg;</option>
+                                    <option>45&deg;</option>
+                                    <option>46&deg;</option>
+                                    <option>47&deg;</option>
+                                    <option>48&deg;</option>
+                                    <option>49&deg;</option>
+                                    <option>50&deg;</option>
+                                    <option>51&deg;</option>
+                                    <option>52&deg;</option>
+                                    <option>53&deg;</option>
+                                    <option>54&deg;</option>
+                                    <option>55&deg;</option>
+                                    <option>56&deg;</option>
+                                    <option>57&deg;</option>
+                                    <option>58&deg;</option>
+                                    <option>59&deg;</option>
+                                    <option>60&deg;</option>
+                                    <option>61&deg;</option>
+                                    <option>62&deg;</option>
+                                    <option>63&deg;</option>
+                                    <option>64&deg;</option>
+                                    <option>65&deg;</option>
+                                    <option>66&deg;</option>
+                                    <option>67&deg;</option>
+                                    <option>68&deg;</option>
+                                    <option>69&deg;</option>
+                                    <option>70&deg;</option>
+                                    <option>71&deg;</option>
+                                    <option>72&deg;</option>
+                                    <option>73&deg;</option>
+                                    <option>74&deg;</option>
+                                    <option>75&deg;</option>
+                                    <option>76&deg;</option>
+                                    <option>77&deg;</option>
+                                    <option>78&deg;</option>
+                                    <option>79&deg;</option>
+                                    <option>80&deg;</option>
+                                    <option>81&deg;</option>
+                                    <option>82&deg;</option>
+                                    <option>83&deg;</option>
+                                    <option>84&deg;</option>
+                                    <option>85&deg;</option>
+                                    <option>86&deg;</option>
+                                    <option>87&deg;</option>
+                                    <option>88&deg;</option>
+                                    <option>89&deg;</option>
+                                    <option>90&deg;</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </details>
         <details class="system-card" open>
@@ -795,13 +1310,6 @@
                 </select>
             </div>
             <h3 style="margin:6px 0 0;font-size:16px;">Fu&szlig;bodenheizung</h3>
-            <div class="system-row">
-                <label>Fl&auml;chenheizung vorhanden?</label>
-                <div class="inline-options">
-                    <label><input type="radio" name="surfaceHeating" value="Ja">Ja</label>
-                    <label><input type="radio" name="surfaceHeating" value="Nein">Nein</label>
-                </div>
-            </div>
             <div class="system-row" id="surfaceHeatingDetails">
                 <div class="inline-options">
                     <label><input type="checkbox" name="surfaceHeatingDistributorPhoto">Foto vom Verteiler</label>
@@ -1932,7 +2440,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=10").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=18").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -2653,6 +3161,8 @@
     const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
+    const wallNotesDraw = (document.getElementById("wallNotesDraw") || {}).dataset ? (document.getElementById("wallNotesDraw").dataset.drawing || "") : "";
+    const gaubes = collectGaubesFromDom();
     const windows = collectWindowsFromDom();
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
@@ -2726,6 +3236,8 @@
       wallWestL4Draw,
       wallWestL5Draw,
       wallWestTotalDraw,
+      wallNotesDraw,
+      gaubes,
       windows,
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
@@ -2826,6 +3338,29 @@
     ));
   }
 
+  function collectGaubesFromDom(){
+    const gaubes = [];
+    const readDrawById = id => {
+      const hidden = document.getElementById(id);
+      return hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
+    };
+    for(let i = 1; i <= 4; i++){
+      const hr = ((document.getElementById("gaube" + i + "Hr") || {}).value || "").trim();
+      const angle = ((document.getElementById("gaube" + i + "Angle") || {}).value || "").trim();
+      const widthDraw = readDrawById("gaube" + i + "WidthDraw");
+      const heightDraw = readDrawById("gaube" + i + "HeightDraw");
+      gaubes.push({ hr, widthDraw, heightDraw, angle });
+    }
+    return gaubes;
+  }
+
+  function hasGaubeData(gaubes){
+    if(!Array.isArray(gaubes)) return false;
+    return gaubes.some(entry => entry && (
+      entry.hr || entry.angle || entry.widthDraw || entry.heightDraw
+    ));
+  }
+
   function renderCell(value, draw){
     if(draw) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
     return value || "";
@@ -2838,6 +3373,10 @@
     const domWindows = collectWindowsFromDom();
     if(domWindows.length){
       data.system.windows = domWindows;
+    }
+    const domGaubes = collectGaubesFromDom();
+    if(domGaubes.length){
+      data.system.gaubes = domGaubes;
     }
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
@@ -2895,6 +3434,7 @@
     const wallWestL4Draw = (document.getElementById("wallWestL4Draw") || {}).dataset ? (document.getElementById("wallWestL4Draw").dataset.drawing || "") : "";
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
+    const wallNotesDraw = (document.getElementById("wallNotesDraw") || {}).dataset ? (document.getElementById("wallNotesDraw").dataset.drawing || "") : "";
     const systemManufacturer = ((document.getElementById("systemManufacturer") || {}).value || "").trim();
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -2954,6 +3494,8 @@
       wallWestL4Draw,
       wallWestL5Draw,
       wallWestTotalDraw,
+      wallNotesDraw,
+      gaubes: Array.isArray(data.system.gaubes) ? data.system.gaubes : [],
       windows: Array.isArray(data.system.windows) ? data.system.windows : [],
       systemManufacturer,
       systemManufacturerDraw,
@@ -3105,7 +3647,8 @@
       system.wallSouthL1Draw || system.wallSouthL2Draw || system.wallSouthL3Draw ||
       system.wallSouthL4Draw || system.wallSouthL5Draw || system.wallSouthTotalDraw ||
       system.wallWestL1Draw || system.wallWestL2Draw || system.wallWestL3Draw ||
-      system.wallWestL4Draw || system.wallWestL5Draw || system.wallWestTotalDraw
+      system.wallWestL4Draw || system.wallWestL5Draw || system.wallWestTotalDraw ||
+      system.wallNotesDraw
     );
     if(hasWalls){
       const buildRow = (label, values) => (
@@ -3157,6 +3700,19 @@
         ]),
         '</tbody></table></section>'
       ].join(""));
+      if(system.wallNotesDraw){
+        sections.push([
+          '<section class="room">',
+          '<div class="room-head">',
+          '<div><div class="room-title">Au\u00dfenw\u00e4nde</div><div class="room-sub">Notizen</div></div>',
+          '<div class="badge">Notiz</div>',
+          '</div>',
+          '<table class="hk-table">',
+          '<thead><tr><th>Notizen</th></tr></thead>',
+          '<tbody><tr><td>' + renderCell("", system.wallNotesDraw) + '</td></tr></tbody>',
+          '</table></section>'
+        ].join(""));
+      }
     }
     const normalizeText = value => {
       if(value && typeof value === "object" && "value" in value) return String(value.value || "");
@@ -3192,6 +3748,32 @@
         '<thead><tr><th>HR</th><th>Raum</th><th>VG</th><th>Stoff</th><th>Ma\u00dfe</th><th>Bj.</th></tr></thead>',
         '<tbody>',
         windowRows,
+        '</tbody></table></section>'
+      ].join(""));
+    }
+    const gaubes = Array.isArray(data.system.gaubes)
+      ? data.system.gaubes.filter(entry => entry && (
+        entry.hr || entry.angle || entry.widthDraw || entry.heightDraw
+      ))
+      : [];
+    if(gaubes.length){
+      const headerTitles = ["Gaube1", "Gaube2", "Gaube3", "Gaube2"];
+      const cells = (key, isDraw) => gaubes.map(entry => (
+        '<td>' + renderCell(isDraw ? "" : (entry[key] || ""), isDraw ? (entry[key] || "") : "") + '</td>'
+      )).join("");
+      sections.push([
+        '<section class="room">',
+        '<div class="room-head">',
+        '<div><div class="room-title">Dachgaube</div><div class="room-sub">HR / Breite / H\u00f6he / Winkel</div></div>',
+        '<div class="badge">Dach</div>',
+        '</div>',
+        '<table class="hk-table">',
+        '<thead><tr><th></th>' + headerTitles.map(title => '<th>' + title + '</th>').join("") + '</tr></thead>',
+        '<tbody>',
+        '<tr><td>HR</td>' + cells("hr", false) + '</tr>',
+        '<tr><td>Breite</td>' + cells("widthDraw", true) + '</tr>',
+        '<tr><td>H\u00f6he</td>' + cells("heightDraw", true) + '</tr>',
+        '<tr><td>Winkel</td>' + cells("angle", false) + '</tr>',
         '</tbody></table></section>'
       ].join(""));
     }
@@ -3374,6 +3956,7 @@
     shareBtn.addEventListener("click", async () => {
       const data = collectData();
       data.system.windows = collectWindowsFromDom();
+      data.system.gaubes = collectGaubesFromDom();
       if(
         !data.rooms.length &&
         !data.system.addressNameDraw && !data.system.addressStreetDraw &&
@@ -3400,7 +3983,9 @@
         !data.system.wallWestL1Draw && !data.system.wallWestL2Draw &&
         !data.system.wallWestL3Draw && !data.system.wallWestL4Draw &&
         !data.system.wallWestL5Draw && !data.system.wallWestTotalDraw &&
+        !data.system.wallNotesDraw &&
         !hasWindowData(data.system.windows) &&
+        !hasGaubeData(data.system.gaubes) &&
         !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
         !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
         !data.system.systemTypeDraw &&
@@ -3441,16 +4026,16 @@
         document.getElementById("printView").innerHTML,
         '</body></html>'
       ].join("");
+      if(!navigator.share){
+        alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar.");
+        return;
+      }
       try{
-        if(navigator.share){
-          const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-          if(!navigator.canShare || navigator.canShare({ files: [file] })){
-            await navigator.share({ files: [file] });
-            return;
-          }
-        }
-      } catch(e){}
-      downloadHtml(html, "hk-uebersicht.html");
+        const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
+        await navigator.share({ files: [file] });
+      } catch(e){
+        alert("Teilen konnte nicht ge\u00f6ffnet werden.");
+      }
     });
   }
   if(resetBtn){
