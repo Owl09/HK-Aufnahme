@@ -16,6 +16,13 @@
         form { display: flex; flex-direction: column; gap: 18px; }
         .room-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; }
         .system-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; }
+        .system-card.section-red { background: #fff5f5; border-color: #fecaca; }
+        .system-card.section-orange { background: #fff7ed; border-color: #fed7aa; }
+        .system-card.section-yellow { background: #fffbeb; border-color: #fde68a; }
+        .system-card.section-purple { background: #f5f3ff; border-color: #ddd6fe; }
+        .system-card.section-green { background: #f0fdf4; border-color: #bbf7d0; }
+        .system-card.section-blue { background: #eff6ff; border-color: #bfdbfe; }
+        .system-card.section-gray { background: #f3f4f6; border-color: #e5e7eb; }
         .system-row { display: flex; flex-direction: column; gap: 10px; }
         textarea { width: 100%; min-height: 72px; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; resize: vertical; }
         .hidden { display: none; }
@@ -191,7 +198,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card section-red" open>
             <summary><span>Geb&auml;udetyp</span></summary>
             <div class="section-body">
                 <div class="field-row dual">
@@ -266,7 +273,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card section-red" open>
             <summary><span>Geschossh&ouml;he, Kellerdecke/Bodenplatte, Au&szlig;enw&auml;nde</span></summary>
             <div class="section-body">
                 <div class="field-row dual">
@@ -326,7 +333,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card section-orange" open>
             <summary><span>Au&szlig;enw&auml;nde</span></summary>
             <div class="section-body">
                 <table class="matrix-table">
@@ -509,7 +516,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card section-yellow" open>
             <summary><span>Fenster</span></summary>
             <div class="section-body">
                 <table class="matrix-table window-table">
@@ -574,7 +581,7 @@
                 <button type="button" class="add-window-btn">+ Fenster hinzuf&uuml;gen</button>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card section-purple" open>
             <summary><span>Dachgaube</span></summary>
             <div class="section-body">
                 <table class="matrix-table gaube-table">
@@ -1139,7 +1146,7 @@
                 <button type="button" class="add-window-btn add-gaube-window-btn">+ Gaubenfenster hinzuf&uuml;gen</button>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card section-green" open>
             <summary><span>Dach/OGD</span></summary>
             <div class="section-body">
                 <h3 style="margin:0 0 6px;font-size:16px;">Dachfl&auml;chenfenster</h3>
@@ -1306,7 +1313,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card">
+        <details class="system-card section-blue">
             <summary><span>Anbau</span></summary>
             <div class="section-body">
                 <div class="field-row annex-row">
@@ -1581,7 +1588,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card" open>
+        <details class="system-card section-gray" open>
             <summary><span>Anlagentechnik</span></summary>
             <div class="section-body">
             <div class="field-row dual">
