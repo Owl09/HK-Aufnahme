@@ -3266,7 +3266,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=61").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=63").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5662,6 +5662,71 @@
     return root.innerHTML;
   }
 
+  function buildStaticExportHtmlFromForm(){
+    const styleEl = document.querySelector("style");
+    const styleText = styleEl ? styleEl.textContent : "";
+    const card = document.querySelector(".card");
+    if(!card) return "";
+    const clone = card.cloneNode(true);
+    const originalFields = card.querySelectorAll("input, select, textarea");
+    const cloneFields = clone.querySelectorAll("input, select, textarea");
+    cloneFields.forEach((el, idx) => {
+      const src = originalFields[idx];
+      if(!src) return;
+      if(el.type === "checkbox" || el.type === "radio"){
+        if(src.checked) el.setAttribute("checked", "checked");
+        else el.removeAttribute("checked");
+      } else if(el.tagName === "SELECT"){
+        const val = src.value;
+        el.value = val;
+        Array.from(el.options).forEach(opt => {
+          opt.selected = opt.value === val;
+        });
+      } else if(el.tagName === "TEXTAREA"){
+        el.value = src.value;
+        el.textContent = src.value;
+      } else {
+        el.value = src.value;
+        if(src.value) el.setAttribute("value", src.value);
+      }
+      if(src.type === "hidden" && src.dataset){
+        el.dataset.drawing = src.dataset.drawing || "";
+      }
+    });
+    clone.querySelectorAll(
+      ".share-btn,.eraser-btn,.reset-btn,.add-room-btn,.add-hk-btn,.add-window-btn,.add-gaube-window-btn,.add-roof-window-btn"
+    ).forEach(el => el.remove());
+
+    clone.querySelectorAll("input, select, textarea").forEach(el => {
+      if(el.type === "hidden") return;
+      el.disabled = true;
+      el.readOnly = true;
+    });
+
+    const blankImg = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+    clone.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+      const targetId = canvas.getAttribute("data-draw-target");
+      const hidden = targetId ? clone.querySelector("#" + CSS.escape(targetId)) : null;
+      const draw = hidden && hidden.dataset ? hidden.dataset.drawing || "" : "";
+      const img = document.createElement("img");
+      img.className = "draw-canvas export-draw";
+      img.src = isValidDraw(draw) ? draw : blankImg;
+      canvas.replaceWith(img);
+    });
+
+    const html = [
+      '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
+      '<style>',
+      styleText,
+      '.export-view input[disabled], .export-view select[disabled], .export-view textarea[disabled] { color: #111827; background: #fff; opacity: 1; }',
+      '.export-view .draw-canvas.export-draw { border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; }',
+      '</style></head><body class="export-view">',
+      clone.outerHTML,
+      '</body></html>'
+    ].join("");
+    return html;
+  }
+
   function buildShareHtml(reportMarkup){
     const safeMarkup = sanitizeExportMarkup(reportMarkup);
     return [
@@ -5746,18 +5811,11 @@
       const active = document.activeElement;
       if(active && typeof active.blur === "function") active.blur();
       try{
-        const data = collectData();
-        data.system.windows = collectWindowsFromDom();
-        data.system.gaubes = collectGaubesFromDom();
-        data.system.gaubeWindows = collectGaubeWindowsFromDom();
-        data.system.roofWindows = collectRoofWindowsFromDom();
-        if(!hasAnyData(data)){
-          alert("Keine Daten erfasst.");
+        const html = buildStaticExportHtmlFromForm();
+        if(!html){
+          alert("Export nicht m\u00f6glich.");
           return;
         }
-        renderPrint(data, true);
-        const container = document.getElementById("printView");
-        const html = buildShareHtml(container ? container.innerHTML : "");
         downloadHtml(html, "hk-uebersicht.html");
         alert("Datei wurde heruntergeladen.");
       } catch(e){
