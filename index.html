@@ -3224,6 +3224,7 @@
 <script>
 (function(){
   const STORAGE_KEY = "hkFormStateV1";
+  const APP_VERSION = "v43";
   let saveTimer = null;
   let eraserMode = false;
   let shareErrorShown = false;
@@ -3241,7 +3242,12 @@
     const file = event && event.filename ? event.filename : "";
     const line = event && event.lineno ? event.lineno : "";
     const col = event && event.colno ? event.colno : "";
-    alert("Fehler: " + message + (file || line ? "\nQuelle: " + file + ":" + line + ":" + col : ""));
+    const stack = event && event.error && event.error.stack ? event.error.stack : "";
+    alert(
+      "Fehler (" + APP_VERSION + "): " + message +
+      (file || line ? "\nQuelle: " + file + ":" + line + ":" + col : "") +
+      (stack ? "\nStack: " + stack : "")
+    );
   });
   window.addEventListener("unhandledrejection", event => {
     if(shareErrorShown) return;
@@ -3259,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=42").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=43").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
