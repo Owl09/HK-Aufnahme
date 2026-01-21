@@ -5660,23 +5660,30 @@
         return;
       }
       let blobUrl = "";
+      let shared = false;
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        const canShareFiles = navigator.canShare ? navigator.canShare({ files: [file] }) : false;
-        const shareData = { title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" };
-        if(canShareFiles){
-          shareData.files = [file];
-        } else {
+        try{
+          await navigator.share({ files: [file], title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" });
+          shared = true;
+        } catch(e){
+          if(e && e.name === "AbortError") return;
+        }
+        if(!shared){
           const blob = new Blob([html], { type: "text/html" });
           blobUrl = URL.createObjectURL(blob);
-          shareData.url = blobUrl;
+          await navigator.share({ url: blobUrl, title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" });
+          shared = true;
         }
-        await navigator.share(shareData);
       } catch(e){
         if(e && e.name === "AbortError") return;
         alert("Teilen konnte nicht ge\u00f6ffnet werden.");
       } finally {
         if(blobUrl) setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+      }
+      if(!shared){
+        downloadHtml(html, "hk-uebersicht.html");
+        alert("Teilen konnte nicht ge\u00f6ffnet werden. Datei wurde heruntergeladen.");
       }
     });
   }
