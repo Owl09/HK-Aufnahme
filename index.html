@@ -3251,7 +3251,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=36").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=37").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5047,13 +5047,13 @@
       if(value && typeof value === "object" && value.dataset && value.dataset.drawing) return value.dataset.drawing || "";
       return value ? String(value) : "";
     };
-    const windows = Array.isArray(data.system.windows)
+    const filteredWindows = Array.isArray(data.system.windows)
       ? data.system.windows.filter(entry => entry && (
         entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
       ))
       : [];
-    if(windows.length){
-      const windowRows = windows.map(entry => [
+    if(filteredWindows.length){
+      const windowRows = filteredWindows.map(entry => [
         '<tr>',
         '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
         '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
@@ -5076,13 +5076,13 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const gaubeWindows = Array.isArray(data.system.gaubeWindows)
+    const filteredGaubeWindows = Array.isArray(data.system.gaubeWindows)
       ? data.system.gaubeWindows.filter(entry => entry && (
         entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
       ))
       : [];
-    if(gaubeWindows.length){
-      const windowRows = gaubeWindows.map(entry => [
+    if(filteredGaubeWindows.length){
+      const windowRows = filteredGaubeWindows.map(entry => [
         '<tr>',
         '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
         '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
@@ -5105,13 +5105,13 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const roofWindows = Array.isArray(data.system.roofWindows)
+    const filteredRoofWindows = Array.isArray(data.system.roofWindows)
       ? data.system.roofWindows.filter(entry => entry && (
         entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
       ))
       : [];
-    if(roofWindows.length){
-      const windowRows = roofWindows.map(entry => [
+    if(filteredRoofWindows.length){
+      const windowRows = filteredRoofWindows.map(entry => [
         '<tr>',
         '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
         '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
@@ -5134,14 +5134,14 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const gaubes = Array.isArray(data.system.gaubes)
+    const filteredGaubes = Array.isArray(data.system.gaubes)
       ? data.system.gaubes.filter(entry => entry && (
         entry.hr || entry.angle || entry.widthDraw || entry.heightDraw
       ))
       : [];
-    if(gaubes.length){
+    if(filteredGaubes.length){
       const headerTitles = ["Gaube1", "Gaube2", "Gaube3", "Gaube4"];
-      const cells = (key, isDraw) => gaubes.map(entry => (
+      const cells = (key, isDraw) => filteredGaubes.map(entry => (
         '<td>' + renderCell(isDraw ? "" : (entry[key] || ""), isDraw ? (entry[key] || "") : "") + '</td>'
       )).join("");
       sections.push([
