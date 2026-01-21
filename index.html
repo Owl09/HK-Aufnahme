@@ -3266,7 +3266,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=60").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=61").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5652,7 +5652,18 @@
     shareHasData = !!shareHtmlCache;
   }
 
+  function sanitizeExportMarkup(markup){
+    if(!markup) return "";
+    const parser = new DOMParser();
+    const doc = parser.parseFromString('<div>' + markup + '</div>', "text/html");
+    const root = doc.body;
+    root.querySelectorAll("input, select, textarea, button").forEach(el => el.remove());
+    root.querySelectorAll("[contenteditable]").forEach(el => el.removeAttribute("contenteditable"));
+    return root.innerHTML;
+  }
+
   function buildShareHtml(reportMarkup){
+    const safeMarkup = sanitizeExportMarkup(reportMarkup);
     return [
       '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
       '<style>',
@@ -5672,7 +5683,7 @@
       'th { background: #f8fafc; font-weight: 700; }',
       '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
       '</style></head><body>',
-      reportMarkup || "",
+      safeMarkup || "",
       '</body></html>'
     ].join("");
   }
