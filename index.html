@@ -3229,6 +3229,10 @@
   let shareErrorShown = false;
   let shareHtmlCache = "";
   let shareHasData = false;
+  let gaubes = [];
+  let windows = [];
+  let gaubeWindows = [];
+  let roofWindows = [];
   const eraserButtons = document.querySelectorAll(".eraser-btn");
   window.addEventListener("error", event => {
     if(shareErrorShown) return;
@@ -3251,7 +3255,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=39").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=40").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
