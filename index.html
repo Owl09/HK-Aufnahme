@@ -3265,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=46").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=49").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -3506,6 +3506,7 @@
       window.addEventListener("resize", resizeCanvas);
 
       let drawing = false;
+      let hasStroke = false;
       function posFromEvent(e){
         const rect = canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -3520,6 +3521,7 @@
       function start(e){
         if(!isStylusEvent(e)) return;
         drawing = true;
+        hasStroke = false;
         applyMode();
         const p = posFromEvent(e);
         ctx.beginPath();
@@ -3531,13 +3533,16 @@
         const p = posFromEvent(e);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
+        hasStroke = true;
         e.preventDefault();
       }
       function end(){
         if(!drawing) return;
         drawing = false;
-        hidden.dataset.drawing = canvas.toDataURL("image/png");
-        scheduleSave();
+        if(hasStroke){
+          hidden.dataset.drawing = canvas.toDataURL("image/png");
+          scheduleSave();
+        }
       }
       canvas.addEventListener("pointerdown", start);
       canvas.addEventListener("pointermove", move);
@@ -3573,10 +3578,15 @@
       resizeDrawCanvas(canvas, ctx);
     }
     resizeCanvas();
+    const blankDataUrl = canvas.toDataURL("image/png");
+    if(hidden && hidden.dataset && hidden.dataset.drawing === blankDataUrl){
+      hidden.dataset.drawing = "";
+    }
     canvas.dataset.resizeHook = "1";
     window.addEventListener("resize", resizeCanvas);
 
     let drawing = false;
+    let hasStroke = false;
     function posFromEvent(e){
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -3591,6 +3601,7 @@
     function start(e){
       if(!isStylusEvent(e)) return;
       drawing = true;
+      hasStroke = false;
       applyMode();
       const p = posFromEvent(e);
       ctx.beginPath();
@@ -3602,13 +3613,16 @@
       const p = posFromEvent(e);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
+      hasStroke = true;
       e.preventDefault();
     }
     function end(){
       if(!drawing) return;
       drawing = false;
-      hidden.dataset.drawing = canvas.toDataURL("image/png");
-      scheduleSave();
+      if(hasStroke){
+        hidden.dataset.drawing = canvas.toDataURL("image/png");
+        scheduleSave();
+      }
     }
     canvas.addEventListener("pointerdown", start);
     canvas.addEventListener("pointermove", move);
@@ -3708,6 +3722,14 @@
     const ctx = canvas.getContext("2d");
     resizeDrawCanvas(canvas, ctx);
     const rect = canvas.getBoundingClientRect();
+    const blankDataUrl = canvas.toDataURL("image/png");
+    if(dataUrl === blankDataUrl){
+      const targetId = canvas.getAttribute("data-draw-target");
+      const hidden = targetId ? document.getElementById(targetId) : null;
+      if(hidden && hidden.dataset) hidden.dataset.drawing = "";
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      return;
+    }
     const img = new Image();
     img.onload = () => {
       ctx.drawImage(img, 0, 0, rect.width, rect.height);
@@ -4894,13 +4916,14 @@
     if(hasAddress){
       const rows = [];
       const addRowDraw = (label, draw) => {
-        if(draw){
+        if(isValidDraw(draw)){
           rows.push('<tr><td>' + label + '</td><td>' + renderCell("", draw) + '</td></tr>');
         }
       };
       const addRowValue = (label, value) => {
-        if(value){
-          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value, "") + '</td></tr>');
+        const safeValue = normalizeValue(value);
+        if(safeValue){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(safeValue, "") + '</td></tr>');
         }
       };
       const addFlag = (label, flag) => {
@@ -4945,13 +4968,14 @@
     if(hasStructure){
       const rows = [];
       const addRowDraw = (label, draw) => {
-        if(draw){
+        if(isValidDraw(draw)){
           rows.push('<tr><td>' + label + '</td><td>' + renderCell("", draw) + '</td></tr>');
         }
       };
       const addRowValue = (label, value) => {
-        if(value){
-          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value, "") + '</td></tr>');
+        const safeValue = normalizeValue(value);
+        if(safeValue){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(safeValue, "") + '</td></tr>');
         }
       };
       const addFlag = (label, flag) => {
@@ -5057,10 +5081,14 @@
         ].join(""));
       }
     }
-    const normalizeText = value => {
-      if(value && typeof value === "object" && "value" in value) return String(value.value || "");
+    const normalizeValue = value => {
+      if(value && typeof value === "object"){
+        if("value" in value) return String(value.value || "");
+        return "";
+      }
       return value ? String(value) : "";
     };
+    const normalizeText = value => normalizeValue(value);
     const normalizeDraw = value => {
       if(value && typeof value === "object" && value.dataset && value.dataset.drawing){
         return isValidDraw(value.dataset.drawing) ? value.dataset.drawing : "";
@@ -5069,9 +5097,13 @@
       return "";
     };
     const filteredWindows = Array.isArray(data.system.windows)
-      ? data.system.windows.filter(entry => entry && (
-        entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
-      ))
+      ? data.system.windows.filter(entry => {
+        if(!entry) return false;
+        const hr = normalizeValue(entry.hr);
+        const vg = normalizeValue(entry.vg);
+        const material = normalizeValue(entry.material);
+        return hr || vg || material || entry.roomDraw || entry.sizeDraw || entry.yearDraw;
+      })
       : [];
     if(filteredWindows.length){
       const windowRows = filteredWindows.map(entry => [
@@ -5098,9 +5130,13 @@
       ].join(""));
     }
     const filteredGaubeWindows = Array.isArray(data.system.gaubeWindows)
-      ? data.system.gaubeWindows.filter(entry => entry && (
-        entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
-      ))
+      ? data.system.gaubeWindows.filter(entry => {
+        if(!entry) return false;
+        const hr = normalizeValue(entry.hr);
+        const vg = normalizeValue(entry.vg);
+        const material = normalizeValue(entry.material);
+        return hr || vg || material || entry.roomDraw || entry.sizeDraw || entry.yearDraw;
+      })
       : [];
     if(filteredGaubeWindows.length){
       const windowRows = filteredGaubeWindows.map(entry => [
@@ -5127,9 +5163,13 @@
       ].join(""));
     }
     const filteredRoofWindows = Array.isArray(data.system.roofWindows)
-      ? data.system.roofWindows.filter(entry => entry && (
-        entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
-      ))
+      ? data.system.roofWindows.filter(entry => {
+        if(!entry) return false;
+        const hr = normalizeValue(entry.hr);
+        const vg = normalizeValue(entry.vg);
+        const material = normalizeValue(entry.material);
+        return hr || vg || material || entry.roomDraw || entry.sizeDraw || entry.yearDraw;
+      })
       : [];
     if(filteredRoofWindows.length){
       const windowRows = filteredRoofWindows.map(entry => [
@@ -5468,8 +5508,9 @@
     if(hasSystem){
       const rows = [];
       const addRow = (label, value, draw) => {
-        if((value && value !== "-") || draw){
-          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value || "", draw || "") + '</td></tr>');
+        const safeValue = normalizeValue(value);
+        if((safeValue && safeValue !== "-") || draw){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(safeValue || "", draw || "") + '</td></tr>');
         }
       };
       const addFlag = (label, flag) => {
