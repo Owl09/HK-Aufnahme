@@ -3266,7 +3266,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=63").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=64").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5708,9 +5708,14 @@
       const targetId = canvas.getAttribute("data-draw-target");
       const hidden = targetId ? clone.querySelector("#" + CSS.escape(targetId)) : null;
       const draw = hidden && hidden.dataset ? hidden.dataset.drawing || "" : "";
+      const sourceCanvas = targetId ? card.querySelector('canvas[data-draw-target="' + targetId + '"]') : null;
+      const rect = sourceCanvas ? sourceCanvas.getBoundingClientRect() : null;
       const img = document.createElement("img");
       img.className = "draw-canvas export-draw";
       img.src = isValidDraw(draw) ? draw : blankImg;
+      if(rect){
+        img.style.height = rect.height + "px";
+      }
       canvas.replaceWith(img);
     });
 
@@ -5719,7 +5724,7 @@
       '<style>',
       styleText,
       '.export-view input[disabled], .export-view select[disabled], .export-view textarea[disabled] { color: #111827; background: #fff; opacity: 1; }',
-      '.export-view .draw-canvas.export-draw { border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; }',
+      '.export-view .draw-canvas.export-draw { border: 1px dashed #cbd5e1; border-radius: 6px; background: #fff; display: block; width: 100%; }',
       '</style></head><body class="export-view">',
       clone.outerHTML,
       '</body></html>'
