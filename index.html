@@ -78,14 +78,15 @@
         .hk-toggle summary::after { content: "+"; font-size: 16px; }
         .hk-toggle[open] summary::after { content: "-"; }
         .hk-toggle .hk-card { margin-top: 10px; }
-        .add-hk-btn, .add-room-btn, .add-window-btn, .export-btn, .reset-btn, .eraser-btn, .share-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
-        .add-hk-btn:active, .add-room-btn:active, .add-window-btn:active, .export-btn:active, .reset-btn:active, .eraser-btn:active, .share-btn:active { transform: translateY(1px); }
+        .add-hk-btn, .add-room-btn, .add-window-btn, .export-btn, .reset-btn, .eraser-btn, .share-btn, .list-export-btn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px dashed #9ca3af; background: #f9fafb; color: #111827; font-weight: 600; cursor: pointer; width: 100%; text-align: center; }
+        .add-hk-btn:active, .add-room-btn:active, .add-window-btn:active, .export-btn:active, .reset-btn:active, .eraser-btn:active, .share-btn:active, .list-export-btn:active { transform: translateY(1px); }
         .add-room-btn { margin-top: 16px; }
         .export-btn { border-color: #2563eb; color: #1d4ed8; background: #eef2ff; }
         .eraser-btn { border-color: #f59e0b; color: #92400e; background: #fef3c7; }
         .eraser-btn.active { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
         .share-btn { border-color: #16a34a; color: #14532d; background: #dcfce7; }
         .share-btn.active { background: #bbf7d0; border-color: #86efac; }
+        .list-export-btn { border-color: #0ea5e9; color: #0c4a6e; background: #e0f2fe; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
         .floating-eraser {
           position: fixed;
@@ -3215,6 +3216,7 @@
             </div>
         </details>
         <button type="button" class="share-btn">Teilen</button>
+        <button type="button" class="list-export-btn">Listen Export</button>
         <button type="button" class="eraser-btn">Radierer</button>
         <button type="button" class="reset-btn">Alles reseten</button>
     </form>
@@ -3266,7 +3268,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=65").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=66").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5694,7 +5696,7 @@
       }
     });
     clone.querySelectorAll(
-      ".share-btn,.eraser-btn,.reset-btn,.add-room-btn,.add-hk-btn,.add-window-btn,.add-gaube-window-btn,.add-roof-window-btn"
+      ".share-btn,.list-export-btn,.eraser-btn,.reset-btn,.add-room-btn,.add-hk-btn,.add-window-btn,.add-gaube-window-btn,.add-roof-window-btn"
     ).forEach(el => el.remove());
 
     clone.querySelectorAll("input, select, textarea").forEach(el => {
@@ -5767,6 +5769,66 @@
     ].join("");
   }
 
+  function buildListExportHtml(data){
+    renderPrint(data, true);
+    const container = document.getElementById("printView");
+    if(!container) return "";
+    const parser = new DOMParser();
+    const doc = parser.parseFromString('<div>' + container.innerHTML + '</div>', "text/html");
+    const sections = [];
+    doc.querySelectorAll(".room").forEach(section => {
+      const titleEl = section.querySelector(".room-title");
+      const title = titleEl ? titleEl.textContent.trim() : "Abschnitt";
+      const items = [];
+      section.querySelectorAll("table").forEach(table => {
+        const headers = Array.from(table.querySelectorAll("thead th")).map(th => th.textContent.trim());
+        const rows = table.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+          const cells = Array.from(row.querySelectorAll("td, th")).map(cell => {
+            const img = cell.querySelector("img");
+            if(img) return img.outerHTML;
+            return cell.textContent.trim();
+          });
+          if(!cells.length) return;
+          if(headers.length === cells.length){
+            const pairs = cells.map((val, idx) => headers[idx] ? (headers[idx] + ": " + val) : val);
+            items.push(pairs.join(" | "));
+            return;
+          }
+          if(cells.length >= 2){
+            items.push(cells[0] + ": " + cells.slice(1).join(" | "));
+            return;
+          }
+          if(cells[0]) items.push(cells[0]);
+        });
+      });
+      if(items.length){
+        sections.push([
+          '<section class="room">',
+          '<div class="room-head"><div class="room-title">' + title + '</div></div>',
+          '<ul>',
+          items.map(item => '<li>' + item + '</li>').join(""),
+          '</ul>',
+          '</section>'
+        ].join(""));
+      }
+    });
+    const html = [
+      '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Liste</title>',
+      '<style>',
+      'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
+      '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
+      '.room-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }',
+      'ul { margin: 0; padding-left: 18px; }',
+      'li { margin: 4px 0; }',
+      '.draw-img { display: inline-block; max-height: 60px; max-width: 140px; vertical-align: middle; }',
+      '</style></head><body>',
+      sections.join(""),
+      '</body></html>'
+    ].join("");
+    return html;
+  }
+
   function downloadFile(data){
     const now = new Date().toLocaleString();
     const markup = buildReportMarkup(data, now);
@@ -5814,6 +5876,7 @@
   }
 
   const shareBtn = document.querySelector(".share-btn");
+  const listExportBtn = document.querySelector(".list-export-btn");
   const resetBtn = document.querySelector(".reset-btn");
   window.addEventListener("afterprint", () => {
     document.body.classList.remove("show-print");
@@ -5835,6 +5898,30 @@
       } catch(e){
         if(e && e.name === "AbortError") return;
         alert("Download fehlgeschlagen: " + (e && e.message ? e.message : "Unbekannter Fehler"));
+      }
+    });
+  }
+  if(listExportBtn){
+    listExportBtn.addEventListener("click", () => {
+      try{
+        const data = collectData();
+        data.system.windows = collectWindowsFromDom();
+        data.system.gaubes = collectGaubesFromDom();
+        data.system.gaubeWindows = collectGaubeWindowsFromDom();
+        data.system.roofWindows = collectRoofWindowsFromDom();
+        if(!hasAnyData(data)){
+          alert("Keine Daten erfasst.");
+          return;
+        }
+        const html = buildListExportHtml(data);
+        if(!html){
+          alert("Listen-Export nicht m\u00f6glich.");
+          return;
+        }
+        downloadHtml(html, "hk-liste.html");
+        alert("Listen-Export heruntergeladen.");
+      } catch(e){
+        alert("Listen-Export fehlgeschlagen: " + (e && e.message ? e.message : "Unbekannter Fehler"));
       }
     });
   }
