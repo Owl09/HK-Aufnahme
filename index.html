@@ -3226,7 +3226,19 @@
   const STORAGE_KEY = "hkFormStateV1";
   let saveTimer = null;
   let eraserMode = false;
+  let shareErrorShown = false;
   const eraserButtons = document.querySelectorAll(".eraser-btn");
+  window.addEventListener("error", event => {
+    if(shareErrorShown) return;
+    shareErrorShown = true;
+    alert("Fehler: " + (event && event.message ? event.message : "Unbekannter Fehler"));
+  });
+  window.addEventListener("unhandledrejection", event => {
+    if(shareErrorShown) return;
+    shareErrorShown = true;
+    const msg = event && event.reason ? (event.reason.message || String(event.reason)) : "Unbekannter Fehler";
+    alert("Fehler: " + msg);
+  });
   if(eraserButtons.length){
     eraserButtons.forEach(btn => {
       btn.addEventListener("click", () => {
@@ -5625,7 +5637,9 @@
     document.body.classList.remove("show-print");
   });
   if(shareBtn){
-    shareBtn.addEventListener("click", () => {
+    shareBtn.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       const data = collectData();
       data.system.windows = collectWindowsFromDom();
       data.system.gaubes = collectGaubesFromDom();
@@ -5637,21 +5651,28 @@
       const reportMarkup = document.getElementById("printView").innerHTML || "";
       const html = buildShareHtml(reportMarkup);
       if(!navigator.share){
-        alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar.");
+        downloadHtml(html, "hk-uebersicht.html");
+        alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar. Datei wurde heruntergeladen.");
         return;
       }
+      let blobUrl = "";
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        const files = [file];
-        if(navigator.canShare && !navigator.canShare({ files })){
-          alert("Teilen mit mehreren Dateien ist nicht verf\u00fcgbar.");
-          return;
+        const canShareFiles = navigator.canShare ? navigator.canShare({ files: [file] }) : false;
+        const shareData = { title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" };
+        if(canShareFiles){
+          shareData.files = [file];
+        } else {
+          const blob = new Blob([html], { type: "text/html" });
+          blobUrl = URL.createObjectURL(blob);
+          shareData.url = blobUrl;
         }
-        navigator.share({ files }).catch(() => {
-          alert("Teilen konnte nicht ge\u00f6ffnet werden.");
-        });
+        await navigator.share(shareData);
       } catch(e){
+        if(e && e.name === "AbortError") return;
         alert("Teilen konnte nicht ge\u00f6ffnet werden.");
+      } finally {
+        if(blobUrl) setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
       }
     });
   }
