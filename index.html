@@ -3266,7 +3266,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=64").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=65").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5704,11 +5704,20 @@
     });
 
     const blankImg = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
-    clone.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
+    const sourceCanvases = card.querySelectorAll("canvas");
+    const cloneCanvases = clone.querySelectorAll("canvas");
+    cloneCanvases.forEach((canvas, idx) => {
       const targetId = canvas.getAttribute("data-draw-target");
-      const hidden = targetId ? clone.querySelector("#" + CSS.escape(targetId)) : null;
+      let hidden = null;
+      if(targetId){
+        hidden = clone.querySelector("#" + CSS.escape(targetId));
+      } else {
+        const wrap = canvas.closest(".draw-wrap");
+        const prev = wrap ? wrap.previousElementSibling : null;
+        if(prev && prev.type === "hidden") hidden = prev;
+      }
       const draw = hidden && hidden.dataset ? hidden.dataset.drawing || "" : "";
-      const sourceCanvas = targetId ? card.querySelector('canvas[data-draw-target="' + targetId + '"]') : null;
+      const sourceCanvas = sourceCanvases[idx] || null;
       const rect = sourceCanvas ? sourceCanvas.getBoundingClientRect() : null;
       const img = document.createElement("img");
       img.className = "draw-canvas export-draw";
