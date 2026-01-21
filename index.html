@@ -3268,7 +3268,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=66").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=67").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5778,7 +5778,9 @@
     const sections = [];
     doc.querySelectorAll(".room").forEach(section => {
       const titleEl = section.querySelector(".room-title");
+      const subEl = section.querySelector(".room-sub");
       const title = titleEl ? titleEl.textContent.trim() : "Abschnitt";
+      const sub = subEl ? subEl.textContent.trim() : "";
       const items = [];
       section.querySelectorAll("table").forEach(table => {
         const headers = Array.from(table.querySelectorAll("thead th")).map(th => th.textContent.trim());
@@ -5805,9 +5807,12 @@
       if(items.length){
         sections.push([
           '<section class="room">',
-          '<div class="room-head"><div class="room-title">' + title + '</div></div>',
+          '<div class="room-head">',
+          '<div class="room-title">' + title + '</div>',
+          (sub ? '<div class="room-sub">' + sub + '</div>' : ''),
+          '</div>',
           '<ul>',
-          items.map(item => '<li>' + item + '</li>').join(""),
+          items.map(item => '<li><span class="item-line">' + item + '</span></li>').join(""),
           '</ul>',
           '</section>'
         ].join(""));
@@ -5816,11 +5821,14 @@
     const html = [
       '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Liste</title>',
       '<style>',
-      'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
-      '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
-      '.room-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }',
-      'ul { margin: 0; padding-left: 18px; }',
-      'li { margin: 4px 0; }',
+      'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; background: #f8fafc; }',
+      '.room { border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px 18px; margin: 0 0 16px; background: #fff; }',
+      '.room-head { margin-bottom: 10px; }',
+      '.room-title { font-size: 18px; font-weight: 700; }',
+      '.room-sub { color: #6b7280; font-size: 14px; margin-top: 4px; }',
+      'ul { margin: 0; padding: 0; list-style: none; }',
+      'li { margin: 8px 0; padding: 8px 10px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }',
+      '.item-line { display: block; line-height: 1.45; }',
       '.draw-img { display: inline-block; max-height: 60px; max-width: 140px; vertical-align: middle; }',
       '</style></head><body>',
       sections.join(""),
