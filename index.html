@@ -3265,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=43").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=44").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -4316,13 +4316,13 @@
       ogdStructure,
       ogdStructureDraw,
       ogdInsulationDraw,
-      roofTypeSatteldach,
-      roofTypeWalmdach,
-      roofTypeKruppelwalmdach,
-      roofTypeMansardendach,
-      roofTypePultdach,
-      roofTypeFlachdach,
-      roofTypeSheddach,
+      roofTypeSatteldach: !!document.querySelector('input[name="roofTypeSatteldach"]:checked'),
+      roofTypeWalmdach: !!document.querySelector('input[name="roofTypeWalmdach"]:checked'),
+      roofTypeKruppelwalmdach: !!document.querySelector('input[name="roofTypeKruppelwalmdach"]:checked'),
+      roofTypeMansardendach: !!document.querySelector('input[name="roofTypeMansardendach"]:checked'),
+      roofTypePultdach: !!document.querySelector('input[name="roofTypePultdach"]:checked'),
+      roofTypeFlachdach: !!document.querySelector('input[name="roofTypeFlachdach"]:checked'),
+      roofTypeSheddach: !!document.querySelector('input[name="roofTypeSheddach"]:checked'),
       roofDepthDraw,
       roofWidthDraw,
       roofSpacingDraw,
@@ -4332,7 +4332,7 @@
       roofSpacingDraw2,
       roofAngleDraw2,
       roofInsulationDraw,
-      annexExists,
+      annexExists: ((document.querySelector('input[name="annexExists"]:checked') || {}).value || "").trim(),
       annexYearDraw,
       annexType,
       annexWallNorthL1Draw,
@@ -4359,13 +4359,13 @@
       annexWallWestL4Draw,
       annexWallWestL5Draw,
       annexWallWestTotalDraw,
-      annexRoofTypeSatteldach,
-      annexRoofTypeWalmdach,
-      annexRoofTypeKruppelwalmdach,
-      annexRoofTypeMansardendach,
-      annexRoofTypePultdach,
-      annexRoofTypeFlachdach,
-      annexRoofTypeSheddach,
+      annexRoofTypeSatteldach: !!document.querySelector('input[name="annexRoofTypeSatteldach"]:checked'),
+      annexRoofTypeWalmdach: !!document.querySelector('input[name="annexRoofTypeWalmdach"]:checked'),
+      annexRoofTypeKruppelwalmdach: !!document.querySelector('input[name="annexRoofTypeKruppelwalmdach"]:checked'),
+      annexRoofTypeMansardendach: !!document.querySelector('input[name="annexRoofTypeMansardendach"]:checked'),
+      annexRoofTypePultdach: !!document.querySelector('input[name="annexRoofTypePultdach"]:checked'),
+      annexRoofTypeFlachdach: !!document.querySelector('input[name="annexRoofTypeFlachdach"]:checked'),
+      annexRoofTypeSheddach: !!document.querySelector('input[name="annexRoofTypeSheddach"]:checked'),
       annexRoofDepthDraw,
       annexRoofWidthDraw,
       annexRoofSpacingDraw,
