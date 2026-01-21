@@ -3255,7 +3255,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=40").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=41").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -4746,10 +4746,10 @@
       wallWestTotalDraw,
       wallNotesDraw,
       notesLargeDraw,
-      gaubes,
-      windows,
-      gaubeWindows,
-      roofWindows,
+      gaubes: Array.isArray(data.system.gaubes) ? data.system.gaubes : [],
+      windows: Array.isArray(data.system.windows) ? data.system.windows : [],
+      gaubeWindows: Array.isArray(data.system.gaubeWindows) ? data.system.gaubeWindows : [],
+      roofWindows: Array.isArray(data.system.roofWindows) ? data.system.roofWindows : [],
       solarYearDraw,
       solarStorageDraw,
       solarPumpDraw,
