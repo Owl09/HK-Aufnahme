@@ -3265,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=45").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=46").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -4609,8 +4609,12 @@
     );
   }
 
+  function isValidDraw(draw){
+    return typeof draw === "string" && draw.startsWith("data:image/");
+  }
+
   function renderCell(value, draw){
-    if(draw) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
+    if(isValidDraw(draw)) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
     return value || "";
   }
 
@@ -5058,8 +5062,11 @@
       return value ? String(value) : "";
     };
     const normalizeDraw = value => {
-      if(value && typeof value === "object" && value.dataset && value.dataset.drawing) return value.dataset.drawing || "";
-      return value ? String(value) : "";
+      if(value && typeof value === "object" && value.dataset && value.dataset.drawing){
+        return isValidDraw(value.dataset.drawing) ? value.dataset.drawing : "";
+      }
+      if(isValidDraw(value)) return value;
+      return "";
     };
     const filteredWindows = Array.isArray(data.system.windows)
       ? data.system.windows.filter(entry => entry && (
