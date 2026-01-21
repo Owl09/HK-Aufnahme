@@ -4616,6 +4616,10 @@
     if(domRoofWindows.length){
       data.system.roofWindows = domRoofWindows;
     }
+    const gaubes = Array.isArray(data.system.gaubes) ? data.system.gaubes : [];
+    const windows = Array.isArray(data.system.windows) ? data.system.windows : [];
+    const gaubeWindows = Array.isArray(data.system.gaubeWindows) ? data.system.gaubeWindows : [];
+    const roofWindows = Array.isArray(data.system.roofWindows) ? data.system.roofWindows : [];
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
