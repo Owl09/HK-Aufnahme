@@ -3227,6 +3227,8 @@
   let saveTimer = null;
   let eraserMode = false;
   let shareErrorShown = false;
+  let shareHtmlCache = "";
+  let shareHasData = false;
   const eraserButtons = document.querySelectorAll(".eraser-btn");
   window.addEventListener("error", event => {
     if(shareErrorShown) return;
@@ -3670,6 +3672,7 @@
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormState()));
       } catch(e){}
+      updateShareCache();
     }, 300);
   }
 
@@ -4063,6 +4066,7 @@
   restoreFormState();
   toggleSurfaceHeating();
   toggleBuildingData();
+  updateShareCache();
 
   function pickField(selectEl, customEl){
     const selectVal = selectEl && selectEl.value ? selectEl.value : "";
@@ -5564,6 +5568,21 @@
     });
   }
 
+  function updateShareCache(){
+    const data = collectData();
+    data.system.windows = collectWindowsFromDom();
+    data.system.gaubes = collectGaubesFromDom();
+    if(!hasAnyData(data)){
+      shareHasData = false;
+      shareHtmlCache = "";
+      return;
+    }
+    renderPrint(data, true);
+    const container = document.getElementById("printView");
+    shareHtmlCache = container ? container.innerHTML : "";
+    shareHasData = !!shareHtmlCache;
+  }
+
   function buildShareHtml(reportMarkup){
     return [
       '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
@@ -5644,44 +5663,24 @@
     shareBtn.addEventListener("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const data = collectData();
-      data.system.windows = collectWindowsFromDom();
-      data.system.gaubes = collectGaubesFromDom();
-      if(!hasAnyData(data)){
+      if(!shareHasData){
+        updateShareCache();
+      }
+      if(!shareHasData){
         alert("Keine Daten erfasst.");
         return;
       }
-      renderPrint(data, true);
-      const reportMarkup = document.getElementById("printView").innerHTML || "";
-      const html = buildShareHtml(reportMarkup);
+      const html = buildShareHtml(shareHtmlCache);
       if(!navigator.share){
         downloadHtml(html, "hk-uebersicht.html");
         alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar. Datei wurde heruntergeladen.");
         return;
       }
-      let blobUrl = "";
-      let shared = false;
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        try{
-          await navigator.share({ files: [file], title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" });
-          shared = true;
-        } catch(e){
-          if(e && e.name === "AbortError") return;
-        }
-        if(!shared){
-          const blob = new Blob([html], { type: "text/html" });
-          blobUrl = URL.createObjectURL(blob);
-          await navigator.share({ url: blobUrl, title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" });
-          shared = true;
-        }
+        await navigator.share({ files: [file], title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" });
       } catch(e){
         if(e && e.name === "AbortError") return;
-        alert("Teilen konnte nicht ge\u00f6ffnet werden.");
-      } finally {
-        if(blobUrl) setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
-      }
-      if(!shared){
         downloadHtml(html, "hk-uebersicht.html");
         alert("Teilen konnte nicht ge\u00f6ffnet werden. Datei wurde heruntergeladen.");
       }
