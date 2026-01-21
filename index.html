@@ -8,21 +8,13 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>
         :root { font-family: "Segoe UI", Arial, sans-serif; -webkit-text-size-adjust: 100%; }
-        *, *::before, *::after { box-sizing: border-box; }
-        body { margin: 0; padding: calc(24px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom)); background: #f4f5f7; color: #1f2933; overflow-x: hidden; }
-        .card { width: 100%; max-width: 100%; background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 18px 40px rgba(15,23,42,0.12); border: 1px solid #e5e7eb; }
+        body { margin: 0; padding: calc(24px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom)); background: #f4f5f7; color: #1f2933; display: flex; justify-content: center; }
+        .card { width: min(940px, 100%); background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 18px 40px rgba(15,23,42,0.12); border: 1px solid #e5e7eb; }
         h1 { margin: 0 0 6px; }
         p { margin: 0 0 20px; color: #4b5563; }
         form { display: flex; flex-direction: column; gap: 18px; }
         .room-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; }
         .system-card { border: 1px solid #d1d5db; border-radius: 14px; background: #fcfdff; }
-        .system-card.section-red { background: #ffe4e6; border-color: #fda4af; }
-        .system-card.section-orange { background: #ffedd5; border-color: #fdba74; }
-        .system-card.section-yellow { background: #fef3c7; border-color: #facc15; }
-        .system-card.section-purple { background: #ede9fe; border-color: #c4b5fd; }
-        .system-card.section-green { background: #dcfce7; border-color: #86efac; }
-        .system-card.section-blue { background: #dbeafe; border-color: #93c5fd; }
-        .system-card.section-gray { background: #e5e7eb; border-color: #cbd5f5; }
         .system-row { display: flex; flex-direction: column; gap: 10px; }
         textarea { width: 100%; min-height: 72px; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; resize: vertical; }
         .hidden { display: none; }
@@ -37,13 +29,12 @@
         .room-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 18px; }
         .field-row { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 12px; align-items: center; }
         .field-row.single { grid-template-columns: 170px 1fr; }
-        .field-row.dual { grid-template-columns: 170px 1fr 170px 1fr; column-gap: 12px; }
+        .field-row.dual { grid-template-columns: 170px 0.8fr 170px 0.8fr; column-gap: 2px; }
         .field-row.annex-row { grid-template-columns: 150px 1fr 120px 1fr 110px 1fr; column-gap: 8px; }
         .field-row.ogd-row { grid-template-columns: 170px 0.8fr 1fr; }
-        .field-row.dual.type-row { grid-template-columns: 170px 1fr 170px 1fr; }
+        .field-row.dual.type-row { grid-template-columns: 170px 1fr 170px 0.6fr; }
         .field-row.pump { grid-template-columns: 170px 1fr 70px 1fr; column-gap: 8px; }
         .label-shift-right { margin-left: 10px; }
-        .field-spacer { display: block; }
         label { font-weight: 600; color: #1f2933; }
         select, input[type="text"] { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 16px; background: #fff; }
         .inline-options { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
@@ -57,7 +48,7 @@
         .gaube-table { table-layout: fixed; }
         .gaube-table th:first-child, .gaube-table td:first-child { width: 12%; }
         .gaube-table th:not(:first-child), .gaube-table td:not(:first-child) { width: 22%; }
-        .matrix-table th, .matrix-table td { border: 1px solid #94a3b8; padding: 8px; vertical-align: top; text-align: left; }
+        .matrix-table th, .matrix-table td { border: 1px solid #e5e7eb; padding: 8px; vertical-align: top; text-align: left; }
         .matrix-table th { background: #f8fafc; font-weight: 700; }
         .matrix-table .col-wide { width: 40%; }
         .matrix-table .col-narrow { width: 12%; }
@@ -87,21 +78,6 @@
         .share-btn { border-color: #16a34a; color: #14532d; background: #dcfce7; }
         .share-btn.active { background: #bbf7d0; border-color: #86efac; }
         .reset-btn { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
-        .floating-eraser {
-          position: fixed;
-          top: calc(12px + env(safe-area-inset-top));
-          left: 12px;
-          z-index: 1000;
-          width: 44px;
-          height: 44px;
-          min-width: 44px;
-          padding: 0;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 700;
-        }
         .print-view { display: block; visibility: hidden; height: 0; overflow: hidden; }
         .print-view { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; padding: 18px; }
         .print-view .doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
@@ -198,7 +174,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card section-red" open>
+        <details class="system-card" open>
             <summary><span>Geb&auml;udetyp</span></summary>
             <div class="section-body">
                 <div class="field-row dual">
@@ -273,7 +249,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card section-red" open>
+        <details class="system-card" open>
             <summary><span>Geschossh&ouml;he, Kellerdecke/Bodenplatte, Au&szlig;enw&auml;nde</span></summary>
             <div class="section-body">
                 <div class="field-row dual">
@@ -333,7 +309,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card section-orange" open>
+        <details class="system-card" open>
             <summary><span>Au&szlig;enw&auml;nde</span></summary>
             <div class="section-body">
                 <table class="matrix-table">
@@ -516,7 +492,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card section-yellow" open>
+        <details class="system-card" open>
             <summary><span>Fenster</span></summary>
             <div class="section-body">
                 <table class="matrix-table window-table">
@@ -581,7 +557,7 @@
                 <button type="button" class="add-window-btn">+ Fenster hinzuf&uuml;gen</button>
             </div>
         </details>
-        <details class="system-card section-purple" open>
+        <details class="system-card" open>
             <summary><span>Dachgaube</span></summary>
             <div class="section-body">
                 <table class="matrix-table gaube-table">
@@ -1146,7 +1122,7 @@
                 <button type="button" class="add-window-btn add-gaube-window-btn">+ Gaubenfenster hinzuf&uuml;gen</button>
             </div>
         </details>
-        <details class="system-card section-green" open>
+        <details class="system-card" open>
             <summary><span>Dach/OGD</span></summary>
             <div class="section-body">
                 <h3 style="margin:0 0 6px;font-size:16px;">Dachfl&auml;chenfenster</h3>
@@ -1313,7 +1289,7 @@
                 </div>
             </div>
         </details>
-        <details class="system-card section-blue">
+        <details class="system-card">
             <summary><span>Anbau</span></summary>
             <div class="section-body">
                 <div class="field-row annex-row">
@@ -1588,10 +1564,10 @@
                 </div>
             </div>
         </details>
-        <details class="system-card section-gray" open>
+        <details class="system-card" open>
             <summary><span>Anlagentechnik</span></summary>
             <div class="section-body">
-            <div class="field-row dual">
+            <div class="field-row">
                 <label for="systemManufacturer">Hersteller</label>
                 <select id="systemManufacturer" name="systemManufacturer">
                     <option value="" selected disabled>Hersteller w&auml;hlen &hellip;</option>
@@ -1600,7 +1576,6 @@
                     <option>Buderus</option>
                     <option>Junkers</option>
                 </select>
-                <span class="field-spacer" aria-hidden="true"></span>
                 <div class="draw-wrap">
                     <input type="hidden" id="systemManufacturerDraw" name="systemManufacturerDraw">
                     <canvas class="draw-canvas" data-draw-target="systemManufacturerDraw"></canvas>
@@ -2246,7 +2221,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room1HkHeight1">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room1HkHeight1Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2254,7 +2229,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room1HkWidth1">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room1HkWidth1Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2303,7 +2278,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room1HkHeight2">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room1HkHeight2Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2311,7 +2286,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room1HkWidth2">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room1HkWidth2Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2361,7 +2336,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room1HkHeight3">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room1HkHeight3Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2369,7 +2344,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room1HkWidth3">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room1HkWidth3Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2449,7 +2424,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room2HkHeight1">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room2HkHeight1Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2457,7 +2432,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room2HkWidth1">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room2HkWidth1Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2506,7 +2481,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room2HkHeight2">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room2HkHeight2Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2514,7 +2489,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room2HkWidth2">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room2HkWidth2Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2564,7 +2539,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room2HkHeight3">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room2HkHeight3Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2572,7 +2547,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room2HkWidth3">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room2HkWidth3Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2652,7 +2627,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room3HkHeight1">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room3HkHeight1Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2660,7 +2635,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room3HkWidth1">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room3HkWidth1Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2709,7 +2684,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room3HkHeight2">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room3HkHeight2Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2717,7 +2692,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room3HkWidth2">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room3HkWidth2Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2767,7 +2742,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room3HkHeight3">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room3HkHeight3Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2775,7 +2750,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room3HkWidth3">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room3HkWidth3Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2855,7 +2830,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room4HkHeight1">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room4HkHeight1Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2863,7 +2838,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room4HkWidth1">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room4HkWidth1Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2912,7 +2887,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room4HkHeight2">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room4HkHeight2Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2920,7 +2895,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room4HkWidth2">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room4HkWidth2Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -2970,7 +2945,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room4HkHeight3">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room4HkHeight3Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -2978,7 +2953,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room4HkWidth3">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room4HkWidth3Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -3058,7 +3033,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room5HkHeight1">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room5HkHeight1Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -3066,7 +3041,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room5HkWidth1">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room5HkWidth1Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -3115,7 +3090,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room5HkHeight2">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room5HkHeight2Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -3123,7 +3098,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room5HkWidth2">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room5HkWidth2Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -3173,7 +3148,7 @@
                                 <label>H&ouml;he [mm]<small>400, 600, 800, 900</small></label>
                                 <select name="room5HkHeight3">
                                     <option value="" selected disabled>H&ouml;he w&auml;hlen &hellip;</option>
-                                    <option>300</option>                                    <option>400</option>                                    <option>600</option>                                    <option>800</option>                                    <option>900</option>
+                                    <option>300</option>`r`n                                    <option>400</option>`r`n                                    <option>600</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>
                                 </select>
                                 <input type="text" name="room5HkHeight3Custom" placeholder="andere H&ouml;he">
                             </div>
@@ -3181,7 +3156,7 @@
                                 <label>Breite [mm]<small>500, 600, 900, 1000, 1200, 1400</small></label>
                                 <select name="room5HkWidth3">
                                     <option value="" selected disabled>Breite w&auml;hlen &hellip;</option>
-                                    <option>400</option>                                    <option>500</option>                                    <option>600</option>                                    <option>700</option>                                    <option>800</option>                                    <option>900</option>                                    <option>1100</option>                                    <option>1200</option>                                    <option>1300</option>                                    <option>1400</option>                                    <option>1600</option>                                    <option>1800</option>                                    <option>2000</option>                                    <option>2300</option>                                    <option>2400</option>                                    <option>2600</option>                                    <option>3000</option></select>
+                                    <option>400</option>`r`n                                    <option>500</option>`r`n                                    <option>600</option>`r`n                                    <option>700</option>`r`n                                    <option>800</option>`r`n                                    <option>900</option>`r`n                                    <option>1100</option>`r`n                                    <option>1200</option>`r`n                                    <option>1300</option>`r`n                                    <option>1400</option>`r`n                                    <option>1600</option>`r`n                                    <option>1800</option>`r`n                                    <option>2000</option>`r`n                                    <option>2300</option>`r`n                                    <option>2400</option>`r`n                                    <option>2600</option>`r`n                                    <option>3000</option></select>
                                 <input type="text" name="room5HkWidth3Custom" placeholder="andere Breite">
                             </div>
                             <div class="field-row">
@@ -3219,53 +3194,22 @@
         <button type="button" class="reset-btn">Alles reseten</button>
     </form>
 </main>
-<button type="button" class="eraser-btn floating-eraser">R</button>
 <div id="printView" class="print-view" aria-hidden="true"></div>
 <script>
 (function(){
   const STORAGE_KEY = "hkFormStateV1";
-  const APP_VERSION = "v51";
   let saveTimer = null;
   let eraserMode = false;
-  let shareErrorShown = false;
-  let shareHtmlCache = "";
-  let shareHasData = false;
-  let gaubes = [];
-  let windows = [];
-  let gaubeWindows = [];
-  let roofWindows = [];
-  const eraserButtons = document.querySelectorAll(".eraser-btn");
-  window.addEventListener("error", event => {
-    if(shareErrorShown) return;
-    shareErrorShown = true;
-    const message = event && event.message ? event.message : "Unbekannter Fehler";
-    const file = event && event.filename ? event.filename : "";
-    const line = event && event.lineno ? event.lineno : "";
-    const col = event && event.colno ? event.colno : "";
-    const stack = event && event.error && event.error.stack ? event.error.stack : "";
-    alert(
-      "Fehler (" + APP_VERSION + "): " + message +
-      (file || line ? "\nQuelle: " + file + ":" + line + ":" + col : "") +
-      (stack ? "\nStack: " + stack : "")
-    );
-  });
-  window.addEventListener("unhandledrejection", event => {
-    if(shareErrorShown) return;
-    shareErrorShown = true;
-    const msg = event && event.reason ? (event.reason.message || String(event.reason)) : "Unbekannter Fehler";
-    alert("Fehler: " + msg);
-  });
-  if(eraserButtons.length){
-    eraserButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        eraserMode = !eraserMode;
-        eraserButtons.forEach(b => b.classList.toggle("active", eraserMode));
-      });
+  const eraserBtn = document.querySelector(".eraser-btn");
+  if(eraserBtn){
+    eraserBtn.addEventListener("click", () => {
+      eraserMode = !eraserMode;
+      eraserBtn.classList.toggle("active", eraserMode);
     });
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=52").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=35").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -3506,7 +3450,6 @@
       window.addEventListener("resize", resizeCanvas);
 
       let drawing = false;
-      let hasStroke = false;
       function posFromEvent(e){
         const rect = canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -3521,7 +3464,6 @@
       function start(e){
         if(!isStylusEvent(e)) return;
         drawing = true;
-        hasStroke = false;
         applyMode();
         const p = posFromEvent(e);
         ctx.beginPath();
@@ -3533,16 +3475,13 @@
         const p = posFromEvent(e);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
-        hasStroke = true;
         e.preventDefault();
       }
       function end(){
         if(!drawing) return;
         drawing = false;
-        if(hasStroke){
-          hidden.dataset.drawing = canvas.toDataURL("image/png");
-          scheduleSave();
-        }
+        hidden.dataset.drawing = canvas.toDataURL("image/png");
+        scheduleSave();
       }
       canvas.addEventListener("pointerdown", start);
       canvas.addEventListener("pointermove", move);
@@ -3560,7 +3499,6 @@
 
   function resizeDrawCanvas(canvas, ctx){
     const rect = canvas.getBoundingClientRect();
-    if(rect.width < 1 || rect.height < 1) return;
     const dpr = (window.devicePixelRatio || 1) * 2;
     canvas.width = Math.max(1, Math.floor(rect.width * dpr));
     canvas.height = Math.max(1, Math.floor(rect.height * dpr));
@@ -3578,15 +3516,10 @@
       resizeDrawCanvas(canvas, ctx);
     }
     resizeCanvas();
-    const blankDataUrl = canvas.toDataURL("image/png");
-    if(hidden && hidden.dataset && hidden.dataset.drawing === blankDataUrl){
-      hidden.dataset.drawing = "";
-    }
     canvas.dataset.resizeHook = "1";
     window.addEventListener("resize", resizeCanvas);
 
     let drawing = false;
-    let hasStroke = false;
     function posFromEvent(e){
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -3601,7 +3534,6 @@
     function start(e){
       if(!isStylusEvent(e)) return;
       drawing = true;
-      hasStroke = false;
       applyMode();
       const p = posFromEvent(e);
       ctx.beginPath();
@@ -3613,16 +3545,13 @@
       const p = posFromEvent(e);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
-      hasStroke = true;
       e.preventDefault();
     }
     function end(){
       if(!drawing) return;
       drawing = false;
-      if(hasStroke){
-        hidden.dataset.drawing = canvas.toDataURL("image/png");
-        scheduleSave();
-      }
+      hidden.dataset.drawing = canvas.toDataURL("image/png");
+      scheduleSave();
     }
     canvas.addEventListener("pointerdown", start);
     canvas.addEventListener("pointermove", move);
@@ -3700,7 +3629,6 @@
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormState()));
       } catch(e){}
-      updateShareCache();
     }, 300);
   }
 
@@ -3722,54 +3650,12 @@
     const ctx = canvas.getContext("2d");
     resizeDrawCanvas(canvas, ctx);
     const rect = canvas.getBoundingClientRect();
-    const blankDataUrl = canvas.toDataURL("image/png");
-    if(dataUrl === blankDataUrl){
-      const targetId = canvas.getAttribute("data-draw-target");
-      const hidden = targetId ? document.getElementById(targetId) : null;
-      if(hidden && hidden.dataset) hidden.dataset.drawing = "";
-      ctx.clearRect(0, 0, rect.width, rect.height);
-      return;
-    }
     const img = new Image();
     img.onload = () => {
       ctx.drawImage(img, 0, 0, rect.width, rect.height);
     };
     img.src = dataUrl;
   }
-
-  function refreshDrawCanvases(){
-    document.querySelectorAll("canvas[data-draw-target]").forEach(canvas => {
-      const targetId = canvas.getAttribute("data-draw-target");
-      const hidden = targetId ? document.getElementById(targetId) : null;
-      const dataUrl = hidden && hidden.dataset ? hidden.dataset.drawing : "";
-      if(dataUrl){
-        drawDataUrl(canvas, dataUrl);
-      } else {
-        const ctx = canvas.getContext("2d");
-        if(ctx) resizeDrawCanvas(canvas, ctx);
-      }
-    });
-  }
-
-  function scheduleCanvasRefresh(){
-    requestAnimationFrame(() => {
-      requestAnimationFrame(refreshDrawCanvases);
-    });
-  }
-
-  window.addEventListener("pageshow", scheduleCanvasRefresh);
-  window.addEventListener("orientationchange", scheduleCanvasRefresh);
-  document.addEventListener("visibilitychange", () => {
-    if(!document.hidden) scheduleCanvasRefresh();
-  });
-  if(window.visualViewport){
-    window.visualViewport.addEventListener("resize", scheduleCanvasRefresh);
-  }
-  document.querySelectorAll("details").forEach(detail => {
-    detail.addEventListener("toggle", () => {
-      if(detail.open) scheduleCanvasRefresh();
-    });
-  });
 
   function restoreFormState(){
     let raw = null;
@@ -4102,7 +3988,6 @@
   restoreFormState();
   toggleSurfaceHeating();
   toggleBuildingData();
-  updateShareCache();
 
   function pickField(selectEl, customEl){
     const selectVal = selectEl && selectEl.value ? selectEl.value : "";
@@ -4166,84 +4051,8 @@
     const wallWestL5Draw = (document.getElementById("wallWestL5Draw") || {}).dataset ? (document.getElementById("wallWestL5Draw").dataset.drawing || "") : "";
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
     const wallNotesDraw = (document.getElementById("wallNotesDraw") || {}).dataset ? (document.getElementById("wallNotesDraw").dataset.drawing || "") : "";
-    const notesLargeDraw = (document.getElementById("notesLargeDraw") || {}).dataset ? (document.getElementById("notesLargeDraw").dataset.drawing || "") : "";
-    const gaubeWindows = collectGaubeWindowsFromDom();
-    const roofWindows = collectRoofWindowsFromDom();
-    const solarYearDraw = (document.getElementById("solarYearDraw") || {}).dataset ? (document.getElementById("solarYearDraw").dataset.drawing || "") : "";
-    const solarStorageDraw = (document.getElementById("solarStorageDraw") || {}).dataset ? (document.getElementById("solarStorageDraw").dataset.drawing || "") : "";
-    const solarPumpDraw = (document.getElementById("solarPumpDraw") || {}).dataset ? (document.getElementById("solarPumpDraw").dataset.drawing || "") : "";
-    const solarModulesDraw = (document.getElementById("solarModulesDraw") || {}).dataset ? (document.getElementById("solarModulesDraw").dataset.drawing || "") : "";
-    const solarModulesAreaDraw = (document.getElementById("solarModulesAreaDraw") || {}).dataset ? (document.getElementById("solarModulesAreaDraw").dataset.drawing || "") : "";
-    const solarOrientation = ((document.getElementById("solarOrientation") || {}).value || "").trim();
-    const solarCollectorType = ((document.getElementById("solarCollectorType") || {}).value || "").trim();
-    const pvModulesDraw = (document.getElementById("pvModulesDraw") || {}).dataset ? (document.getElementById("pvModulesDraw").dataset.drawing || "") : "";
-    const pvModulesAreaDraw = (document.getElementById("pvModulesAreaDraw") || {}).dataset ? (document.getElementById("pvModulesAreaDraw").dataset.drawing || "") : "";
-    const pvPowerDraw = (document.getElementById("pvPowerDraw") || {}).dataset ? (document.getElementById("pvPowerDraw").dataset.drawing || "") : "";
-    const pvVentilation = ((document.getElementById("pvVentilation") || {}).value || "").trim();
-    const pvOrientation = ((document.getElementById("pvOrientation") || {}).value || "").trim();
-    const pvBatteryDraw = (document.getElementById("pvBatteryDraw") || {}).dataset ? (document.getElementById("pvBatteryDraw").dataset.drawing || "") : "";
-    const ogdStructure = ((document.getElementById("ogdStructure") || {}).value || "").trim();
-    const ogdStructureDraw = (document.getElementById("ogdStructureDraw") || {}).dataset ? (document.getElementById("ogdStructureDraw").dataset.drawing || "") : "";
-    const ogdInsulationDraw = (document.getElementById("ogdInsulationDraw") || {}).dataset ? (document.getElementById("ogdInsulationDraw").dataset.drawing || "") : "";
-    const roofTypeSatteldach = !!document.querySelector('input[name="roofTypeSatteldach"]:checked');
-    const roofTypeWalmdach = !!document.querySelector('input[name="roofTypeWalmdach"]:checked');
-    const roofTypeKruppelwalmdach = !!document.querySelector('input[name="roofTypeKruppelwalmdach"]:checked');
-    const roofTypeMansardendach = !!document.querySelector('input[name="roofTypeMansardendach"]:checked');
-    const roofTypePultdach = !!document.querySelector('input[name="roofTypePultdach"]:checked');
-    const roofTypeFlachdach = !!document.querySelector('input[name="roofTypeFlachdach"]:checked');
-    const roofTypeSheddach = !!document.querySelector('input[name="roofTypeSheddach"]:checked');
-    const roofDepthDraw = (document.getElementById("roofDepthDraw") || {}).dataset ? (document.getElementById("roofDepthDraw").dataset.drawing || "") : "";
-    const roofWidthDraw = (document.getElementById("roofWidthDraw") || {}).dataset ? (document.getElementById("roofWidthDraw").dataset.drawing || "") : "";
-    const roofSpacingDraw = (document.getElementById("roofSpacingDraw") || {}).dataset ? (document.getElementById("roofSpacingDraw").dataset.drawing || "") : "";
-    const roofAngleDraw = (document.getElementById("roofAngleDraw") || {}).dataset ? (document.getElementById("roofAngleDraw").dataset.drawing || "") : "";
-    const roofDepthDraw2 = (document.getElementById("roofDepthDraw2") || {}).dataset ? (document.getElementById("roofDepthDraw2").dataset.drawing || "") : "";
-    const roofWidthDraw2 = (document.getElementById("roofWidthDraw2") || {}).dataset ? (document.getElementById("roofWidthDraw2").dataset.drawing || "") : "";
-    const roofSpacingDraw2 = (document.getElementById("roofSpacingDraw2") || {}).dataset ? (document.getElementById("roofSpacingDraw2").dataset.drawing || "") : "";
-    const roofAngleDraw2 = (document.getElementById("roofAngleDraw2") || {}).dataset ? (document.getElementById("roofAngleDraw2").dataset.drawing || "") : "";
-    const roofInsulationDraw = (document.getElementById("roofInsulationDraw") || {}).dataset ? (document.getElementById("roofInsulationDraw").dataset.drawing || "") : "";
-    const annexExists = ((document.querySelector('input[name="annexExists"]:checked') || {}).value || "").trim();
-    const annexYearDraw = (document.getElementById("annexYearDraw") || {}).dataset ? (document.getElementById("annexYearDraw").dataset.drawing || "") : "";
-    const annexType = ((document.getElementById("annexType") || {}).value || "").trim();
-    const annexWallNorthL1Draw = (document.getElementById("annexWallNorthL1Draw") || {}).dataset ? (document.getElementById("annexWallNorthL1Draw").dataset.drawing || "") : "";
-    const annexWallNorthL2Draw = (document.getElementById("annexWallNorthL2Draw") || {}).dataset ? (document.getElementById("annexWallNorthL2Draw").dataset.drawing || "") : "";
-    const annexWallNorthL3Draw = (document.getElementById("annexWallNorthL3Draw") || {}).dataset ? (document.getElementById("annexWallNorthL3Draw").dataset.drawing || "") : "";
-    const annexWallNorthL4Draw = (document.getElementById("annexWallNorthL4Draw") || {}).dataset ? (document.getElementById("annexWallNorthL4Draw").dataset.drawing || "") : "";
-    const annexWallNorthL5Draw = (document.getElementById("annexWallNorthL5Draw") || {}).dataset ? (document.getElementById("annexWallNorthL5Draw").dataset.drawing || "") : "";
-    const annexWallNorthTotalDraw = (document.getElementById("annexWallNorthTotalDraw") || {}).dataset ? (document.getElementById("annexWallNorthTotalDraw").dataset.drawing || "") : "";
-    const annexWallEastL1Draw = (document.getElementById("annexWallEastL1Draw") || {}).dataset ? (document.getElementById("annexWallEastL1Draw").dataset.drawing || "") : "";
-    const annexWallEastL2Draw = (document.getElementById("annexWallEastL2Draw") || {}).dataset ? (document.getElementById("annexWallEastL2Draw").dataset.drawing || "") : "";
-    const annexWallEastL3Draw = (document.getElementById("annexWallEastL3Draw") || {}).dataset ? (document.getElementById("annexWallEastL3Draw").dataset.drawing || "") : "";
-    const annexWallEastL4Draw = (document.getElementById("annexWallEastL4Draw") || {}).dataset ? (document.getElementById("annexWallEastL4Draw").dataset.drawing || "") : "";
-    const annexWallEastL5Draw = (document.getElementById("annexWallEastL5Draw") || {}).dataset ? (document.getElementById("annexWallEastL5Draw").dataset.drawing || "") : "";
-    const annexWallEastTotalDraw = (document.getElementById("annexWallEastTotalDraw") || {}).dataset ? (document.getElementById("annexWallEastTotalDraw").dataset.drawing || "") : "";
-    const annexWallSouthL1Draw = (document.getElementById("annexWallSouthL1Draw") || {}).dataset ? (document.getElementById("annexWallSouthL1Draw").dataset.drawing || "") : "";
-    const annexWallSouthL2Draw = (document.getElementById("annexWallSouthL2Draw") || {}).dataset ? (document.getElementById("annexWallSouthL2Draw").dataset.drawing || "") : "";
-    const annexWallSouthL3Draw = (document.getElementById("annexWallSouthL3Draw") || {}).dataset ? (document.getElementById("annexWallSouthL3Draw").dataset.drawing || "") : "";
-    const annexWallSouthL4Draw = (document.getElementById("annexWallSouthL4Draw") || {}).dataset ? (document.getElementById("annexWallSouthL4Draw").dataset.drawing || "") : "";
-    const annexWallSouthL5Draw = (document.getElementById("annexWallSouthL5Draw") || {}).dataset ? (document.getElementById("annexWallSouthL5Draw").dataset.drawing || "") : "";
-    const annexWallSouthTotalDraw = (document.getElementById("annexWallSouthTotalDraw") || {}).dataset ? (document.getElementById("annexWallSouthTotalDraw").dataset.drawing || "") : "";
-    const annexWallWestL1Draw = (document.getElementById("annexWallWestL1Draw") || {}).dataset ? (document.getElementById("annexWallWestL1Draw").dataset.drawing || "") : "";
-    const annexWallWestL2Draw = (document.getElementById("annexWallWestL2Draw") || {}).dataset ? (document.getElementById("annexWallWestL2Draw").dataset.drawing || "") : "";
-    const annexWallWestL3Draw = (document.getElementById("annexWallWestL3Draw") || {}).dataset ? (document.getElementById("annexWallWestL3Draw").dataset.drawing || "") : "";
-    const annexWallWestL4Draw = (document.getElementById("annexWallWestL4Draw") || {}).dataset ? (document.getElementById("annexWallWestL4Draw").dataset.drawing || "") : "";
-    const annexWallWestL5Draw = (document.getElementById("annexWallWestL5Draw") || {}).dataset ? (document.getElementById("annexWallWestL5Draw").dataset.drawing || "") : "";
-    const annexWallWestTotalDraw = (document.getElementById("annexWallWestTotalDraw") || {}).dataset ? (document.getElementById("annexWallWestTotalDraw").dataset.drawing || "") : "";
-    const annexRoofTypeSatteldach = !!document.querySelector('input[name="annexRoofTypeSatteldach"]:checked');
-    const annexRoofTypeWalmdach = !!document.querySelector('input[name="annexRoofTypeWalmdach"]:checked');
-    const annexRoofTypeKruppelwalmdach = !!document.querySelector('input[name="annexRoofTypeKruppelwalmdach"]:checked');
-    const annexRoofTypeMansardendach = !!document.querySelector('input[name="annexRoofTypeMansardendach"]:checked');
-    const annexRoofTypePultdach = !!document.querySelector('input[name="annexRoofTypePultdach"]:checked');
-    const annexRoofTypeFlachdach = !!document.querySelector('input[name="annexRoofTypeFlachdach"]:checked');
-    const annexRoofTypeSheddach = !!document.querySelector('input[name="annexRoofTypeSheddach"]:checked');
-    const annexRoofDepthDraw = (document.getElementById("annexRoofDepthDraw") || {}).dataset ? (document.getElementById("annexRoofDepthDraw").dataset.drawing || "") : "";
-    const annexRoofWidthDraw = (document.getElementById("annexRoofWidthDraw") || {}).dataset ? (document.getElementById("annexRoofWidthDraw").dataset.drawing || "") : "";
-    const annexRoofSpacingDraw = (document.getElementById("annexRoofSpacingDraw") || {}).dataset ? (document.getElementById("annexRoofSpacingDraw").dataset.drawing || "") : "";
-    const annexRoofAngleDraw = (document.getElementById("annexRoofAngleDraw") || {}).dataset ? (document.getElementById("annexRoofAngleDraw").dataset.drawing || "") : "";
-    const annexRoofDepthDraw2 = (document.getElementById("annexRoofDepthDraw2") || {}).dataset ? (document.getElementById("annexRoofDepthDraw2").dataset.drawing || "") : "";
-    const annexRoofWidthDraw2 = (document.getElementById("annexRoofWidthDraw2") || {}).dataset ? (document.getElementById("annexRoofWidthDraw2").dataset.drawing || "") : "";
-    const annexRoofSpacingDraw2 = (document.getElementById("annexRoofSpacingDraw2") || {}).dataset ? (document.getElementById("annexRoofSpacingDraw2").dataset.drawing || "") : "";
-    const annexRoofAngleDraw2 = (document.getElementById("annexRoofAngleDraw2") || {}).dataset ? (document.getElementById("annexRoofAngleDraw2").dataset.drawing || "") : "";
-    const annexRoofInsulationDraw = (document.getElementById("annexRoofInsulationDraw") || {}).dataset ? (document.getElementById("annexRoofInsulationDraw").dataset.drawing || "") : "";
+    const gaubes = collectGaubesFromDom();
+    const windows = collectWindowsFromDom();
     const systemManufacturer = (document.getElementById("systemManufacturer") || {}).value || "";
     const systemManufacturerDraw = (document.getElementById("systemManufacturerDraw") || {}).dataset ? (document.getElementById("systemManufacturerDraw").dataset.drawing || "") : "";
     const systemTypeDraw = (document.getElementById("systemTypeDraw") || {}).dataset ? (document.getElementById("systemTypeDraw").dataset.drawing || "") : "";
@@ -4317,86 +4126,8 @@
       wallWestL5Draw,
       wallWestTotalDraw,
       wallNotesDraw,
-      notesLargeDraw,
-      gaubes: collectGaubesFromDom(),
-      windows: collectWindowsFromDom(),
-      gaubeWindows,
-      roofWindows,
-      solarYearDraw,
-      solarStorageDraw,
-      solarPumpDraw,
-      solarModulesDraw,
-      solarModulesAreaDraw,
-      solarOrientation,
-      solarCollectorType,
-      pvModulesDraw,
-      pvModulesAreaDraw,
-      pvPowerDraw,
-      pvVentilation,
-      pvOrientation,
-      pvBatteryDraw,
-      ogdStructure,
-      ogdStructureDraw,
-      ogdInsulationDraw,
-      roofTypeSatteldach: !!document.querySelector('input[name="roofTypeSatteldach"]:checked'),
-      roofTypeWalmdach: !!document.querySelector('input[name="roofTypeWalmdach"]:checked'),
-      roofTypeKruppelwalmdach: !!document.querySelector('input[name="roofTypeKruppelwalmdach"]:checked'),
-      roofTypeMansardendach: !!document.querySelector('input[name="roofTypeMansardendach"]:checked'),
-      roofTypePultdach: !!document.querySelector('input[name="roofTypePultdach"]:checked'),
-      roofTypeFlachdach: !!document.querySelector('input[name="roofTypeFlachdach"]:checked'),
-      roofTypeSheddach: !!document.querySelector('input[name="roofTypeSheddach"]:checked'),
-      roofDepthDraw,
-      roofWidthDraw,
-      roofSpacingDraw,
-      roofAngleDraw,
-      roofDepthDraw2,
-      roofWidthDraw2,
-      roofSpacingDraw2,
-      roofAngleDraw2,
-      roofInsulationDraw,
-      annexExists: ((document.querySelector('input[name="annexExists"]:checked') || {}).value || "").trim(),
-      annexYearDraw,
-      annexType,
-      annexWallNorthL1Draw,
-      annexWallNorthL2Draw,
-      annexWallNorthL3Draw,
-      annexWallNorthL4Draw,
-      annexWallNorthL5Draw,
-      annexWallNorthTotalDraw,
-      annexWallEastL1Draw,
-      annexWallEastL2Draw,
-      annexWallEastL3Draw,
-      annexWallEastL4Draw,
-      annexWallEastL5Draw,
-      annexWallEastTotalDraw,
-      annexWallSouthL1Draw,
-      annexWallSouthL2Draw,
-      annexWallSouthL3Draw,
-      annexWallSouthL4Draw,
-      annexWallSouthL5Draw,
-      annexWallSouthTotalDraw,
-      annexWallWestL1Draw,
-      annexWallWestL2Draw,
-      annexWallWestL3Draw,
-      annexWallWestL4Draw,
-      annexWallWestL5Draw,
-      annexWallWestTotalDraw,
-      annexRoofTypeSatteldach: !!document.querySelector('input[name="annexRoofTypeSatteldach"]:checked'),
-      annexRoofTypeWalmdach: !!document.querySelector('input[name="annexRoofTypeWalmdach"]:checked'),
-      annexRoofTypeKruppelwalmdach: !!document.querySelector('input[name="annexRoofTypeKruppelwalmdach"]:checked'),
-      annexRoofTypeMansardendach: !!document.querySelector('input[name="annexRoofTypeMansardendach"]:checked'),
-      annexRoofTypePultdach: !!document.querySelector('input[name="annexRoofTypePultdach"]:checked'),
-      annexRoofTypeFlachdach: !!document.querySelector('input[name="annexRoofTypeFlachdach"]:checked'),
-      annexRoofTypeSheddach: !!document.querySelector('input[name="annexRoofTypeSheddach"]:checked'),
-      annexRoofDepthDraw,
-      annexRoofWidthDraw,
-      annexRoofSpacingDraw,
-      annexRoofAngleDraw,
-      annexRoofDepthDraw2,
-      annexRoofWidthDraw2,
-      annexRoofSpacingDraw2,
-      annexRoofAngleDraw2,
-      annexRoofInsulationDraw,
+      gaubes,
+      windows,
       surfaceHeating: surfaceHeating ? surfaceHeating.value : (detailsOpen ? "Ja" : ""),
       distributorPhoto: !!document.querySelector('input[name="surfaceHeatingDistributorPhoto"]:checked'),
       distributorDn: (document.getElementById("distributorDn") || {}).value || "",
@@ -4489,42 +4220,6 @@
     return windows;
   }
 
-  function collectGaubeWindowsFromDom(){
-    const windows = [];
-    const readDraw = (row, field) => {
-      const hidden = row.querySelector('input[type="hidden"][data-gaube-window-field="' + field + '"]');
-      return hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
-    };
-    document.querySelectorAll(".gaube-window-row").forEach(row => {
-      const hr = (row.querySelector('select[data-gaube-window-field="gaubeWindowHr"]') || {}).value || "";
-      const vg = (row.querySelector('select[data-gaube-window-field="gaubeWindowVg"]') || {}).value || "";
-      const material = (row.querySelector('select[data-gaube-window-field="gaubeWindowMaterial"]') || {}).value || "";
-      const roomDraw = readDraw(row, "gaubeWindowRoomDraw");
-      const sizeDraw = readDraw(row, "gaubeWindowSizeDraw");
-      const yearDraw = readDraw(row, "gaubeWindowYearDraw");
-      windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
-    });
-    return windows;
-  }
-
-  function collectRoofWindowsFromDom(){
-    const windows = [];
-    const readDraw = (row, field) => {
-      const hidden = row.querySelector('input[type="hidden"][data-roof-window-field="' + field + '"]');
-      return hidden && hidden.dataset ? (hidden.dataset.drawing || "") : "";
-    };
-    document.querySelectorAll(".roof-window-row").forEach(row => {
-      const hr = (row.querySelector('select[data-roof-window-field="roofWindowHr"]') || {}).value || "";
-      const vg = (row.querySelector('select[data-roof-window-field="roofWindowVg"]') || {}).value || "";
-      const material = (row.querySelector('select[data-roof-window-field="roofWindowMaterial"]') || {}).value || "";
-      const roomDraw = readDraw(row, "roofWindowRoomDraw");
-      const sizeDraw = readDraw(row, "roofWindowSizeDraw");
-      const yearDraw = readDraw(row, "roofWindowYearDraw");
-      windows.push({ hr, roomDraw, vg, material, sizeDraw, yearDraw });
-    });
-    return windows;
-  }
-
   function hasWindowData(windows){
     if(!Array.isArray(windows)) return false;
     return windows.some(entry => entry && (
@@ -4555,96 +4250,8 @@
     ));
   }
 
-  function hasAnyData(data){
-    if(!data) return false;
-    const system = data.system || {};
-    return !!(
-      data.rooms.length ||
-      system.addressNameDraw || system.addressStreetDraw ||
-      system.addressCityDraw || system.buildingData ||
-      system.buildingStreetDraw || system.buildingCityDraw ||
-      system.buildingYearDraw || system.buildingUnits ||
-      system.buildingTypeDetached || system.buildingTypeMultiFamily ||
-      system.buildingTypeEndTerrace || system.buildingTypeMidTerrace ||
-      system.floorHeightBasementDraw || system.floorHeightGroundDraw ||
-      system.floorHeight1OgDraw || system.floorHeight2OgDraw ||
-      system.floorHeight3OgDraw || system.floorHeightDgDraw ||
-      system.structureMassive || system.structureWooden ||
-      system.basementHeated ||
-      system.notesDraw ||
-      system.wallNorthL1Draw || system.wallNorthL2Draw ||
-      system.wallNorthL3Draw || system.wallNorthL4Draw ||
-      system.wallNorthL5Draw || system.wallNorthTotalDraw ||
-      system.wallEastL1Draw || system.wallEastL2Draw ||
-      system.wallEastL3Draw || system.wallEastL4Draw ||
-      system.wallEastL5Draw || system.wallEastTotalDraw ||
-      system.wallSouthL1Draw || system.wallSouthL2Draw ||
-      system.wallSouthL3Draw || system.wallSouthL4Draw ||
-      system.wallSouthL5Draw || system.wallSouthTotalDraw ||
-      system.wallWestL1Draw || system.wallWestL2Draw ||
-      system.wallWestL3Draw || system.wallWestL4Draw ||
-      system.wallWestL5Draw || system.wallWestTotalDraw ||
-      system.wallNotesDraw ||
-      system.notesLargeDraw ||
-      hasWindowData(system.windows) ||
-      hasWindowData(system.gaubeWindows) ||
-      hasWindowData(system.roofWindows) ||
-      hasGaubeData(system.gaubes) ||
-      system.addressPhoneDraw || system.addressEmailDraw ||
-      system.systemManufacturer || system.systemManufacturerDraw ||
-      system.systemTypeDraw ||
-      system.systemPowerDraw ||
-      system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
-      system.optionNightReduction || system.optionHydraulicBalance || system.optionHeaterNiches || system.optionCirculationTimed ||
-      system.systemThermostatValves ||
-      system.surfaceHeating || system.distributorPhoto ||
-      system.heatingCircuits || system.distributorDn ||
-      system.layingSpacing || system.fbhLineDiameter ||
-      system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
-      system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStf ||
-      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStf ||
-      system.solarYearDraw || system.solarStorageDraw || system.solarPumpDraw ||
-      system.solarModulesDraw || system.solarModulesAreaDraw || system.solarOrientation || system.solarCollectorType ||
-      system.pvModulesDraw || system.pvModulesAreaDraw || system.pvPowerDraw ||
-      system.pvVentilation || system.pvOrientation || system.pvBatteryDraw ||
-      system.ogdStructure || system.ogdStructureDraw || system.ogdInsulationDraw ||
-      system.roofTypeSatteldach || system.roofTypeWalmdach || system.roofTypeKruppelwalmdach ||
-      system.roofTypeMansardendach || system.roofTypePultdach || system.roofTypeFlachdach || system.roofTypeSheddach ||
-      system.roofDepthDraw || system.roofWidthDraw || system.roofSpacingDraw || system.roofAngleDraw ||
-      system.roofDepthDraw2 || system.roofWidthDraw2 || system.roofSpacingDraw2 || system.roofAngleDraw2 ||
-      system.roofInsulationDraw ||
-      system.annexExists || system.annexYearDraw || system.annexType ||
-      system.annexWallNorthL1Draw || system.annexWallNorthL2Draw || system.annexWallNorthL3Draw ||
-      system.annexWallNorthL4Draw || system.annexWallNorthL5Draw || system.annexWallNorthTotalDraw ||
-      system.annexWallEastL1Draw || system.annexWallEastL2Draw || system.annexWallEastL3Draw ||
-      system.annexWallEastL4Draw || system.annexWallEastL5Draw || system.annexWallEastTotalDraw ||
-      system.annexWallSouthL1Draw || system.annexWallSouthL2Draw || system.annexWallSouthL3Draw ||
-      system.annexWallSouthL4Draw || system.annexWallSouthL5Draw || system.annexWallSouthTotalDraw ||
-      system.annexWallWestL1Draw || system.annexWallWestL2Draw || system.annexWallWestL3Draw ||
-      system.annexWallWestL4Draw || system.annexWallWestL5Draw || system.annexWallWestTotalDraw ||
-      system.annexRoofTypeSatteldach || system.annexRoofTypeWalmdach || system.annexRoofTypeKruppelwalmdach ||
-      system.annexRoofTypeMansardendach || system.annexRoofTypePultdach || system.annexRoofTypeFlachdach ||
-      system.annexRoofTypeSheddach ||
-      system.annexRoofDepthDraw || system.annexRoofWidthDraw || system.annexRoofSpacingDraw || system.annexRoofAngleDraw ||
-      system.annexRoofDepthDraw2 || system.annexRoofWidthDraw2 || system.annexRoofSpacingDraw2 || system.annexRoofAngleDraw2 ||
-      system.annexRoofInsulationDraw
-    );
-  }
-
-  function isValidDraw(draw){
-    return typeof draw === "string" && draw.startsWith("data:image/");
-  }
-
-  function normalizeValue(value){
-    if(value && typeof value === "object"){
-      if("value" in value) return String(value.value || "");
-      return "";
-    }
-    return value ? String(value) : "";
-  }
-
   function renderCell(value, draw){
-    if(isValidDraw(draw)) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
+    if(draw) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
     return value || "";
   }
 
@@ -4660,18 +4267,6 @@
     if(domGaubes.length){
       data.system.gaubes = domGaubes;
     }
-    const domGaubeWindows = collectGaubeWindowsFromDom();
-    if(domGaubeWindows.length){
-      data.system.gaubeWindows = domGaubeWindows;
-    }
-    const domRoofWindows = collectRoofWindowsFromDom();
-    if(domRoofWindows.length){
-      data.system.roofWindows = domRoofWindows;
-    }
-    const gaubes = Array.isArray(data.system.gaubes) ? data.system.gaubes : [];
-    const windows = Array.isArray(data.system.windows) ? data.system.windows : [];
-    const gaubeWindows = Array.isArray(data.system.gaubeWindows) ? data.system.gaubeWindows : [];
-    const roofWindows = Array.isArray(data.system.roofWindows) ? data.system.roofWindows : [];
     const surfaceHeating = document.querySelector('input[name="surfaceHeating"]:checked');
     const surfaceDetails = document.getElementById("surfaceHeatingDetails");
     const detailsOpen = surfaceDetails && !surfaceDetails.classList.contains("hidden");
@@ -4789,86 +4384,8 @@
       wallWestL5Draw,
       wallWestTotalDraw,
       wallNotesDraw,
-      notesLargeDraw,
       gaubes: Array.isArray(data.system.gaubes) ? data.system.gaubes : [],
       windows: Array.isArray(data.system.windows) ? data.system.windows : [],
-      gaubeWindows: Array.isArray(data.system.gaubeWindows) ? data.system.gaubeWindows : [],
-      roofWindows: Array.isArray(data.system.roofWindows) ? data.system.roofWindows : [],
-      solarYearDraw,
-      solarStorageDraw,
-      solarPumpDraw,
-      solarModulesDraw,
-      solarModulesAreaDraw,
-      solarOrientation,
-      solarCollectorType,
-      pvModulesDraw,
-      pvModulesAreaDraw,
-      pvPowerDraw,
-      pvVentilation,
-      pvOrientation,
-      pvBatteryDraw,
-      ogdStructure,
-      ogdStructureDraw,
-      ogdInsulationDraw,
-      roofTypeSatteldach: !!document.querySelector('input[name="roofTypeSatteldach"]:checked'),
-      roofTypeWalmdach: !!document.querySelector('input[name="roofTypeWalmdach"]:checked'),
-      roofTypeKruppelwalmdach: !!document.querySelector('input[name="roofTypeKruppelwalmdach"]:checked'),
-      roofTypeMansardendach: !!document.querySelector('input[name="roofTypeMansardendach"]:checked'),
-      roofTypePultdach: !!document.querySelector('input[name="roofTypePultdach"]:checked'),
-      roofTypeFlachdach: !!document.querySelector('input[name="roofTypeFlachdach"]:checked'),
-      roofTypeSheddach: !!document.querySelector('input[name="roofTypeSheddach"]:checked'),
-      roofDepthDraw,
-      roofWidthDraw,
-      roofSpacingDraw,
-      roofAngleDraw,
-      roofDepthDraw2,
-      roofWidthDraw2,
-      roofSpacingDraw2,
-      roofAngleDraw2,
-      roofInsulationDraw,
-      annexExists: ((document.querySelector('input[name="annexExists"]:checked') || {}).value || "").trim(),
-      annexYearDraw,
-      annexType,
-      annexWallNorthL1Draw,
-      annexWallNorthL2Draw,
-      annexWallNorthL3Draw,
-      annexWallNorthL4Draw,
-      annexWallNorthL5Draw,
-      annexWallNorthTotalDraw,
-      annexWallEastL1Draw,
-      annexWallEastL2Draw,
-      annexWallEastL3Draw,
-      annexWallEastL4Draw,
-      annexWallEastL5Draw,
-      annexWallEastTotalDraw,
-      annexWallSouthL1Draw,
-      annexWallSouthL2Draw,
-      annexWallSouthL3Draw,
-      annexWallSouthL4Draw,
-      annexWallSouthL5Draw,
-      annexWallSouthTotalDraw,
-      annexWallWestL1Draw,
-      annexWallWestL2Draw,
-      annexWallWestL3Draw,
-      annexWallWestL4Draw,
-      annexWallWestL5Draw,
-      annexWallWestTotalDraw,
-      annexRoofTypeSatteldach: !!document.querySelector('input[name="annexRoofTypeSatteldach"]:checked'),
-      annexRoofTypeWalmdach: !!document.querySelector('input[name="annexRoofTypeWalmdach"]:checked'),
-      annexRoofTypeKruppelwalmdach: !!document.querySelector('input[name="annexRoofTypeKruppelwalmdach"]:checked'),
-      annexRoofTypeMansardendach: !!document.querySelector('input[name="annexRoofTypeMansardendach"]:checked'),
-      annexRoofTypePultdach: !!document.querySelector('input[name="annexRoofTypePultdach"]:checked'),
-      annexRoofTypeFlachdach: !!document.querySelector('input[name="annexRoofTypeFlachdach"]:checked'),
-      annexRoofTypeSheddach: !!document.querySelector('input[name="annexRoofTypeSheddach"]:checked'),
-      annexRoofDepthDraw,
-      annexRoofWidthDraw,
-      annexRoofSpacingDraw,
-      annexRoofAngleDraw,
-      annexRoofDepthDraw2,
-      annexRoofWidthDraw2,
-      annexRoofSpacingDraw2,
-      annexRoofAngleDraw2,
-      annexRoofInsulationDraw,
       systemManufacturer,
       systemManufacturerDraw,
       systemTypeDraw,
@@ -4900,41 +4417,37 @@
       layingSpacing: layingSpacingValue,
       fbhLineDiameter: ((document.getElementById("fBHLineDiameter") || {}).value || "").trim()
     };
-    const hasValue = value => normalizeValue(value) !== "";
-    const hasDraw = draw => isValidDraw(draw);
     const hasSystem = !!(
-      hasValue(system.systemManufacturer) || hasDraw(system.systemManufacturerDraw) ||
-      hasDraw(system.systemTypeDraw) ||
-      hasDraw(system.systemPowerDraw) || hasValue(system.systemYear) || hasValue(system.systemFuel) ||
-      hasValue(system.systemLocation) || hasValue(system.heatDistribution) || hasValue(system.pipeInsulation) ||
-      hasDraw(system.pumpCirculationDraw) || system.pumpCirculationHe || hasValue(system.pumpCirculationStf) ||
-      hasDraw(system.pumpStorageDraw) || system.pumpStorageHe || hasValue(system.pumpStorageStf) ||
-      hasDraw(system.pumpRecircDraw) || system.pumpRecircHe || hasValue(system.pumpRecircStf) ||
+      system.systemManufacturer || system.systemManufacturerDraw ||
+      system.systemType || system.systemTypeDraw ||
+      system.systemPowerDraw || system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
+      system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
+      system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStf ||
+      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStf ||
       system.optionNightReduction || system.optionHydraulicBalance || system.optionHeaterNiches || system.optionCirculationTimed ||
-      hasValue(system.systemThermostatValves) || hasValue(system.heatingCircuits) ||
-      hasValue(system.surfaceHeating) || system.distributorPhoto || hasValue(system.distributorDn) || hasDraw(system.distributorDnDraw) ||
-      hasValue(system.layingSpacing) || hasValue(system.fbhLineDiameter) || detailsOpen
+      system.systemThermostatValves || system.heatingCircuits ||
+      system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.distributorDnDraw ||
+      system.layingSpacing || system.fbhLineDiameter || detailsOpen
     );
     const sections = [];
     const hasAddress = !!(
-      hasDraw(system.addressNameDraw) || hasDraw(system.addressStreetDraw) ||
-      hasDraw(system.addressCityDraw) || hasDraw(system.addressPhoneDraw) || hasDraw(system.addressEmailDraw) ||
-      hasValue(system.buildingData) || hasDraw(system.buildingStreetDraw) || hasDraw(system.buildingCityDraw) ||
-      hasDraw(system.buildingYearDraw) || hasValue(system.buildingUnits) ||
+      system.addressNameDraw || system.addressStreetDraw ||
+      system.addressCityDraw || system.addressPhoneDraw || system.addressEmailDraw ||
+      system.buildingData || system.buildingStreetDraw || system.buildingCityDraw ||
+      system.buildingYearDraw || system.buildingUnits ||
       system.buildingTypeDetached || system.buildingTypeMultiFamily ||
       system.buildingTypeEndTerrace || system.buildingTypeMidTerrace
     );
     if(hasAddress){
       const rows = [];
       const addRowDraw = (label, draw) => {
-        if(isValidDraw(draw)){
+        if(draw){
           rows.push('<tr><td>' + label + '</td><td>' + renderCell("", draw) + '</td></tr>');
         }
       };
       const addRowValue = (label, value) => {
-        const safeValue = normalizeValue(value);
-        if(safeValue){
-          rows.push('<tr><td>' + label + '</td><td>' + renderCell(safeValue, "") + '</td></tr>');
+        if(value){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value, "") + '</td></tr>');
         }
       };
       const addFlag = (label, flag) => {
@@ -4970,23 +4483,22 @@
       }
     }
     const hasStructure = !!(
-      hasDraw(system.floorHeightBasementDraw) || hasDraw(system.floorHeightGroundDraw) ||
-      hasDraw(system.floorHeight1OgDraw) || hasDraw(system.floorHeight2OgDraw) ||
-      hasDraw(system.floorHeight3OgDraw) || hasDraw(system.floorHeightDgDraw) ||
-      system.structureMassive || system.structureWooden || hasValue(system.basementHeated) ||
-      hasDraw(system.notesDraw)
+      system.floorHeightBasementDraw || system.floorHeightGroundDraw ||
+      system.floorHeight1OgDraw || system.floorHeight2OgDraw ||
+      system.floorHeight3OgDraw || system.floorHeightDgDraw ||
+      system.structureMassive || system.structureWooden || system.basementHeated ||
+      system.notesDraw
     );
     if(hasStructure){
       const rows = [];
       const addRowDraw = (label, draw) => {
-        if(isValidDraw(draw)){
+        if(draw){
           rows.push('<tr><td>' + label + '</td><td>' + renderCell("", draw) + '</td></tr>');
         }
       };
       const addRowValue = (label, value) => {
-        const safeValue = normalizeValue(value);
-        if(safeValue){
-          rows.push('<tr><td>' + label + '</td><td>' + renderCell(safeValue, "") + '</td></tr>');
+        if(value){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value, "") + '</td></tr>');
         }
       };
       const addFlag = (label, flag) => {
@@ -5018,15 +4530,15 @@
       }
     }
     const hasWalls = !!(
-      hasDraw(system.wallNorthL1Draw) || hasDraw(system.wallNorthL2Draw) || hasDraw(system.wallNorthL3Draw) ||
-      hasDraw(system.wallNorthL4Draw) || hasDraw(system.wallNorthL5Draw) || hasDraw(system.wallNorthTotalDraw) ||
-      hasDraw(system.wallEastL1Draw) || hasDraw(system.wallEastL2Draw) || hasDraw(system.wallEastL3Draw) ||
-      hasDraw(system.wallEastL4Draw) || hasDraw(system.wallEastL5Draw) || hasDraw(system.wallEastTotalDraw) ||
-      hasDraw(system.wallSouthL1Draw) || hasDraw(system.wallSouthL2Draw) || hasDraw(system.wallSouthL3Draw) ||
-      hasDraw(system.wallSouthL4Draw) || hasDraw(system.wallSouthL5Draw) || hasDraw(system.wallSouthTotalDraw) ||
-      hasDraw(system.wallWestL1Draw) || hasDraw(system.wallWestL2Draw) || hasDraw(system.wallWestL3Draw) ||
-      hasDraw(system.wallWestL4Draw) || hasDraw(system.wallWestL5Draw) || hasDraw(system.wallWestTotalDraw) ||
-      hasDraw(system.wallNotesDraw)
+      system.wallNorthL1Draw || system.wallNorthL2Draw || system.wallNorthL3Draw ||
+      system.wallNorthL4Draw || system.wallNorthL5Draw || system.wallNorthTotalDraw ||
+      system.wallEastL1Draw || system.wallEastL2Draw || system.wallEastL3Draw ||
+      system.wallEastL4Draw || system.wallEastL5Draw || system.wallEastTotalDraw ||
+      system.wallSouthL1Draw || system.wallSouthL2Draw || system.wallSouthL3Draw ||
+      system.wallSouthL4Draw || system.wallSouthL5Draw || system.wallSouthTotalDraw ||
+      system.wallWestL1Draw || system.wallWestL2Draw || system.wallWestL3Draw ||
+      system.wallWestL4Draw || system.wallWestL5Draw || system.wallWestTotalDraw ||
+      system.wallNotesDraw
     );
     if(hasWalls){
       const buildRow = (label, values) => (
@@ -5092,25 +4604,21 @@
         ].join(""));
       }
     }
-    const normalizeText = value => normalizeValue(value);
-    const normalizeDraw = value => {
-      if(value && typeof value === "object" && value.dataset && value.dataset.drawing){
-        return isValidDraw(value.dataset.drawing) ? value.dataset.drawing : "";
-      }
-      if(isValidDraw(value)) return value;
-      return "";
+    const normalizeText = value => {
+      if(value && typeof value === "object" && "value" in value) return String(value.value || "");
+      return value ? String(value) : "";
     };
-    const filteredWindows = Array.isArray(data.system.windows)
-      ? data.system.windows.filter(entry => {
-        if(!entry) return false;
-        const hr = normalizeValue(entry.hr);
-        const vg = normalizeValue(entry.vg);
-        const material = normalizeValue(entry.material);
-        return hr || vg || material || entry.roomDraw || entry.sizeDraw || entry.yearDraw;
-      })
+    const normalizeDraw = value => {
+      if(value && typeof value === "object" && value.dataset && value.dataset.drawing) return value.dataset.drawing || "";
+      return value ? String(value) : "";
+    };
+    const windows = Array.isArray(data.system.windows)
+      ? data.system.windows.filter(entry => entry && (
+        entry.hr || entry.vg || entry.material || entry.roomDraw || entry.sizeDraw || entry.yearDraw
+      ))
       : [];
-    if(filteredWindows.length){
-      const windowRows = filteredWindows.map(entry => [
+    if(windows.length){
+      const windowRows = windows.map(entry => [
         '<tr>',
         '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
         '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
@@ -5133,80 +4641,14 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const filteredGaubeWindows = Array.isArray(data.system.gaubeWindows)
-      ? data.system.gaubeWindows.filter(entry => {
-        if(!entry) return false;
-        const hr = normalizeValue(entry.hr);
-        const vg = normalizeValue(entry.vg);
-        const material = normalizeValue(entry.material);
-        return hr || vg || material || entry.roomDraw || entry.sizeDraw || entry.yearDraw;
-      })
-      : [];
-    if(filteredGaubeWindows.length){
-      const windowRows = filteredGaubeWindows.map(entry => [
-        '<tr>',
-        '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
-        '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
-        '<td>' + renderCell(normalizeText(entry.vg), "") + '</td>',
-        '<td>' + renderCell(normalizeText(entry.material), "") + '</td>',
-        '<td>' + renderCell("", normalizeDraw(entry.sizeDraw)) + '</td>',
-        '<td>' + renderCell("", normalizeDraw(entry.yearDraw)) + '</td>',
-        '</tr>'
-      ].join("")).join("");
-      sections.push([
-        '<section class="room">',
-        '<div class="room-head">',
-        '<div><div class="room-title">Gaubenfenster</div><div class="room-sub">Dachgaube</div></div>',
-        '<div class="badge">Fenster</div>',
-        '</div>',
-        '<table class="hk-table window-table">',
-        '<thead><tr><th>HR</th><th>Raum</th><th>VG</th><th>Stoff</th><th>Ma\u00dfe</th><th>Bj.</th></tr></thead>',
-        '<tbody>',
-        windowRows,
-        '</tbody></table></section>'
-      ].join(""));
-    }
-    const filteredRoofWindows = Array.isArray(data.system.roofWindows)
-      ? data.system.roofWindows.filter(entry => {
-        if(!entry) return false;
-        const hr = normalizeValue(entry.hr);
-        const vg = normalizeValue(entry.vg);
-        const material = normalizeValue(entry.material);
-        return hr || vg || material || entry.roomDraw || entry.sizeDraw || entry.yearDraw;
-      })
-      : [];
-    if(filteredRoofWindows.length){
-      const windowRows = filteredRoofWindows.map(entry => [
-        '<tr>',
-        '<td>' + renderCell(normalizeText(entry.hr), "") + '</td>',
-        '<td>' + renderCell("", normalizeDraw(entry.roomDraw)) + '</td>',
-        '<td>' + renderCell(normalizeText(entry.vg), "") + '</td>',
-        '<td>' + renderCell(normalizeText(entry.material), "") + '</td>',
-        '<td>' + renderCell("", normalizeDraw(entry.sizeDraw)) + '</td>',
-        '<td>' + renderCell("", normalizeDraw(entry.yearDraw)) + '</td>',
-        '</tr>'
-      ].join("")).join("");
-      sections.push([
-        '<section class="room">',
-        '<div class="room-head">',
-        '<div><div class="room-title">Dachfl\u00e4chenfenster</div><div class="room-sub">Dach/OGD</div></div>',
-        '<div class="badge">Fenster</div>',
-        '</div>',
-        '<table class="hk-table window-table">',
-        '<thead><tr><th>HR</th><th>Raum</th><th>VG</th><th>Stoff</th><th>Ma\u00dfe</th><th>Bj.</th></tr></thead>',
-        '<tbody>',
-        windowRows,
-        '</tbody></table></section>'
-      ].join(""));
-    }
-    const filteredGaubes = Array.isArray(data.system.gaubes)
+    const gaubes = Array.isArray(data.system.gaubes)
       ? data.system.gaubes.filter(entry => entry && (
         entry.hr || entry.angle || entry.widthDraw || entry.heightDraw
       ))
       : [];
-    if(filteredGaubes.length){
-      const headerTitles = ["Gaube1", "Gaube2", "Gaube3", "Gaube4"];
-      const cells = (key, isDraw) => filteredGaubes.map(entry => (
+    if(gaubes.length){
+      const headerTitles = ["Gaube1", "Gaube2", "Gaube3", "Gaube2"];
+      const cells = (key, isDraw) => gaubes.map(entry => (
         '<td>' + renderCell(isDraw ? "" : (entry[key] || ""), isDraw ? (entry[key] || "") : "") + '</td>'
       )).join("");
       sections.push([
@@ -5225,297 +4667,11 @@
         '</tbody></table></section>'
       ].join(""));
     }
-    const roofTypes = [];
-    if(system.roofTypeSatteldach) roofTypes.push("Satteldach");
-    if(system.roofTypeWalmdach) roofTypes.push("Walmdach");
-    if(system.roofTypeKruppelwalmdach) roofTypes.push("Kr\u00fcppelwalmdach");
-    if(system.roofTypeMansardendach) roofTypes.push("Mansardendach");
-    if(system.roofTypePultdach) roofTypes.push("Pultdach");
-    if(system.roofTypeFlachdach) roofTypes.push("Flachdach");
-    if(system.roofTypeSheddach) roofTypes.push("Sheddach");
-    const hasOgd = !!(
-      system.ogdStructure || system.ogdStructureDraw || system.ogdInsulationDraw ||
-      roofTypes.length ||
-      system.roofDepthDraw || system.roofWidthDraw || system.roofSpacingDraw || system.roofAngleDraw ||
-      system.roofDepthDraw2 || system.roofWidthDraw2 || system.roofSpacingDraw2 || system.roofAngleDraw2 ||
-      system.roofInsulationDraw
-    );
-    if(hasOgd){
-      const ogdRows = [];
-      if(system.ogdStructure || system.ogdStructureDraw){
-        ogdRows.push('<tr><td>Art/Aufbau/Material</td><td>' + renderCell(system.ogdStructure || "", system.ogdStructureDraw || "") + '</td></tr>');
-      }
-      if(system.ogdInsulationDraw){
-        ogdRows.push('<tr><td>D\u00e4mmung</td><td>' + renderCell("", system.ogdInsulationDraw) + '</td></tr>');
-      }
-      const roofRows = [];
-      if(roofTypes.length){
-        roofRows.push('<tr><td>Dachform</td><td>' + roofTypes.join(", ") + '</td></tr>');
-      }
-      if(system.roofDepthDraw || system.roofWidthDraw || system.roofSpacingDraw || system.roofAngleDraw){
-        roofRows.push(
-          '<tr>' +
-          '<td>Tiefe</td><td>' + renderCell("", system.roofDepthDraw) + '</td>' +
-          '<td>Breite</td><td>' + renderCell("", system.roofWidthDraw) + '</td>' +
-          '</tr>' +
-          '<tr>' +
-          '<td>Abstand</td><td>' + renderCell("", system.roofSpacingDraw) + '</td>' +
-          '<td>Winkel</td><td>' + renderCell("", system.roofAngleDraw) + '</td>' +
-          '</tr>'
-        );
-      }
-      if(system.roofDepthDraw2 || system.roofWidthDraw2 || system.roofSpacingDraw2 || system.roofAngleDraw2){
-        roofRows.push(
-          '<tr>' +
-          '<td>Tiefe</td><td>' + renderCell("", system.roofDepthDraw2) + '</td>' +
-          '<td>Breite</td><td>' + renderCell("", system.roofWidthDraw2) + '</td>' +
-          '</tr>' +
-          '<tr>' +
-          '<td>Abstand</td><td>' + renderCell("", system.roofSpacingDraw2) + '</td>' +
-          '<td>Winkel</td><td>' + renderCell("", system.roofAngleDraw2) + '</td>' +
-          '</tr>'
-        );
-      }
-      if(system.roofInsulationDraw){
-        roofRows.push('<tr><td>D\u00e4mmung</td><td colspan="3">' + renderCell("", system.roofInsulationDraw) + '</td></tr>');
-      }
-      sections.push([
-        '<section class="room">',
-        '<div class="room-head">',
-        '<div><div class="room-title">Dach/OGD</div><div class="room-sub">Aufbau / Dach</div></div>',
-        '<div class="badge">Dach</div>',
-        '</div>',
-        (ogdRows.length ? [
-          '<table class="hk-table">',
-          '<thead><tr><th>OGD</th><th>Wert</th></tr></thead>',
-          '<tbody>',
-          ogdRows.join(""),
-          '</tbody></table>'
-        ].join("") : ""),
-        (roofRows.length ? [
-          '<table class="hk-table" style="margin-top:10px;">',
-          '<thead><tr><th colspan="4">Dach</th></tr></thead>',
-          '<tbody>',
-          roofRows.join(""),
-          '</tbody></table>'
-        ].join("") : ""),
-        '</section>'
-      ].join(""));
-    }
-    const annexRoofTypes = [];
-    if(system.annexRoofTypeSatteldach) annexRoofTypes.push("Satteldach");
-    if(system.annexRoofTypeWalmdach) annexRoofTypes.push("Walmdach");
-    if(system.annexRoofTypeKruppelwalmdach) annexRoofTypes.push("Kr\u00fcppelwalmdach");
-    if(system.annexRoofTypeMansardendach) annexRoofTypes.push("Mansardendach");
-    if(system.annexRoofTypePultdach) annexRoofTypes.push("Pultdach");
-    if(system.annexRoofTypeFlachdach) annexRoofTypes.push("Flachdach");
-    if(system.annexRoofTypeSheddach) annexRoofTypes.push("Sheddach");
-    const hasAnnexWalls = !!(
-      system.annexWallNorthL1Draw || system.annexWallNorthL2Draw || system.annexWallNorthL3Draw ||
-      system.annexWallNorthL4Draw || system.annexWallNorthL5Draw || system.annexWallNorthTotalDraw ||
-      system.annexWallEastL1Draw || system.annexWallEastL2Draw || system.annexWallEastL3Draw ||
-      system.annexWallEastL4Draw || system.annexWallEastL5Draw || system.annexWallEastTotalDraw ||
-      system.annexWallSouthL1Draw || system.annexWallSouthL2Draw || system.annexWallSouthL3Draw ||
-      system.annexWallSouthL4Draw || system.annexWallSouthL5Draw || system.annexWallSouthTotalDraw ||
-      system.annexWallWestL1Draw || system.annexWallWestL2Draw || system.annexWallWestL3Draw ||
-      system.annexWallWestL4Draw || system.annexWallWestL5Draw || system.annexWallWestTotalDraw
-    );
-    const hasAnnexRoof = !!(
-      annexRoofTypes.length ||
-      system.annexRoofDepthDraw || system.annexRoofWidthDraw || system.annexRoofSpacingDraw || system.annexRoofAngleDraw ||
-      system.annexRoofDepthDraw2 || system.annexRoofWidthDraw2 || system.annexRoofSpacingDraw2 || system.annexRoofAngleDraw2 ||
-      system.annexRoofInsulationDraw
-    );
-    const hasAnnex = !!(system.annexExists || system.annexYearDraw || system.annexType || hasAnnexWalls || hasAnnexRoof);
-    if(hasAnnex){
-      const annexRows = [];
-      if(system.annexExists) annexRows.push('<tr><td>Anbau vorhanden</td><td>' + system.annexExists + '</td></tr>');
-      if(system.annexYearDraw) annexRows.push('<tr><td>Baujahr</td><td>' + renderCell("", system.annexYearDraw) + '</td></tr>');
-      if(system.annexType) annexRows.push('<tr><td>Bodenplatte</td><td>' + renderCell(system.annexType, "") + '</td></tr>');
-      if(annexRows.length){
-        sections.push([
-          '<section class="room">',
-          '<div class="room-head">',
-          '<div><div class="room-title">Anbau</div><div class="room-sub">Stammdaten</div></div>',
-          '<div class="badge">Anbau</div>',
-          '</div>',
-          '<table class="hk-table">',
-          '<thead><tr><th>Feld</th><th>Wert</th></tr></thead>',
-          '<tbody>',
-          annexRows.join(""),
-          '</tbody></table></section>'
-        ].join(""));
-      }
-      if(hasAnnexWalls){
-        const buildRow = (label, values) => (
-          '<tr>' +
-          '<td>' + label + '</td>' +
-          values.map(draw => '<td>' + renderCell("", draw) + '</td>').join("") +
-          '</tr>'
-        );
-        sections.push([
-          '<section class="room">',
-          '<div class="room-head">',
-          '<div><div class="room-title">Anbau Au\u00dfenw\u00e4nde</div><div class="room-sub">Aufbau</div></div>',
-          '<div class="badge">Anbau</div>',
-          '</div>',
-          '<table class="hk-table">',
-          '<thead><tr><th>Aufbau</th><th>Schicht 1</th><th>Schicht 2</th><th>Schicht 3</th><th>Schicht 4</th><th>Schicht 5</th><th>Gesamtdicke</th></tr></thead>',
-          '<tbody>',
-          buildRow("Nord", [
-            system.annexWallNorthL1Draw,
-            system.annexWallNorthL2Draw,
-            system.annexWallNorthL3Draw,
-            system.annexWallNorthL4Draw,
-            system.annexWallNorthL5Draw,
-            system.annexWallNorthTotalDraw
-          ]),
-          buildRow("Ost", [
-            system.annexWallEastL1Draw,
-            system.annexWallEastL2Draw,
-            system.annexWallEastL3Draw,
-            system.annexWallEastL4Draw,
-            system.annexWallEastL5Draw,
-            system.annexWallEastTotalDraw
-          ]),
-          buildRow("S\u00fcd", [
-            system.annexWallSouthL1Draw,
-            system.annexWallSouthL2Draw,
-            system.annexWallSouthL3Draw,
-            system.annexWallSouthL4Draw,
-            system.annexWallSouthL5Draw,
-            system.annexWallSouthTotalDraw
-          ]),
-          buildRow("West", [
-            system.annexWallWestL1Draw,
-            system.annexWallWestL2Draw,
-            system.annexWallWestL3Draw,
-            system.annexWallWestL4Draw,
-            system.annexWallWestL5Draw,
-            system.annexWallWestTotalDraw
-          ]),
-          '</tbody></table></section>'
-        ].join(""));
-      }
-      if(hasAnnexRoof){
-        const roofRows = [];
-        if(annexRoofTypes.length){
-          roofRows.push('<tr><td>Dachform</td><td>' + annexRoofTypes.join(", ") + '</td></tr>');
-        }
-        if(system.annexRoofDepthDraw || system.annexRoofWidthDraw || system.annexRoofSpacingDraw || system.annexRoofAngleDraw){
-          roofRows.push(
-            '<tr>' +
-            '<td>Tiefe</td><td>' + renderCell("", system.annexRoofDepthDraw) + '</td>' +
-            '<td>Breite</td><td>' + renderCell("", system.annexRoofWidthDraw) + '</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>Abstand</td><td>' + renderCell("", system.annexRoofSpacingDraw) + '</td>' +
-            '<td>Winkel</td><td>' + renderCell("", system.annexRoofAngleDraw) + '</td>' +
-            '</tr>'
-          );
-        }
-        if(system.annexRoofDepthDraw2 || system.annexRoofWidthDraw2 || system.annexRoofSpacingDraw2 || system.annexRoofAngleDraw2){
-          roofRows.push(
-            '<tr>' +
-            '<td>Tiefe</td><td>' + renderCell("", system.annexRoofDepthDraw2) + '</td>' +
-            '<td>Breite</td><td>' + renderCell("", system.annexRoofWidthDraw2) + '</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>Abstand</td><td>' + renderCell("", system.annexRoofSpacingDraw2) + '</td>' +
-            '<td>Winkel</td><td>' + renderCell("", system.annexRoofAngleDraw2) + '</td>' +
-            '</tr>'
-          );
-        }
-        if(system.annexRoofInsulationDraw){
-          roofRows.push('<tr><td>D\u00e4mmung</td><td colspan="3">' + renderCell("", system.annexRoofInsulationDraw) + '</td></tr>');
-        }
-        if(roofRows.length){
-          sections.push([
-            '<section class="room">',
-            '<div class="room-head">',
-            '<div><div class="room-title">Anbau Dach</div><div class="room-sub">Aufbau</div></div>',
-            '<div class="badge">Anbau</div>',
-            '</div>',
-            '<table class="hk-table">',
-            '<thead><tr><th colspan="4">Dach</th></tr></thead>',
-            '<tbody>',
-            roofRows.join(""),
-            '</tbody></table></section>'
-          ].join(""));
-        }
-      }
-    }
-    const hasSolar = !!(
-      hasDraw(system.solarYearDraw) || hasDraw(system.solarStorageDraw) || hasDraw(system.solarPumpDraw) ||
-      hasDraw(system.solarModulesDraw) || hasDraw(system.solarModulesAreaDraw) ||
-      hasValue(system.solarOrientation) || hasValue(system.solarCollectorType)
-    );
-    const hasPv = !!(
-      hasDraw(system.pvModulesDraw) || hasDraw(system.pvModulesAreaDraw) || hasDraw(system.pvPowerDraw) ||
-      hasValue(system.pvVentilation) || hasValue(system.pvOrientation) || hasDraw(system.pvBatteryDraw)
-    );
-    if(hasSolar || hasPv){
-      const blocks = [];
-      if(hasSolar){
-        blocks.push([
-          '<table class="hk-table">',
-          '<thead><tr><th colspan="7">Solarthermie</th></tr>',
-          '<tr><th>Baujahr</th><th>Speicher</th><th>Pumpe</th><th>Module</th><th>Module m\u00b2</th><th>Ausrichtung</th><th>Kollektorart</th></tr></thead>',
-          '<tbody><tr>',
-          '<td>' + renderCell("", system.solarYearDraw) + '</td>',
-          '<td>' + renderCell("", system.solarStorageDraw) + '</td>',
-          '<td>' + renderCell("", system.solarPumpDraw) + '</td>',
-          '<td>' + renderCell("", system.solarModulesDraw) + '</td>',
-          '<td>' + renderCell("", system.solarModulesAreaDraw) + '</td>',
-          '<td>' + renderCell(system.solarOrientation || "", "") + '</td>',
-          '<td>' + renderCell(system.solarCollectorType || "", "") + '</td>',
-          '</tr></tbody></table>'
-        ].join(""));
-      }
-      if(hasPv){
-        blocks.push([
-          '<table class="hk-table" style="margin-top:10px;">',
-          '<thead><tr><th colspan="6">Photovoltaik</th></tr>',
-          '<tr><th>Module</th><th>Module m\u00b2</th><th>Leistung</th><th>Bel\u00fcftung</th><th>Ausrichtung</th><th>Batteriespeicher</th></tr></thead>',
-          '<tbody><tr>',
-          '<td>' + renderCell("", system.pvModulesDraw) + '</td>',
-          '<td>' + renderCell("", system.pvModulesAreaDraw) + '</td>',
-          '<td>' + renderCell("", system.pvPowerDraw) + '</td>',
-          '<td>' + renderCell(system.pvVentilation || "", "") + '</td>',
-          '<td>' + renderCell(system.pvOrientation || "", "") + '</td>',
-          '<td>' + renderCell("", system.pvBatteryDraw) + '</td>',
-          '</tr></tbody></table>'
-        ].join(""));
-      }
-      sections.push([
-        '<section class="room">',
-        '<div class="room-head">',
-        '<div><div class="room-title">Sonstiges</div><div class="room-sub">Solar / PV</div></div>',
-        '<div class="badge">Zusatz</div>',
-        '</div>',
-        blocks.join(""),
-        '</section>'
-      ].join(""));
-    }
-    if(system.notesLargeDraw){
-      sections.push([
-        '<section class="room">',
-        '<div class="room-head">',
-        '<div><div class="room-title">Notizen</div><div class="room-sub">Zusatz</div></div>',
-        '<div class="badge">Notiz</div>',
-        '</div>',
-        '<table class="hk-table">',
-        '<thead><tr><th>Notizen</th></tr></thead>',
-        '<tbody><tr><td>' + renderCell("", system.notesLargeDraw) + '</td></tr></tbody>',
-        '</table></section>'
-      ].join(""));
-    }
     if(hasSystem){
       const rows = [];
       const addRow = (label, value, draw) => {
-        const safeValue = normalizeValue(value);
-        if((safeValue && safeValue !== "-") || draw){
-          rows.push('<tr><td>' + label + '</td><td>' + renderCell(safeValue || "", draw || "") + '</td></tr>');
+        if((value && value !== "-") || draw){
+          rows.push('<tr><td>' + label + '</td><td>' + renderCell(value || "", draw || "") + '</td></tr>');
         }
       };
       const addFlag = (label, flag) => {
@@ -5635,46 +4791,6 @@
     });
   }
 
-  function updateShareCache(){
-    const data = collectData();
-    data.system.windows = collectWindowsFromDom();
-    data.system.gaubes = collectGaubesFromDom();
-    if(!hasAnyData(data)){
-      shareHasData = false;
-      shareHtmlCache = "";
-      return;
-    }
-    renderPrint(data, true);
-    const container = document.getElementById("printView");
-    shareHtmlCache = container ? container.innerHTML : "";
-    shareHasData = !!shareHtmlCache;
-  }
-
-  function buildShareHtml(reportMarkup){
-    return [
-      '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
-      '<style>',
-      'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
-      '.doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }',
-      'h1 { margin: 0; font-size: 22px; }',
-      '.meta { color: #6b7280; font-size: 13px; }',
-      '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
-      '.room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }',
-      '.room-title { font-size: 18px; font-weight: 700; }',
-      '.room-sub { color: #6b7280; font-size: 14px; }',
-      '.badge { background: #eef2ff; color: #1d4ed8; border: 1px solid #c7d2fe; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 13px; }',
-      'table { width: 100%; border-collapse: collapse; }',
-      'th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }',
-      '.window-table th, .window-table td { padding: 4px 6px; }',
-      '.window-table .draw-img { max-height: 36px; max-width: 120px; }',
-      'th { background: #f8fafc; font-weight: 700; }',
-      '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
-      '</style></head><body>',
-      reportMarkup || "",
-      '</body></html>'
-    ].join("");
-  }
-
   function downloadFile(data){
     const now = new Date().toLocaleString();
     const markup = buildReportMarkup(data, now);
@@ -5727,29 +4843,95 @@
     document.body.classList.remove("show-print");
   });
   if(shareBtn){
-    shareBtn.addEventListener("click", async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if(!shareHasData){
-        updateShareCache();
-      }
-      if(!shareHasData){
+    shareBtn.addEventListener("click", () => {
+      const data = collectData();
+      data.system.windows = collectWindowsFromDom();
+      data.system.gaubes = collectGaubesFromDom();
+      if(
+        !data.rooms.length &&
+        !data.system.addressNameDraw && !data.system.addressStreetDraw &&
+        !data.system.addressCityDraw && !data.system.buildingData &&
+        !data.system.buildingStreetDraw && !data.system.buildingCityDraw &&
+        !data.system.buildingYearDraw && !data.system.buildingUnits &&
+        !data.system.buildingTypeDetached && !data.system.buildingTypeMultiFamily &&
+        !data.system.buildingTypeEndTerrace && !data.system.buildingTypeMidTerrace &&
+        !data.system.floorHeightBasementDraw && !data.system.floorHeightGroundDraw &&
+        !data.system.floorHeight1OgDraw && !data.system.floorHeight2OgDraw &&
+        !data.system.floorHeight3OgDraw && !data.system.floorHeightDgDraw &&
+        !data.system.structureMassive && !data.system.structureWooden &&
+        !data.system.basementHeated &&
+        !data.system.notesDraw &&
+        !data.system.wallNorthL1Draw && !data.system.wallNorthL2Draw &&
+        !data.system.wallNorthL3Draw && !data.system.wallNorthL4Draw &&
+        !data.system.wallNorthL5Draw && !data.system.wallNorthTotalDraw &&
+        !data.system.wallEastL1Draw && !data.system.wallEastL2Draw &&
+        !data.system.wallEastL3Draw && !data.system.wallEastL4Draw &&
+        !data.system.wallEastL5Draw && !data.system.wallEastTotalDraw &&
+        !data.system.wallSouthL1Draw && !data.system.wallSouthL2Draw &&
+        !data.system.wallSouthL3Draw && !data.system.wallSouthL4Draw &&
+        !data.system.wallSouthL5Draw && !data.system.wallSouthTotalDraw &&
+        !data.system.wallWestL1Draw && !data.system.wallWestL2Draw &&
+        !data.system.wallWestL3Draw && !data.system.wallWestL4Draw &&
+        !data.system.wallWestL5Draw && !data.system.wallWestTotalDraw &&
+        !data.system.wallNotesDraw &&
+        !hasWindowData(data.system.windows) &&
+        !hasGaubeData(data.system.gaubes) &&
+        !data.system.addressPhoneDraw && !data.system.addressEmailDraw &&
+        !data.system.systemManufacturer && !data.system.systemManufacturerDraw &&
+        !data.system.systemTypeDraw &&
+        !data.system.systemPowerDraw &&
+        !data.system.systemYear && !data.system.systemFuel && !data.system.systemLocation && !data.system.heatDistribution && !data.system.pipeInsulation &&
+        !data.system.optionNightReduction && !data.system.optionHydraulicBalance && !data.system.optionHeaterNiches && !data.system.optionCirculationTimed &&
+        !data.system.systemThermostatValves &&
+        !data.system.surfaceHeating && !data.system.distributorPhoto &&
+        !data.system.heatingCircuits && !data.system.distributorDn &&
+        !data.system.layingSpacing && !data.system.fbhLineDiameter &&
+        !data.system.pumpCirculationDraw && !data.system.pumpCirculationHe && !data.system.pumpCirculationStf &&
+        !data.system.pumpStorageDraw && !data.system.pumpStorageHe && !data.system.pumpStorageStf &&
+        !data.system.pumpRecircDraw && !data.system.pumpRecircHe && !data.system.pumpRecircStf
+      ){
         alert("Keine Daten erfasst.");
         return;
       }
-      const html = buildShareHtml(shareHtmlCache);
+      renderPrint(data, true);
+      const html = [
+        '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>HK-Uebersicht</title>',
+        '<style>',
+        'body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #0f172a; }',
+        '.doc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }',
+        'h1 { margin: 0; font-size: 22px; }',
+        '.meta { color: #6b7280; font-size: 13px; }',
+        '.room { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 14px; background: #fff; }',
+        '.room-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }',
+        '.room-title { font-size: 18px; font-weight: 700; }',
+        '.room-sub { color: #6b7280; font-size: 14px; }',
+        '.badge { background: #eef2ff; color: #1d4ed8; border: 1px solid #c7d2fe; border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 13px; }',
+        'table { width: 100%; border-collapse: collapse; }',
+        'th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; font-size: 14px; }',
+        '.window-table th, .window-table td { padding: 4px 6px; }',
+        '.window-table .draw-img { max-height: 36px; max-width: 120px; }',
+        'th { background: #f8fafc; font-weight: 700; }',
+        '.draw-img { display: block; max-height: 60px; max-width: 140px; }',
+        '</style></head><body>',
+        document.getElementById("printView").innerHTML,
+        '</body></html>'
+      ].join("");
       if(!navigator.share){
-        downloadHtml(html, "hk-uebersicht.html");
-        alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar. Datei wurde heruntergeladen.");
+        alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar.");
         return;
       }
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        await navigator.share({ files: [file], title: "HK-\u00dcbersicht" });
+        const files = [file];
+        if(navigator.canShare && !navigator.canShare({ files })){
+          alert("Teilen mit mehreren Dateien ist nicht verf\u00fcgbar.");
+          return;
+        }
+        navigator.share({ files }).catch(() => {
+          alert("Teilen konnte nicht ge\u00f6ffnet werden.");
+        });
       } catch(e){
-        if(e && e.name === "AbortError") return;
-        downloadHtml(html, "hk-uebersicht.html");
-        alert("Teilen konnte nicht ge\u00f6ffnet werden. Datei wurde heruntergeladen.");
+        alert("Teilen konnte nicht ge\u00f6ffnet werden.");
       }
     });
   }
@@ -5765,4 +4947,3 @@
 </script>
 </body>
 </html>
-
