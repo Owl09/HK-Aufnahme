@@ -3230,6 +3230,7 @@
   let shareErrorShown = false;
   let shareHtmlCache = "";
   let shareHasData = false;
+  let shareInProgress = false;
   let gaubes = [];
   let windows = [];
   let gaubeWindows = [];
@@ -3265,7 +3266,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=56").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=57").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5732,14 +5733,22 @@
       event.stopPropagation();
       const active = document.activeElement;
       if(active && typeof active.blur === "function") active.blur();
+      if(shareInProgress) return;
+      shareInProgress = true;
+      const resetShareState = () => { shareInProgress = false; };
+      const guardTimer = setTimeout(resetShareState, 10000);
       try{
         if(!shareHasData) updateShareCache();
         if(!shareHasData){
+          clearTimeout(guardTimer);
+          resetShareState();
           alert("Keine Daten erfasst.");
           return;
         }
         const html = buildShareHtml(shareHtmlCache);
         if(!navigator.share){
+          clearTimeout(guardTimer);
+          resetShareState();
           downloadHtml(html, "hk-uebersicht.html");
           alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar. Datei wurde heruntergeladen.");
           return;
@@ -5747,12 +5756,26 @@
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
         const shareData = { files: [file] };
         if(navigator.canShare && !navigator.canShare(shareData)){
+          clearTimeout(guardTimer);
+          resetShareState();
           downloadHtml(html, "hk-uebersicht.html");
           alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar. Datei wurde heruntergeladen.");
           return;
         }
-        await navigator.share(shareData);
+        requestAnimationFrame(() => {
+          navigator.share(shareData).then(() => {
+            clearTimeout(guardTimer);
+            resetShareState();
+          }).catch(e => {
+            clearTimeout(guardTimer);
+            resetShareState();
+            if(e && e.name === "AbortError") return;
+            alert("Teilen fehlgeschlagen: " + (e && e.message ? e.message : "Unbekannter Fehler"));
+          });
+        });
       } catch(e){
+        clearTimeout(guardTimer);
+        resetShareState();
         if(e && e.name === "AbortError") return;
         alert("Teilen fehlgeschlagen: " + (e && e.message ? e.message : "Unbekannter Fehler"));
       }
