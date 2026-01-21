@@ -3265,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=49").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=50").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -4635,6 +4635,14 @@
     return typeof draw === "string" && draw.startsWith("data:image/");
   }
 
+  function normalizeValue(value){
+    if(value && typeof value === "object"){
+      if("value" in value) return String(value.value || "");
+      return "";
+    }
+    return value ? String(value) : "";
+  }
+
   function renderCell(value, draw){
     if(isValidDraw(draw)) return '<img class="draw-img" src="' + draw + '" alt="Zeichnung">';
     return value || "";
@@ -5081,13 +5089,6 @@
         ].join(""));
       }
     }
-    const normalizeValue = value => {
-      if(value && typeof value === "object"){
-        if("value" in value) return String(value.value || "");
-        return "";
-      }
-      return value ? String(value) : "";
-    };
     const normalizeText = value => normalizeValue(value);
     const normalizeDraw = value => {
       if(value && typeof value === "object" && value.dataset && value.dataset.drawing){
