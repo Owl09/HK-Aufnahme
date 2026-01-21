@@ -3265,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=51").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=52").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -4900,24 +4900,27 @@
       layingSpacing: layingSpacingValue,
       fbhLineDiameter: ((document.getElementById("fBHLineDiameter") || {}).value || "").trim()
     };
+    const hasValue = value => normalizeValue(value) !== "";
+    const hasDraw = draw => isValidDraw(draw);
     const hasSystem = !!(
-      system.systemManufacturer || system.systemManufacturerDraw ||
-      system.systemType || system.systemTypeDraw ||
-      system.systemPowerDraw || system.systemYear || system.systemFuel || system.systemLocation || system.heatDistribution || system.pipeInsulation ||
-      system.pumpCirculationDraw || system.pumpCirculationHe || system.pumpCirculationStf ||
-      system.pumpStorageDraw || system.pumpStorageHe || system.pumpStorageStf ||
-      system.pumpRecircDraw || system.pumpRecircHe || system.pumpRecircStf ||
+      hasValue(system.systemManufacturer) || hasDraw(system.systemManufacturerDraw) ||
+      hasDraw(system.systemTypeDraw) ||
+      hasDraw(system.systemPowerDraw) || hasValue(system.systemYear) || hasValue(system.systemFuel) ||
+      hasValue(system.systemLocation) || hasValue(system.heatDistribution) || hasValue(system.pipeInsulation) ||
+      hasDraw(system.pumpCirculationDraw) || system.pumpCirculationHe || hasValue(system.pumpCirculationStf) ||
+      hasDraw(system.pumpStorageDraw) || system.pumpStorageHe || hasValue(system.pumpStorageStf) ||
+      hasDraw(system.pumpRecircDraw) || system.pumpRecircHe || hasValue(system.pumpRecircStf) ||
       system.optionNightReduction || system.optionHydraulicBalance || system.optionHeaterNiches || system.optionCirculationTimed ||
-      system.systemThermostatValves || system.heatingCircuits ||
-      system.surfaceHeating || system.distributorPhoto || system.distributorDn || system.distributorDnDraw ||
-      system.layingSpacing || system.fbhLineDiameter || detailsOpen
+      hasValue(system.systemThermostatValves) || hasValue(system.heatingCircuits) ||
+      hasValue(system.surfaceHeating) || system.distributorPhoto || hasValue(system.distributorDn) || hasDraw(system.distributorDnDraw) ||
+      hasValue(system.layingSpacing) || hasValue(system.fbhLineDiameter) || detailsOpen
     );
     const sections = [];
     const hasAddress = !!(
-      system.addressNameDraw || system.addressStreetDraw ||
-      system.addressCityDraw || system.addressPhoneDraw || system.addressEmailDraw ||
-      system.buildingData || system.buildingStreetDraw || system.buildingCityDraw ||
-      system.buildingYearDraw || system.buildingUnits ||
+      hasDraw(system.addressNameDraw) || hasDraw(system.addressStreetDraw) ||
+      hasDraw(system.addressCityDraw) || hasDraw(system.addressPhoneDraw) || hasDraw(system.addressEmailDraw) ||
+      hasValue(system.buildingData) || hasDraw(system.buildingStreetDraw) || hasDraw(system.buildingCityDraw) ||
+      hasDraw(system.buildingYearDraw) || hasValue(system.buildingUnits) ||
       system.buildingTypeDetached || system.buildingTypeMultiFamily ||
       system.buildingTypeEndTerrace || system.buildingTypeMidTerrace
     );
@@ -4967,11 +4970,11 @@
       }
     }
     const hasStructure = !!(
-      system.floorHeightBasementDraw || system.floorHeightGroundDraw ||
-      system.floorHeight1OgDraw || system.floorHeight2OgDraw ||
-      system.floorHeight3OgDraw || system.floorHeightDgDraw ||
-      system.structureMassive || system.structureWooden || system.basementHeated ||
-      system.notesDraw
+      hasDraw(system.floorHeightBasementDraw) || hasDraw(system.floorHeightGroundDraw) ||
+      hasDraw(system.floorHeight1OgDraw) || hasDraw(system.floorHeight2OgDraw) ||
+      hasDraw(system.floorHeight3OgDraw) || hasDraw(system.floorHeightDgDraw) ||
+      system.structureMassive || system.structureWooden || hasValue(system.basementHeated) ||
+      hasDraw(system.notesDraw)
     );
     if(hasStructure){
       const rows = [];
@@ -5015,15 +5018,15 @@
       }
     }
     const hasWalls = !!(
-      system.wallNorthL1Draw || system.wallNorthL2Draw || system.wallNorthL3Draw ||
-      system.wallNorthL4Draw || system.wallNorthL5Draw || system.wallNorthTotalDraw ||
-      system.wallEastL1Draw || system.wallEastL2Draw || system.wallEastL3Draw ||
-      system.wallEastL4Draw || system.wallEastL5Draw || system.wallEastTotalDraw ||
-      system.wallSouthL1Draw || system.wallSouthL2Draw || system.wallSouthL3Draw ||
-      system.wallSouthL4Draw || system.wallSouthL5Draw || system.wallSouthTotalDraw ||
-      system.wallWestL1Draw || system.wallWestL2Draw || system.wallWestL3Draw ||
-      system.wallWestL4Draw || system.wallWestL5Draw || system.wallWestTotalDraw ||
-      system.wallNotesDraw
+      hasDraw(system.wallNorthL1Draw) || hasDraw(system.wallNorthL2Draw) || hasDraw(system.wallNorthL3Draw) ||
+      hasDraw(system.wallNorthL4Draw) || hasDraw(system.wallNorthL5Draw) || hasDraw(system.wallNorthTotalDraw) ||
+      hasDraw(system.wallEastL1Draw) || hasDraw(system.wallEastL2Draw) || hasDraw(system.wallEastL3Draw) ||
+      hasDraw(system.wallEastL4Draw) || hasDraw(system.wallEastL5Draw) || hasDraw(system.wallEastTotalDraw) ||
+      hasDraw(system.wallSouthL1Draw) || hasDraw(system.wallSouthL2Draw) || hasDraw(system.wallSouthL3Draw) ||
+      hasDraw(system.wallSouthL4Draw) || hasDraw(system.wallSouthL5Draw) || hasDraw(system.wallSouthTotalDraw) ||
+      hasDraw(system.wallWestL1Draw) || hasDraw(system.wallWestL2Draw) || hasDraw(system.wallWestL3Draw) ||
+      hasDraw(system.wallWestL4Draw) || hasDraw(system.wallWestL5Draw) || hasDraw(system.wallWestTotalDraw) ||
+      hasDraw(system.wallNotesDraw)
     );
     if(hasWalls){
       const buildRow = (label, values) => (
@@ -5443,12 +5446,13 @@
       }
     }
     const hasSolar = !!(
-      system.solarYearDraw || system.solarStorageDraw || system.solarPumpDraw ||
-      system.solarModulesDraw || system.solarModulesAreaDraw || system.solarOrientation || system.solarCollectorType
+      hasDraw(system.solarYearDraw) || hasDraw(system.solarStorageDraw) || hasDraw(system.solarPumpDraw) ||
+      hasDraw(system.solarModulesDraw) || hasDraw(system.solarModulesAreaDraw) ||
+      hasValue(system.solarOrientation) || hasValue(system.solarCollectorType)
     );
     const hasPv = !!(
-      system.pvModulesDraw || system.pvModulesAreaDraw || system.pvPowerDraw ||
-      system.pvVentilation || system.pvOrientation || system.pvBatteryDraw
+      hasDraw(system.pvModulesDraw) || hasDraw(system.pvModulesAreaDraw) || hasDraw(system.pvPowerDraw) ||
+      hasValue(system.pvVentilation) || hasValue(system.pvOrientation) || hasDraw(system.pvBatteryDraw)
     );
     if(hasSolar || hasPv){
       const blocks = [];
@@ -5741,7 +5745,7 @@
       }
       try{
         const file = new File([html], "hk-uebersicht.html", { type: "text/html" });
-        await navigator.share({ files: [file], title: "HK-\u00dcbersicht", text: "HK-\u00dcbersicht" });
+        await navigator.share({ files: [file], title: "HK-\u00dcbersicht" });
       } catch(e){
         if(e && e.name === "AbortError") return;
         downloadHtml(html, "hk-uebersicht.html");
