@@ -3251,7 +3251,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=37").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=38").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -4131,6 +4131,8 @@
     const wallWestTotalDraw = (document.getElementById("wallWestTotalDraw") || {}).dataset ? (document.getElementById("wallWestTotalDraw").dataset.drawing || "") : "";
     const wallNotesDraw = (document.getElementById("wallNotesDraw") || {}).dataset ? (document.getElementById("wallNotesDraw").dataset.drawing || "") : "";
     const notesLargeDraw = (document.getElementById("notesLargeDraw") || {}).dataset ? (document.getElementById("notesLargeDraw").dataset.drawing || "") : "";
+    const windows = collectWindowsFromDom();
+    const gaubes = collectGaubesFromDom();
     const gaubeWindows = collectGaubeWindowsFromDom();
     const roofWindows = collectRoofWindowsFromDom();
     const solarYearDraw = (document.getElementById("solarYearDraw") || {}).dataset ? (document.getElementById("solarYearDraw").dataset.drawing || "") : "";
