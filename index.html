@@ -3224,7 +3224,7 @@
 <script>
 (function(){
   const STORAGE_KEY = "hkFormStateV1";
-  const APP_VERSION = "v43";
+  const APP_VERSION = "v51";
   let saveTimer = null;
   let eraserMode = false;
   let shareErrorShown = false;
@@ -3265,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=50").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=51").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
