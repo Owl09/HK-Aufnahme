@@ -3265,7 +3265,7 @@
   }
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js?v=53").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=54").then(reg => {
         reg.update().catch(() => {});
       }).catch(() => {});
     });
@@ -5730,14 +5730,18 @@
     shareBtn.addEventListener("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
-      if(!shareHasData){
-        updateShareCache();
-      }
-      if(!shareHasData){
+      const data = collectData();
+      data.system.windows = collectWindowsFromDom();
+      data.system.gaubes = collectGaubesFromDom();
+      data.system.gaubeWindows = collectGaubeWindowsFromDom();
+      data.system.roofWindows = collectRoofWindowsFromDom();
+      if(!hasAnyData(data)){
         alert("Keine Daten erfasst.");
         return;
       }
-      const html = buildShareHtml(shareHtmlCache);
+      renderPrint(data, true);
+      const container = document.getElementById("printView");
+      const html = buildShareHtml(container ? container.innerHTML : "");
       if(!navigator.share){
         downloadHtml(html, "hk-uebersicht.html");
         alert("Teilen ist auf diesem Ger\u00e4t nicht verf\u00fcgbar. Datei wurde heruntergeladen.");
